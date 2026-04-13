@@ -80,15 +80,24 @@ async function createServer() {
           const name = $(el).find('.title').text().trim();
           const sector = $(el).find('.description').text().trim() || 'Other';
           const logoUrl = $(el).find('img').attr('src');
-          const fullLogoUrl = logoUrl ? (logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl}`) : null;
+          
+          // Resolve logo URL
+          let fullLogoUrl = null;
+          if (logoUrl) {
+            if (logoUrl.startsWith('http')) {
+              fullLogoUrl = logoUrl;
+            } else {
+              // Handle relative paths like /resources/...
+              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+            }
+          }
           
           if (name) {
             members.push({
               name,
               sector,
               logo: fullLogoUrl,
-              id: $(el).attr('data-id') || `m-${i}`,
-              event: $(el).attr('data-event')
+              id: $(el).attr('data-id') || `m-${i}`
             });
           }
         });
@@ -106,6 +115,13 @@ async function createServer() {
         $('dt.BlockRow').each((i, el) => {
           const company = $(el).find('[itemprop="worksFor"]').text().trim();
           if (company) companies.add(company);
+          
+          // Also check title if worksFor is empty, sometimes the company is in the description or title area
+          const description = $(el).find('.description').text().trim();
+          if (description && description.includes('at ')) {
+            const parts = description.split('at ');
+            if (parts.length > 1) companies.add(parts[1].trim());
+          }
         });
         return Array.from(companies);
       };
@@ -190,7 +206,8 @@ async function createServer() {
     };
 
     try {
-      const url = 'https://lbbc.glueup.com/organization/5915/widget/events/';
+      // Using the full-view widget URL as requested for more complete data
+      const url = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
       const response = await fetchWithRetry(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const html = await response.text();
@@ -199,22 +216,29 @@ async function createServer() {
       const upcoming: any[] = [];
       const past: any[] = [];
 
-      $('.EventList .EventItem').each((i, el) => {
-        const title = $(el).find('.title').text().trim();
-        const date = $(el).find('.date').text().trim();
-        const location = $(el).find('.location').text().trim();
-        const description = $(el).find('.description').text().trim();
-        const image = $(el).find('img').attr('src');
+      $('.events-list li').each((i, el) => {
+        const title = $(el).find('h2.content').text().trim();
+        const date = $(el).find('time.content').text().trim();
+        const location = $(el).find('.area.content').text().trim();
+        const description = $(el).find('.description').text().trim() || '';
+        const imgStyle = $(el).find('.event-image').attr('style') || '';
+        const imgMatch = imgStyle.match(/url\((.*?)\)/);
+        let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
+        
+        if (image && !image.startsWith('http')) {
+          image = `https://lbbc.glueup.com${image}`;
+        }
+
         const link = $(el).find('a').attr('href');
         const isPast = $(el).hasClass('past');
 
         const event = {
-          id: $(el).attr('data-id') || `e-${i}`,
+          id: `e-${i}`,
           title,
           date,
           location,
           description,
-          image: image ? (image.startsWith('http') ? image : `https://lbbc.glueup.com${image}`) : null,
+          image,
           link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
           type: 'Event'
         };

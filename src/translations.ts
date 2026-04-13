@@ -97,7 +97,7 @@ export const translations = {
     },
     directory: {
       tag: 'DIRECTORY',
-      title: 'Our Membership',
+      title: 'Our Members',
       cta: 'View Full Directory',
       pageTitle: 'A Diverse Network of Leading UK and Libyan Businesses',
       pageTag: 'MEMBER DIRECTORY',
@@ -499,7 +499,7 @@ export const translations = {
     },
     directory: {
       tag: 'الدليل',
-      title: 'عضويتنا',
+      title: 'أعضاؤنا',
       cta: 'عرض الدليل الكامل',
       pageTitle: 'شبكة متنوعة من الشركات البريطانية والليبية الرائدة',
       pageTag: 'دليل الأعضاء',

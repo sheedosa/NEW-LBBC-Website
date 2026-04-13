@@ -1203,7 +1203,7 @@ const MemberDirectory = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 md:mb-10 flex flex-col md:flex-row justify-between items-center md:items-end gap-4 md:gap-6">
         <div className="text-center md:text-left">
           <span className="text-lbbc-green font-bold text-[9px] md:text-[11px] uppercase tracking-[0.3em] mb-2 block">{t.directory.tag}</span>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">{t.directory.title}</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">{t.directory.title}</h2>
         </div>
         <Link 
           to="/directory"
@@ -1286,28 +1286,31 @@ const UpcomingEvents = () => {
         // Fallback to static data if API fails completely
         setEvents([
           {
-            id: 1,
+            id: 'f1',
             title: "Realising Libya's Energy Ambitions",
             location: 'London, UK',
             date: 'MAY 13, 2026',
             description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
             image: 'https://picsum.photos/seed/energy1/800/500',
+            link: 'https://lbbc.glueup.com/event/realising-libyas-energy-ambitions-173494/'
           },
           {
-            id: 2,
+            id: 'f2',
             title: 'Libya Energy Transition Summit',
             location: 'London, UK',
             date: 'JUNE 16, 2026',
             description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
             image: 'https://picsum.photos/seed/energy2/800/500',
+            link: 'https://lbbc.glueup.com/event/libya-energy-transition-summit-168108/'
           },
           {
-            id: 3,
+            id: 'f3',
             title: 'LBBC Summer Reception',
             location: 'London, UK',
             date: 'JUNE 18, 2026',
             description: 'An evening of high-level networking for LBBC members and guests to celebrate bilateral trade and partnership.',
             image: 'https://picsum.photos/seed/reception/800/500',
+            link: 'https://lbbc.glueup.com/event/lbbc-summer-reception-160914/'
           }
         ]);
       } finally {
@@ -2099,30 +2102,10 @@ const DirectoryPage = () => {
     ))
   ].sort();
 
-  const fetchMembers = async (force = true) => {
+  const fetchMembers = async () => {
     setIsLoading(true);
     setError(null);
     
-    // Try to load from localStorage cache first
-    if (!force) {
-      const cached = localStorage.getItem('lbbc_members_cache');
-      if (cached) {
-        try {
-          const { data, timestamp } = JSON.parse(cached);
-          const now = Date.now();
-          // Cache valid for 1 hour
-          if (now - timestamp < 1000 * 60 * 60) {
-            setCouncilMembers(data.council || []);
-            setCorporateMembers(data.corporate || []);
-            setIsLoading(false);
-            return;
-          }
-        } catch (e) {
-          console.error('Error parsing member cache:', e);
-        }
-      }
-    }
-
     try {
       const response = await fetch('/api/members');
       if (!response.ok) throw new Error(`Server returned ${response.status}`);
@@ -2130,12 +2113,6 @@ const DirectoryPage = () => {
       
       setCouncilMembers(data.council || []);
       setCorporateMembers(data.corporate || []);
-      
-      // Save to localStorage
-      localStorage.setItem('lbbc_members_cache', JSON.stringify({
-        data,
-        timestamp: Date.now()
-      }));
     } catch (err) {
       console.error('Error fetching members:', err);
       setError(err instanceof Error ? err.message : t.directory.errorText);
@@ -2149,12 +2126,14 @@ const DirectoryPage = () => {
   }, []);
 
   const filteredCouncil = councilMembers.filter(member => 
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (member.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     member.sector.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (selectedSector === t.directory.allSectors || member.sector === selectedSector)
   );
 
   const filteredCorporate = corporateMembers.filter(member => 
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (member.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     member.sector.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (selectedSector === t.directory.allSectors || member.sector === selectedSector)
   );
 
@@ -2254,7 +2233,7 @@ const DirectoryPage = () => {
               <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{t.directory.error}</h3>
               <p className="text-slate-500 mb-8">{error}</p>
               <button 
-                onClick={() => fetchMembers(true)}
+                onClick={() => fetchMembers()}
                 className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
               >
                 {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
@@ -2311,7 +2290,7 @@ const DirectoryPage = () => {
                   </div>
                   <p className="text-slate-400 font-black uppercase tracking-[0.2em] text-[10px]">{t.directory.noResults.replace('{tab}', activeTab)}</p>
                   <button 
-                    onClick={() => {setSearchTerm(''); setSelectedSector('All Sectors');}}
+                    onClick={() => {setSearchTerm(''); setSelectedSector(t.directory.allSectors);}}
                     className="text-lbbc-green font-black text-[9px] uppercase tracking-widest border-b border-lbbc-green/20 pb-1"
                   >
                     {t.directory.clearFilters}

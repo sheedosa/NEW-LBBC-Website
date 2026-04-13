@@ -252,7 +252,7 @@ const MemberDirectory = () => {
     <section id="directory" className="py-16 bg-slate-50 border-y border-slate-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-10 flex flex-col md:flex-row justify-between items-end gap-6">
         <div>
-          <span className="text-lbbc-green font-black text-[10px] uppercase tracking-[0.4em] mb-3 block">Our Membership</span>
+          <span className="text-lbbc-green font-black text-[10px] uppercase tracking-[0.4em] mb-3 block">Our Members</span>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Leading Global Partners</h2>
         </div>
         <button className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-lbbc-green transition-all">
