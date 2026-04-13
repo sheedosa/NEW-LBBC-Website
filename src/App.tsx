@@ -1271,32 +1271,68 @@ const MemberDirectory = () => {
 
 const UpcomingEvents = () => {
   const { t } = useLanguage();
-  const events = [
-    {
-      id: 1,
-      title: "Realising Libya's Energy Ambitions",
-      location: 'London, UK',
-      date: 'MAY 13, 2026',
-      description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
-      image: 'https://picsum.photos/seed/energy1/800/500',
-    },
-    {
-      id: 2,
-      title: 'Libya Energy Transition Summit',
-      location: 'London, UK',
-      date: 'JUNE 16, 2026',
-      description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
-      image: 'https://picsum.photos/seed/energy2/800/500',
-    },
-    {
-      id: 3,
-      title: 'LBBC Summer Reception',
-      location: 'London, UK',
-      date: 'JUNE 18, 2026',
-      description: 'An evening of high-level networking for LBBC members and guests to celebrate bilateral trade and partnership.',
-      image: 'https://picsum.photos/seed/reception/800/500',
-    }
-  ];
+  const [events, setEvents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('/api/events');
+        if (!response.ok) throw new Error('Failed to fetch events');
+        const data = await response.json();
+        setEvents(data.upcoming || []);
+      } catch (err) {
+        console.error('Error fetching events for home:', err);
+        // Fallback to static data if API fails completely
+        setEvents([
+          {
+            id: 1,
+            title: "Realising Libya's Energy Ambitions",
+            location: 'London, UK',
+            date: 'MAY 13, 2026',
+            description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
+            image: 'https://picsum.photos/seed/energy1/800/500',
+          },
+          {
+            id: 2,
+            title: 'Libya Energy Transition Summit',
+            location: 'London, UK',
+            date: 'JUNE 16, 2026',
+            description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
+            image: 'https://picsum.photos/seed/energy2/800/500',
+          },
+          {
+            id: 3,
+            title: 'LBBC Summer Reception',
+            location: 'London, UK',
+            date: 'JUNE 18, 2026',
+            description: 'An evening of high-level networking for LBBC members and guests to celebrate bilateral trade and partnership.',
+            image: 'https://picsum.photos/seed/reception/800/500',
+          }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <section id="events" className="py-8 md:py-16 bg-slate-50/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="animate-pulse space-y-8">
+            <div className="h-8 bg-slate-200 w-1/4 rounded"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map(i => <div key={i} className="h-64 bg-slate-200 rounded-xl"></div>)}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (events.length === 0) return null;
 
   return (
     <section id="events" className="py-8 md:py-16 bg-slate-50/50">
@@ -1344,10 +1380,22 @@ const UpcomingEvents = () => {
                 <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
                   {event.description}
                 </p>
-                <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
-                  {t.events.register}
-                  <ArrowUpRight size={14} />
-                </button>
+                {event.link ? (
+                  <a 
+                    href={event.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
+                  >
+                    {t.events.register}
+                    <ArrowUpRight size={14} />
+                  </a>
+                ) : (
+                  <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
+                    {t.events.register}
+                    <ArrowUpRight size={14} />
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -1665,97 +1713,43 @@ const Footer = () => {
 const EventsPage = () => {
   const { t } = useLanguage();
   const { hash } = useLocation();
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [pastEvents, setPastEvents] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (hash) {
+    const fetchEvents = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch('/api/events');
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        const data = await response.json();
+        setUpcomingEvents(data.upcoming || []);
+        setPastEvents(data.past || []);
+      } catch (err) {
+        console.error('Error fetching events page:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load events');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    if (hash && !isLoading) {
       const element = document.getElementById(hash.substring(1));
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
-    } else {
+    } else if (!isLoading) {
       window.scrollTo(0, 0);
     }
-  }, [hash]);
-
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Realising Libya's Energy Ambitions",
-      location: 'London, UK',
-      date: 'MAY 13, 2026',
-      description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
-      type: 'Conference',
-      image: 'https://picsum.photos/seed/energy1/800/500'
-    },
-    {
-      id: 2,
-      title: 'Libya Energy Transition Summit',
-      location: 'London, UK',
-      date: 'JUNE 16, 2026',
-      description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
-      type: 'Summit',
-      image: 'https://picsum.photos/seed/energy2/800/500'
-    },
-    {
-      id: 3,
-      title: 'LBBC Summer Reception',
-      location: 'London, UK',
-      date: 'JUNE 18, 2026',
-      description: 'An evening of high-level networking for LBBC members and guests to celebrate bilateral trade and partnership.',
-      type: 'Reception',
-      image: 'https://picsum.photos/seed/reception/800/500'
-    }
-  ];
+  }, [hash, isLoading]);
 
   const [visibleArchiveCount, setVisibleArchiveCount] = useState(3);
-
-  const pastEvents = [
-    {
-      id: 1,
-      title: 'LBBC Webinar: Understanding Libya\'s Banking Landscape',
-      location: 'Online Webinar',
-      date: 'MARCH 25, 2026',
-      description: 'A deep dive into LCs, payment systems, and best practices for financial transactions in the Libyan market.',
-      type: 'Webinar',
-      image: 'https://picsum.photos/seed/banking/800/500'
-    },
-    {
-      id: 2,
-      title: 'LBBC Webinar and Q&A with Tim Eaton, Chatham House',
-      location: 'Online Webinar',
-      date: 'FEBRUARY 12, 2026',
-      description: 'Expert analysis of the current political and economic dynamics in Libya and their impact on international business.',
-      type: 'Webinar',
-      image: 'https://picsum.photos/seed/chatham/800/500'
-    },
-    {
-      id: 3,
-      title: 'Libya-UK Reception: Celebrating Collaboration',
-      location: 'London, UK',
-      date: 'JANUARY 20, 2026',
-      description: 'Celebrating collaboration in business, culture, and heritage between the United Kingdom and Libya.',
-      type: 'Reception',
-      image: 'https://picsum.photos/seed/reception2/800/500'
-    },
-    {
-      id: 4,
-      title: 'Libya Energy Transition Conference',
-      location: 'London, UK',
-      date: 'DECEMBER 05, 2025',
-      description: 'Focusing on renewable investment opportunities and the future of sustainable energy in Libya.',
-      type: 'Conference',
-      image: 'https://picsum.photos/seed/energy3/800/500'
-    },
-    {
-      id: 5,
-      title: 'LBBC Webinar: Essential Guide to Regional Commercial Requirements',
-      location: 'Online Webinar',
-      date: 'NOVEMBER 15, 2025',
-      description: 'A comprehensive guide to navigating regional commercial regulations and requirements in Libya.',
-      type: 'Webinar',
-      image: 'https://picsum.photos/seed/guide/800/500'
-    }
-  ];
 
   return (
     <div className="pt-32">
@@ -1801,56 +1795,98 @@ const EventsPage = () => {
           </div>
 
           <div className="space-y-8 md:space-y-12">
-            {upcomingEvents.map((event) => (
-              <div key={event.id} className="group bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col lg:flex-row">
-                <div className="lg:w-2/5 relative overflow-hidden aspect-[16/9] lg:aspect-auto min-h-[240px] bg-slate-50 flex items-center justify-center">
-                  {event.image ? (
-                    <img 
-                      src={event.image} 
-                      alt={event.title} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-lbbc-green/5 to-transparent"></div>
-                      <Calendar size={48} className="text-slate-200 relative z-10" />
-                    </>
-                  )}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-md shadow-md z-20">
-                    <span className="text-lbbc-green font-black text-[10px] tracking-tighter uppercase">{event.type}</span>
-                  </div>
-                </div>
-                <div className="lg:w-3/5 p-6 md:p-10 flex flex-col justify-between space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex flex-wrap items-center gap-4 text-lbbc-green font-bold text-[10px] uppercase tracking-[0.2em]">
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} />
-                        {event.date}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin size={14} />
-                        {event.location}
-                      </div>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-black text-slate-900 group-hover:text-lbbc-red transition-colors leading-tight">
-                      {event.title}
-                    </h3>
-                    <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-                      {event.description}
-                    </p>
-                  </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-                      <button className="w-full sm:w-auto bg-lbbc-green text-white px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg active:scale-95">
-                        {t.events.register}
-                      </button>
-                      <button className="w-full sm:w-auto border border-slate-200 text-slate-900 px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2">
-                        {t.events.viewDetails} <ArrowUpRight size={14} />
-                      </button>
-                    </div>
-                </div>
+            {isLoading ? (
+              Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="h-64 bg-slate-50 animate-pulse rounded-2xl"></div>
+              ))
+            ) : error ? (
+              <div className="bg-red-50 p-8 rounded-xl text-center border border-red-100">
+                <p className="text-red-600 font-bold mb-4">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
+                >
+                  Retry
+                </button>
               </div>
-            ))}
+            ) : upcomingEvents.length === 0 ? (
+              <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <p className="text-slate-500 font-medium">No upcoming events scheduled at this time.</p>
+              </div>
+            ) : (
+              upcomingEvents.map((event) => (
+                <div key={event.id} className="group bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col lg:flex-row">
+                  <div className="lg:w-2/5 relative overflow-hidden aspect-[16/9] lg:aspect-auto min-h-[240px] bg-slate-50 flex items-center justify-center">
+                    {event.image ? (
+                      <img 
+                        src={event.image} 
+                        alt={event.title} 
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-br from-lbbc-green/5 to-transparent"></div>
+                        <Calendar size={48} className="text-slate-200 relative z-10" />
+                      </>
+                    )}
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-md shadow-md z-20">
+                      <span className="text-lbbc-green font-black text-[10px] tracking-tighter uppercase">{event.type}</span>
+                    </div>
+                  </div>
+                  <div className="lg:w-3/5 p-6 md:p-10 flex flex-col justify-between space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap items-center gap-4 text-lbbc-green font-bold text-[10px] uppercase tracking-[0.2em]">
+                        <div className="flex items-center gap-2">
+                          <Calendar size={14} />
+                          {event.date}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin size={14} />
+                          {event.location}
+                        </div>
+                      </div>
+                      <h3 className="text-2xl md:text-3xl font-black text-slate-900 group-hover:text-lbbc-red transition-colors leading-tight">
+                        {event.title}
+                      </h3>
+                      <p className="text-slate-600 leading-relaxed text-sm md:text-base">
+                        {event.description}
+                      </p>
+                    </div>
+                      <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                        {event.link ? (
+                          <a 
+                            href={event.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto bg-lbbc-green text-white px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg active:scale-95 text-center"
+                          >
+                            {t.events.register}
+                          </a>
+                        ) : (
+                          <button className="w-full sm:w-auto bg-lbbc-green text-white px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg active:scale-95">
+                            {t.events.register}
+                          </button>
+                        )}
+                        {event.link ? (
+                          <a 
+                            href={event.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto border border-slate-200 text-slate-900 px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-center"
+                          >
+                            {t.events.viewDetails} <ArrowUpRight size={14} />
+                          </a>
+                        ) : (
+                          <button className="w-full sm:w-auto border border-slate-200 text-slate-900 px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2">
+                            {t.events.viewDetails} <ArrowUpRight size={14} />
+                          </button>
+                        )}
+                      </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
           
         </div>
@@ -1869,48 +1905,70 @@ const EventsPage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            {pastEvents.slice(0, visibleArchiveCount).map((event) => (
-              <div key={event.id} className="flex flex-col gap-6 group">
-                <div className="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative bg-white flex items-center justify-center border border-slate-100">
-                  {event.image ? (
-                    <img 
-                      src={event.image} 
-                      alt={event.title} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-lbbc-green/5 to-transparent"></div>
-                      <Calendar size={48} className="text-slate-100 relative z-10" />
-                    </>
-                  )}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-md shadow-md z-20">
-                    <span className="text-lbbc-green font-black text-[10px] tracking-tighter uppercase">{event.type}</span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-lbbc-red font-bold text-[9px] uppercase tracking-[0.2em]">
-                      <Calendar size={12} />
-                      {event.date}
-                    </div>
-                    <div className="flex items-center gap-2 text-lbbc-red font-bold text-[9px] uppercase tracking-[0.2em]">
-                      <MapPin size={12} />
-                      {event.location}
-                    </div>
-                    <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-lbbc-red transition-colors line-clamp-2">{event.title}</h3>
-                  </div>
-                  <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
-                    {event.description}
-                  </p>
-                  <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
-                    {t.events.viewSummary}
-                    <ArrowUpRight size={14} />
-                  </button>
-                </div>
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-80 bg-slate-200 animate-pulse rounded-xl"></div>
+              ))
+            ) : pastEvents.length === 0 ? (
+              <div className="col-span-full text-center py-12 bg-white/50 rounded-xl border border-dashed border-slate-200">
+                <p className="text-slate-500 font-medium">No archived events found.</p>
               </div>
-            ))}
+            ) : (
+              pastEvents.slice(0, visibleArchiveCount).map((event) => (
+                <div key={event.id} className="flex flex-col gap-6 group">
+                  <div className="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg relative bg-white flex items-center justify-center border border-slate-100">
+                    {event.image ? (
+                      <img 
+                        src={event.image} 
+                        alt={event.title} 
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <>
+                        <div className="absolute inset-0 bg-gradient-to-br from-lbbc-green/5 to-transparent"></div>
+                        <Calendar size={48} className="text-slate-100 relative z-10" />
+                      </>
+                    )}
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-md shadow-md z-20">
+                      <span className="text-lbbc-green font-black text-[10px] tracking-tighter uppercase">{event.type}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-lbbc-red font-bold text-[9px] uppercase tracking-[0.2em]">
+                        <Calendar size={12} />
+                        {event.date}
+                      </div>
+                      <div className="flex items-center gap-2 text-lbbc-red font-bold text-[9px] uppercase tracking-[0.2em]">
+                        <MapPin size={12} />
+                        {event.location}
+                      </div>
+                      <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-lbbc-red transition-colors line-clamp-2">{event.title}</h3>
+                    </div>
+                    <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
+                      {event.description}
+                    </p>
+                    {event.link ? (
+                      <a 
+                        href={event.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
+                      >
+                        {t.events.viewSummary}
+                        <ArrowUpRight size={14} />
+                      </a>
+                    ) : (
+                      <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
+                        {t.events.viewSummary}
+                        <ArrowUpRight size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="mt-12 flex flex-col items-center gap-8">
