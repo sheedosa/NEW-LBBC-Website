@@ -33,7 +33,7 @@ import {
   Image as ImageIcon,
   Eye
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { translations } from './translations';
@@ -58,8 +58,13 @@ const useLanguage = () => {
 
 const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('lbbc_language');
-    return (saved as Language) || 'en';
+    try {
+      const saved = localStorage.getItem('lbbc_language');
+      if (saved === 'en' || saved === 'ar') return saved;
+    } catch (e) {
+      console.error('Error accessing localStorage:', e);
+    }
+    return 'en';
   });
 
   const setLanguage = (lang: Language) => {
@@ -2028,7 +2033,13 @@ const DirectoryPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const sectors = [t.directory.allSectors, ...Array.from(new Set([...councilMembers, ...corporateMembers].map(m => m.sector)))].sort();
+  const sectors = [
+    t.directory.allSectors, 
+    ...Array.from(new Set([...(councilMembers || []), ...(corporateMembers || [])]
+      .map(m => m?.sector)
+      .filter(Boolean)
+    ))
+  ].sort();
 
   const fetchMembers = async (force = true) => {
     setIsLoading(true);
