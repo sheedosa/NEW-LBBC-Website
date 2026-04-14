@@ -144,13 +144,13 @@ const Hero = () => {
             onClick={() => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)}
             className="p-3 md:p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-lbbc-green transition-all active:scale-90 backdrop-blur-sm"
           >
-            <ChevronLeft size={18} md:size={20} />
+            <ChevronLeft size={20} />
           </button>
           <button 
             onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
             className="p-3 md:p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-lbbc-green transition-all active:scale-90 backdrop-blur-sm"
           >
-            <ChevronRight size={18} md:size={20} />
+            <ChevronRight size={20} />
           </button>
         </div>
       </div>

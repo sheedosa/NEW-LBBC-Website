@@ -272,7 +272,8 @@ async function createServer() {
           date: 'MAY 13, 2026',
           description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
           type: 'Conference',
-          image: 'https://picsum.photos/seed/energy1/800/500'
+          image: 'https://picsum.photos/seed/energy1/800/500',
+          link: 'https://lbbc.glueup.com/event/realising-libyas-energy-ambitions-173494/'
         },
         {
           id: 'f-e-2',
@@ -281,7 +282,8 @@ async function createServer() {
           date: 'JUNE 16, 2026',
           description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
           type: 'Summit',
-          image: 'https://picsum.photos/seed/energy2/800/500'
+          image: 'https://picsum.photos/seed/energy2/800/500',
+          link: 'https://lbbc.glueup.com/organization/5915/events/'
         }
       ],
       past: [
@@ -292,7 +294,8 @@ async function createServer() {
           date: 'MARCH 25, 2026',
           description: 'A deep dive into LCs, payment systems, and best practices for financial transactions in the Libyan market.',
           type: 'Webinar',
-          image: 'https://picsum.photos/seed/banking/800/500'
+          image: 'https://picsum.photos/seed/banking/800/500',
+          link: 'https://lbbc.glueup.com/organization/5915/events/'
         }
       ]
     };
@@ -334,7 +337,8 @@ async function createServer() {
           image = `https://lbbc.glueup.com${image}`;
         }
 
-        const link = $upcoming(el).find('a').attr('href');
+        const link = $upcoming(el).find('h2.content a').attr('href') || 
+                     $upcoming(el).find('a[href]').first().attr('href');
         const isPast = $upcoming(el).hasClass('past');
 
         const event = {
@@ -344,7 +348,7 @@ async function createServer() {
           location,
           description,
           image,
-          link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
+          link: link ? (link.startsWith('http') ? link : (link.startsWith('/') ? `https://lbbc.glueup.com${link}` : `https://lbbc.glueup.com/${link}`)) : null,
           type: 'Event'
         };
 
@@ -366,7 +370,8 @@ async function createServer() {
           image = `https://lbbc.glueup.com${image}`;
         }
 
-        const link = $past(el).find('a').attr('href');
+        const link = $past(el).find('h2.content a').attr('href') || 
+                     $past(el).find('a[href]').first().attr('href');
 
         const event = {
           id: `e-p-${i}`,
@@ -375,7 +380,7 @@ async function createServer() {
           location,
           description,
           image,
-          link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
+          link: link ? (link.startsWith('http') ? link : (link.startsWith('/') ? `https://lbbc.glueup.com${link}` : `https://lbbc.glueup.com/${link}`)) : null,
           type: 'Event'
         };
 

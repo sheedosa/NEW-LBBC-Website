@@ -35,8 +35,168 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation, useParams } from 'react-router-dom';
+import Markdown from 'react-markdown';
 import { translations } from './translations';
+
+// --- News Data ---
+
+const newsData = [
+  {
+    id: 'lbbc-aba-partnership',
+    image: 'https://lh3.googleusercontent.com/d/176Ry53dtybn4l49PqhI7zXpDVT8sePCa',
+    category: 'PARTNERSHIPS',
+    title: 'LBBC Partners with Arab Bankers Association',
+    date: 'APRIL 10, 2026',
+    content: `The Libyan British Business Council is pleased to announce a new partnership with the Arab Bankers Association (ABA), marking a valuable step in strengthening links between the UK–Libya business community and the wider Arab and British financial sectors.
+
+The Arab Bankers Association is a London-based, not-for-profit professional organisation whose members work in banks and related industries across the Arab world and the United Kingdom. Through its programmes and events, the ABA promotes stronger relations, information sharing and understanding between Arab and British financial institutions.
+
+For the LBBC, whose role is to promote bilateral trade and business relations between the UK and Libya, this partnership broadens the network of expertise and dialogue available to members, particularly in areas where finance, trade and investment intersect. It also creates opportunities for greater engagement with banking and financial sector stakeholders whose perspectives are increasingly important to companies looking at Libya’s evolving market.
+
+Together, the LBBC and the ABA look forward to encouraging informed discussion, expanding relevant networks, and creating new opportunities for engagement between members of both organisations.`
+  },
+  {
+    id: 'noc-chairman-keynote',
+    image: 'https://lh3.googleusercontent.com/d/1Na6BOfAiwd7ztdaTTDH_pDIU1JmCuIjz',
+    category: 'ENERGY',
+    title: 'NOC Chairman Joins Libya Energy Forum in London as Keynote Speaker',
+    date: 'APRIL 08, 2026',
+    content: `We are delighted to announce that HE Masoud Suleiman, Chairman of the National Oil Corporation of Libya (NOC), will be attending the Libya Energy Forum alongside a delegation of 20 senior Libyan energy experts.
+ 
+Taking place on 13 May 2026 in London, the Libya Energy Forum will bring senior Libyan leadership, international oil companies, independents, investors, technical partners and advisors for a day of strategic dialogue, targeted networking and direct engagement.
+
+Hosted in association with the National Oil Corporation of Libya (NOC) and convened by the Libyan British Business Council, the forum takes place as part of Africa’s premier global upstream gathering and brings Libya’s energy priorities into a broader regional and international context.
+
+Discussions will explore unlocking value across Libya’s upstream portfolio, Libya’s positioning within the global energy landscape, gas development and domestic supply potential, the role of technology and international partnerships, and workforce development and long term sector capacity.
+ 
+Don't miss this exceptional opportunity to engage directly with NOC leadership and the wider Libyan energy delegation.
+ 
+[Register today to attend](https://lbbc.glueup.com/event/realising-libyas-energy-ambitions-173494/)`
+  },
+  {
+    id: 'halo-trust-partners',
+    image: 'https://lh3.googleusercontent.com/d/1aYtvKVprywiGJhSjM1ojJQhGKPwjVrNj',
+    category: 'CSR',
+    title: 'The HALO Trust Calls for Corporate Partners in Libya',
+    date: 'APRIL 05, 2026',
+    content: `The Senior Management Team of the LBBC were briefed by The HALO Trust, a specialist organisation in humanitarian mine clearance.
+
+Since 2019, HALO has been working across Libya to support the clearance of explosive hazards and strengthen local capacity, helping create safer conditions for communities and enabling the gradual return of economic activity.
+
+Their work highlights the important link between safety, recovery and a functioning business environment. As part of its role in supporting responsible engagement in Libya, the LBBC continues to connect members with initiatives that contribute to longer-term stability and development.
+
+HALO is currently engaging with organisations interested in supporting its work in Libya through partnerships and other forms of collaboration.
+
+For further information on HALO’s work, please contact Poppy Robinson at poppy.robinson@halotrust.org`
+  },
+  {
+    id: 'uk-embassy-evisa',
+    image: 'https://lh3.googleusercontent.com/d/1j4yenovlq9tMOVS3V3bClW7q4Y1fUpvg',
+    category: 'TRAVEL',
+    title: 'UK Embassy in Tripoli Introduces E Visa for Libyan Travellers',
+    date: 'APRIL 01, 2026',
+    content: `The British Embassy in Libya has announced an important update to UK travel procedures. From 25 February 2026, Libyan travellers to the United Kingdom will be required to hold digital permission to travel in advance, either through an eVisa or an Electronic Travel Authorisation (ETA), depending on their circumstances.
+
+The UK Government has also confirmed that most applicants granted a UK visit visa, as well as many other visa types, on or after this date will receive an eVisa instead of a physical visa sticker. Applicants will be instructed on how to access their eVisa through a UKVI account before travelling.
+
+This is particularly relevant for Libyan nationals, as Libya remains on the UK’s list of visa-national countries and does not have a UK visa application centre in-country. In practice, many Libyan applicants travel to Tunis to apply, submit biometrics and return to stamp their visa entry sticker at the UK visa application centre there. Under the updated system, applications are submitted online and the eVisa is issued electronically, meaning travel is generally required only for the biometric appointment.
+
+LBBC members seeking support with UK business travel may contact the Secretariat at secretariat@lbbc.org.uk. Council members receive complimentary visa support.`
+  }
+];
+
+const NewsDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { t } = useLanguage();
+  const newsItem = newsData.find(item => item.id === id);
+
+  if (!newsItem) {
+    return (
+      <div className="pt-32 pb-20 text-center">
+        <h1 className="text-2xl font-bold">News not found</h1>
+        <Link to="/" className="text-lbbc-green hover:underline mt-4 inline-block">Return to Home</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-20">
+      {/* Hero Section */}
+      <section className="relative h-[40vh] md:h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900">
+        <img 
+          src={newsItem.image} 
+          alt={newsItem.title} 
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-4xl"
+          >
+            <span className="inline-block bg-lbbc-green text-white px-3 py-1 rounded-full font-black text-[9px] uppercase tracking-[0.4em] mb-6">
+              {newsItem.category}
+            </span>
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight tracking-tight">
+              {newsItem.title}
+            </h1>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col lg:flex-row gap-16">
+            <div className="lg:w-2/3">
+              <div className="prose prose-slate prose-lg max-w-none space-y-8 text-slate-600 leading-relaxed">
+                <Markdown>{newsItem.content}</Markdown>
+              </div>
+              
+              <div className="pt-12 mt-12 border-t border-slate-100">
+                <Link 
+                  to="/resources"
+                  className="inline-flex items-center gap-3 bg-lbbc-green text-white px-8 py-4 rounded-sm font-black text-xs uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-xl group"
+                >
+                  Back to Resources
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:w-1/3 space-y-12">
+              <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 space-y-6">
+                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">About the LBBC</h4>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {t.footer.about}
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">Contact Us</h4>
+                <div className="space-y-4">
+                  <a href="mailto:secretariat@lbbc.org.uk" className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
+                    <Mail size={18} className="text-lbbc-green" />
+                    secretariat@lbbc.org.uk
+                  </a>
+                  <a href="tel:+442077887935" className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
+                    <Phone size={18} className="text-lbbc-green" />
+                    +44 (0) 20 7788 7935
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
 
 // --- Language Context ---
 
@@ -967,28 +1127,28 @@ Bob has over 25 years of management experience, in both private and public secto
             <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 w-full">
               <div className="bg-slate-50 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-100 space-y-3 md:space-y-4 h-full">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-lbbc-green/10 rounded-lg md:rounded-xl flex items-center justify-center text-lbbc-green">
-                  <ShieldCheck size={20} md:size={24} />
+                  <ShieldCheck size={24} />
                 </div>
                 <h4 className="font-black text-slate-900 uppercase tracking-widest text-[10px] md:text-xs">{t.about.page.feature1}</h4>
                 <p className="text-xs md:text-sm text-slate-500 leading-relaxed">{t.about.page.feature1Text}</p>
               </div>
               <div className="bg-slate-50 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-100 space-y-3 md:space-y-4 h-full">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-lbbc-green/10 rounded-lg md:rounded-xl flex items-center justify-center text-lbbc-green">
-                  <Globe size={20} md:size={24} />
+                  <Globe size={24} />
                 </div>
                 <h4 className="font-black text-slate-900 uppercase tracking-widest text-[10px] md:text-xs">{t.about.page.feature2}</h4>
                 <p className="text-xs md:text-sm text-slate-500 leading-relaxed">{t.about.page.feature2Text}</p>
               </div>
               <div className="bg-slate-50 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-100 space-y-3 md:space-y-4 h-full">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-lbbc-green/10 rounded-lg md:rounded-xl flex items-center justify-center text-lbbc-green">
-                  <Briefcase size={20} md:size={24} />
+                  <Briefcase size={24} />
                 </div>
                 <h4 className="font-black text-slate-900 uppercase tracking-widest text-[10px] md:text-xs">{t.about.page.feature3}</h4>
                 <p className="text-xs md:text-sm text-slate-500 leading-relaxed">{t.about.page.feature3Text}</p>
               </div>
               <div className="bg-slate-50 p-6 md:p-8 rounded-xl md:rounded-2xl border border-slate-100 space-y-3 md:space-y-4 h-full">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-lbbc-green/10 rounded-lg md:rounded-xl flex items-center justify-center text-lbbc-green">
-                  <Users size={20} md:size={24} />
+                  <Users size={24} />
                 </div>
                 <h4 className="font-black text-slate-900 uppercase tracking-widest text-[10px] md:text-xs">{t.about.page.feature4}</h4>
                 <p className="text-xs md:text-sm text-slate-500 leading-relaxed">{t.about.page.feature4Text}</p>
@@ -1011,7 +1171,7 @@ Bob has over 25 years of management experience, in both private and public secto
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             <div className="bg-white p-8 md:p-10 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 space-y-4 md:space-y-6 group hover:shadow-xl transition-all">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-lbbc-green text-white rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Handshake size={24} md:size={32} />
+                <Handshake size={32} />
               </div>
               <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">{t.about.page.pillar1Title}</h3>
               <p className="text-sm md:text-slate-600 leading-relaxed">
@@ -1020,7 +1180,7 @@ Bob has over 25 years of management experience, in both private and public secto
             </div>
             <div className="bg-white p-8 md:p-10 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 space-y-4 md:space-y-6 group hover:shadow-xl transition-all">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-lbbc-green text-white rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Target size={24} md:size={32} />
+                <Target size={32} />
               </div>
               <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">{t.about.page.pillar2Title}</h3>
               <p className="text-sm md:text-slate-600 leading-relaxed">
@@ -1029,7 +1189,7 @@ Bob has over 25 years of management experience, in both private and public secto
             </div>
             <div className="bg-white p-8 md:p-10 rounded-xl md:rounded-2xl shadow-sm border border-slate-100 space-y-4 md:space-y-6 group hover:shadow-xl transition-all">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-lbbc-green text-white rounded-lg md:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                <ShieldCheck size={24} md:size={32} />
+                <ShieldCheck size={32} />
               </div>
               <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">{t.about.page.pillar3Title}</h3>
               <p className="text-sm md:text-slate-600 leading-relaxed">
@@ -1130,7 +1290,7 @@ Bob has over 25 years of management experience, in both private and public secto
               <div key={partner.name} className="flex flex-col items-center gap-4 group w-full sm:w-[calc(50%-20px)] lg:w-[calc(25%-30px)] max-w-[320px]">
                 <div className="h-32 md:h-48 w-full flex items-center justify-center transition-all bg-slate-50 rounded-2xl p-6 md:p-10 border border-transparent hover:border-slate-100 hover:bg-white hover:shadow-xl">
                   {partner.logo.includes('Building2') || partner.logo.includes('d/1PGomWa780IpyKLEScVCwx5SOUtqGimcM') ? (
-                    <Building2 size={48} md:size={64} className="text-slate-300 group-hover:text-lbbc-red transition-colors" />
+                    <Building2 size={64} className="text-slate-300 group-hover:text-lbbc-red transition-colors" />
                   ) : (
                     <img 
                       src={partner.logo} 
@@ -1404,22 +1564,34 @@ const UpcomingEvents = () => {
                 <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
                   {event.description}
                 </p>
-                {event.link ? (
-                  <a 
-                    href={event.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
-                  >
-                    {t.events.register}
-                    <ArrowUpRight size={14} />
-                  </a>
-                ) : (
-                  <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
-                    {t.events.register}
-                    <ArrowUpRight size={14} />
-                  </button>
-                )}
+                <div className="flex items-center gap-6">
+                  {event.link ? (
+                    <a 
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
+                    >
+                      {t.events.register}
+                      <ArrowUpRight size={14} />
+                    </a>
+                  ) : (
+                    <button className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit">
+                      {t.events.register}
+                      <ArrowUpRight size={14} />
+                    </button>
+                  )}
+                  {event.link && (
+                    <a 
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-slate-400 hover:text-lbbc-green font-bold text-[10px] uppercase tracking-widest transition-all w-fit"
+                    >
+                      {t.events.viewDetails}
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}
@@ -1476,36 +1648,7 @@ const FeaturedStory = () => {
 
 const LatestNews = () => {
   const { t } = useLanguage();
-  const news = [
-    { 
-      id: 1, 
-      image: 'https://picsum.photos/seed/n1/600/400',
-      category: 'COMMERCIAL',
-      title: 'New Trade Agreement Signed in London',
-      date: 'MARCH 08, 2026'
-    },
-    { 
-      id: 2, 
-      image: 'https://picsum.photos/seed/n2/600/400',
-      category: 'ENERGY',
-      title: 'NOC Announces Strategic Expansion Plans',
-      date: 'MARCH 05, 2026'
-    },
-    { 
-      id: 3, 
-      image: 'https://picsum.photos/seed/n3/600/400',
-      category: 'GOVERNANCE',
-      title: 'LBBC Board Welcomes New Strategic Members',
-      date: 'MARCH 01, 2026'
-    },
-    { 
-      id: 4, 
-      image: 'https://picsum.photos/seed/n4/600/400',
-      category: 'RESOURCES',
-      title: 'Market Transparency Report: Q1 2026',
-      date: 'FEBRUARY 25, 2026'
-    },
-  ];
+  const news = newsData;
 
   return (
     <section id="resources" className="py-8 md:py-16 bg-slate-50/30">
@@ -1523,21 +1666,25 @@ const LatestNews = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
           {news.map((item) => (
-            <div key={item.id} className="space-y-4 md:space-y-6 group cursor-pointer">
+            <Link to={`/news/${item.id}`} key={item.id} className="space-y-4 md:space-y-6 group cursor-pointer block">
               <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500 bg-slate-100 flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent to-lbbc-green/5"></div>
-                <Newspaper size={32} className="text-slate-300 group-hover:text-lbbc-red/40 transition-colors" />
+                <img 
+                  src={item.image} 
+                  alt={item.title} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div className="space-y-2 md:space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-lbbc-green font-black text-[8px] md:text-[9px] tracking-widest uppercase">{item.category}</span>
-                  <span className="text-slate-400 font-bold text-[8px] md:text-[9px]">{item.date}</span>
                 </div>
                 <h3 className="text-base md:text-lg font-extrabold text-slate-900 leading-snug group-hover:text-lbbc-red transition-colors line-clamp-2">
                   {item.title}
                 </h3>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
         
@@ -1685,13 +1832,13 @@ const Footer = () => {
               <div className="space-y-3 md:space-y-4">
                 <a href="mailto:secretariat@lbbc.org.uk" className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
                   <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <Mail size={12} md:size={14} className="text-white" />
+                    <Mail size={14} className="text-white" />
                   </div>
                   {t.footer.email}: secretariat@lbbc.org.uk
                 </a>
                 <a href="tel:+442077887935" className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
                   <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <Phone size={12} md:size={14} className="text-white" />
+                    <Phone size={14} className="text-white" />
                   </div>
                   {t.footer.tel}: +44 (0) 20 7788 7935
                 </a>
@@ -1706,13 +1853,13 @@ const Footer = () => {
         <div className="pt-12 md:pt-16 border-t border-white/10 flex flex-col md:flex-row justify-between items-center md:items-end gap-10 md:gap-12">
           <div className="space-y-6 md:space-y-8 text-center md:text-start">
             <div className="flex justify-center md:justify-start gap-8 md:gap-10">
-              <a href="https://www.linkedin.com/company/libyan-british-business-council/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={20} md:size={24} /></a>
+              <a href="https://www.linkedin.com/company/libyan-british-business-council/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={24} /></a>
               <a href="https://x.com/LBBCnews" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6">
                   <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932L18.901 1.153zM17.61 20.644h2.039L6.486 3.24H4.298L17.61 20.644z" />
                 </svg>
               </a>
-              <a href="https://www.facebook.com/LibyanBritishBusinessCouncil/#" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={20} md:size={24} /></a>
+              <a href="https://www.facebook.com/LibyanBritishBusinessCouncil/#" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={24} /></a>
             </div>
             <p className="text-[9px] md:text-[11px] text-white uppercase tracking-[0.3em] font-bold">
               {t.footer.rights}
@@ -2397,36 +2544,7 @@ const ResourcesPage = () => {
     { id: 6, title: 'Infrastructure Development Roadmap', category: 'INFRASTRUCTURE' },
   ];
 
-  const news = [
-    { 
-      id: 1, 
-      image: 'https://picsum.photos/seed/n1/600/400',
-      category: 'COMMERCIAL',
-      title: 'New Trade Agreement Signed in London',
-      date: 'MARCH 08, 2026'
-    },
-    { 
-      id: 2, 
-      image: 'https://picsum.photos/seed/n2/600/400',
-      category: 'ENERGY',
-      title: 'NOC Announces Strategic Expansion Plans',
-      date: 'MARCH 05, 2026'
-    },
-    { 
-      id: 3, 
-      image: 'https://picsum.photos/seed/n3/600/400',
-      category: 'GOVERNANCE',
-      title: 'LBBC Board Welcomes New Strategic Members',
-      date: 'MARCH 01, 2026'
-    },
-    { 
-      id: 4, 
-      image: 'https://picsum.photos/seed/n4/600/400',
-      category: 'RESOURCES',
-      title: 'Market Transparency Report: Q1 2026',
-      date: 'FEBRUARY 25, 2026'
-    },
-  ];
+  const news = newsData;
 
   return (
     <div className="pt-32">
@@ -2521,29 +2639,29 @@ const ResourcesPage = () => {
               <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-4 block">{t.news.tag}</span>
               <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.news.title}</h2>
             </div>
-            <button className="text-lbbc-green font-bold text-xs md:text-sm uppercase tracking-widest flex items-center justify-center gap-2 group">
-              {t.news.cta}
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
             {news.map((item) => (
-              <div key={item.id} className="space-y-4 md:space-y-6 group cursor-pointer">
+              <Link to={`/news/${item.id}`} key={item.id} className="space-y-4 md:space-y-6 group cursor-pointer block">
                 <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500 bg-slate-100 flex items-center justify-center relative">
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-lbbc-green/5"></div>
-                  <Newspaper size={32} className="text-slate-300 group-hover:text-lbbc-red/40 transition-colors" />
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
                 </div>
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-lbbc-green font-black text-[8px] md:text-[9px] tracking-widest uppercase">{item.category}</span>
-                    <span className="text-slate-400 font-bold text-[8px] md:text-[9px]">{item.date}</span>
                   </div>
                   <h3 className="text-base md:text-lg font-extrabold text-slate-900 leading-snug group-hover:text-lbbc-red transition-colors line-clamp-2">
                     {item.title}
                   </h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           
@@ -3770,6 +3888,7 @@ export default function App() {
             <Route path="/membership" element={<MembershipPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/spotlight/capterio" element={<SpotlightPage />} />
+            <Route path="/news/:id" element={<NewsDetailPage />} />
           </Routes>
           <Footer />
         </div>

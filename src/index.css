@@ -21,7 +21,7 @@
   }
 
   body {
-    @apply font-sans text-slate-900 bg-white selection:bg-lbbc-green/10 selection:text-lbbc-green;
+    @apply font-sans text-slate-900 bg-white selection:bg-slate-900 selection:text-white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
