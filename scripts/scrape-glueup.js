@@ -36,57 +36,56 @@ const fetchWithRetry = async (url, retries = 3) => {
 
 async function scrapeMembers() {
   try {
-    const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
-    const councilUrl = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/council/';
+    const url = 'https://lbbc.org.uk/lbbc-memberships/';
+    const response = await fetchWithRetry(url);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const html = await response.text();
+    const $ = cheerio.load(html);
     
-    const [resCorp, resCouncil] = await Promise.all([
-      fetchWithRetry(url),
-      fetchWithRetry(councilUrl)
-    ]);
-
-    const htmlCorp = await resCorp.text();
-    const htmlCouncil = await resCouncil.text();
-    
-    const $corp = cheerio.load(htmlCorp);
-    const $council = cheerio.load(htmlCouncil);
-    
+    const council = [];
     const corporate = [];
-    const councilCompanyNames = new Set();
+    let currentList = council;
 
-    // Parse Council Companies
-    $council('dt.BlockRow').each((i, el) => {
-      const company = $council(el).find('[itemprop="worksFor"]').text().trim();
-      if (company) councilCompanyNames.add(company.toLowerCase());
-      const desc = $council(el).find('.description').text().trim();
-      if (desc && desc.includes('at ')) {
-        councilCompanyNames.add(desc.split('at ')[1].trim().toLowerCase());
-      }
-    });
-
-    // Parse Corporate Members
-    $corp('dt.BlockRow').each((i, el) => {
-      const name = $corp(el).find('.title').text().trim();
-      const sector = $corp(el).find('.description').text().trim() || 'Other';
-      const logo = $corp(el).find('img').attr('src');
+    // Find all headings and members
+    $('h3.team-title, .members-con').each((i, el) => {
+      const $el = $(el);
       
-      if (name) {
-        corporate.push({
-          name,
-          sector,
-          logo: logo ? (logo.startsWith('http') ? logo : `https://lbbc.glueup.com${logo}`) : null,
-          id: `m-${i}`
+      if ($el.is('h3.team-title')) {
+        const text = $el.text().trim();
+        if (text.includes('Council Members')) {
+          currentList = council;
+        } else if (text.includes('Corporate Members')) {
+          currentList = corporate;
+        }
+      } else {
+        // It's a member container
+        $el.find('a.lbbcMemberMoreInfo').each((j, a) => {
+          const $a = $(a);
+          const name = $a.find('strong').text().trim();
+          const sector = $a.find('.company-sectors').text().trim() || 'Other';
+          const logoUrl = $a.find('img').attr('src');
+          const id = $a.attr('data-membershipid') || $a.attr('data-membershipID') || `m-${i}-${j}`;
+          
+          // Resolve logo URL
+          let fullLogoUrl = null;
+          if (logoUrl) {
+            if (logoUrl.startsWith('http')) {
+              fullLogoUrl = logoUrl;
+            } else {
+              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+            }
+          }
+          
+          if (name) {
+            currentList.push({ name, sector, logo: fullLogoUrl, id });
+          }
         });
       }
     });
 
-    const council = corporate.filter(m => 
-      Array.from(councilCompanyNames).some(name => m.name.toLowerCase().includes(name) || name.includes(m.name.toLowerCase()))
-    );
-    const nonCouncil = corporate.filter(m => !council.find(c => c.name === m.name));
-
-    const data = { council, corporate: nonCouncil, timestamp: Date.now() };
+    const data = { council, corporate, timestamp: Date.now() };
     fs.writeFileSync(path.join(DATA_DIR, 'members.json'), JSON.stringify(data, null, 2));
-    console.log(`[Build Scraper] Saved ${corporate.length} members.`);
+    console.log(`[Build Scraper] Saved ${council.length + corporate.length} members.`);
   } catch (err) {
     console.error('[Build Scraper] Members scraping failed:', err);
     // Save empty fallback to prevent build failure

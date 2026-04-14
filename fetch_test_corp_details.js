@@ -1,0 +1,14 @@
+import * as cheerio from 'cheerio';
+import https from 'https';
+
+https.get('https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/', (res) => {
+  let data = '';
+  res.on('data', (chunk) => data += chunk);
+  res.on('end', () => {
+    const $ = cheerio.load(data);
+    $('dt.BlockRow').each((i, el) => {
+      console.log($(el).html());
+      if (i > 2) process.exit(0);
+    });
+  });
+});

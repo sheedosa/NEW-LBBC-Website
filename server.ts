@@ -148,8 +148,10 @@ async function createServer() {
       council: [
         { name: 'Bank ABC', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/15cpsQqPmBPGxIFDMENHLFMWWSMlX5RWS', id: 'fallback-1' },
         { name: 'BACB', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/1AncCRiOHV69RThwwxusFjd44kk5Kfm3X', id: 'fallback-2' },
-        { name: 'Metlen', sector: 'Energy', logo: 'https://lh3.googleusercontent.com/d/1qZgdrszXG_q9DaIw9Pi15tK-FibGgnZa', id: 'fallback-3' },
-        { name: 'Promergon', sector: 'Infrastructure', logo: 'https://lh3.googleusercontent.com/d/1tT9Mi34vXyls13GG54cIzrmBsPls301F', id: 'fallback-4' }
+        { name: 'ALFA Holding Group', sector: 'Healthcare', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/216c1dba-14ec-45ec-85e0-11fd4db01608.png', id: 'fallback-3' },
+        { name: 'ALMARAJ Company for Oil and Gas', sector: 'Energy', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/9806499a-9764-468a-8610-811656885662.png', id: 'fallback-4' },
+        { name: 'Metlen', sector: 'Energy', logo: 'https://lh3.googleusercontent.com/d/1qZgdrszXG_q9DaIw9Pi15tK-FibGgnZa', id: 'fallback-5' },
+        { name: 'Promergon', sector: 'Infrastructure', logo: 'https://lh3.googleusercontent.com/d/1tT9Mi34vXyls13GG54cIzrmBsPls301F', id: 'fallback-6' }
       ],
       corporate: [
         { name: 'Medship Group', sector: 'Logistics', logo: 'https://lh3.googleusercontent.com/d/1x4pHfOpvq7iOxhS_o9FwIZTDIYoxNbaw', id: 'fallback-5' },
@@ -159,85 +161,68 @@ async function createServer() {
     };
 
     try {
-      const fetchCorporate = async () => {
-        const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
+      const fetchMembers = async () => {
+        const url = 'https://lbbc.org.uk/lbbc-memberships/';
         const response = await fetchWithRetry(url);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
         const $ = cheerio.load(html);
         
-        const members: any[] = [];
-        $('dt.BlockRow').each((i, el) => {
-          const name = $(el).find('.title').text().trim();
-          const sector = $(el).find('.description').text().trim() || 'Other';
-          const logoUrl = $(el).find('img').attr('src');
+        const council: any[] = [];
+        const corporate: any[] = [];
+        let currentList = council;
+
+        // Find all headings and members
+        $('h3.team-title, .members-con').each((i, el) => {
+          const $el = $(el);
           
-          // Resolve logo URL
-          let fullLogoUrl = null;
-          if (logoUrl) {
-            if (logoUrl.startsWith('http')) {
-              fullLogoUrl = logoUrl;
-            } else {
-              // Handle relative paths like /resources/...
-              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+          if ($el.is('h3.team-title')) {
+            const text = $el.text().trim();
+            if (text.includes('Council Members')) {
+              currentList = council;
+            } else if (text.includes('Corporate Members')) {
+              currentList = corporate;
             }
-          }
-          
-          if (name) {
-            members.push({
-              name,
-              sector,
-              logo: fullLogoUrl,
-              id: $(el).attr('data-id') || `m-${i}`
+          } else {
+            // It's a member container
+            $el.find('a.lbbcMemberMoreInfo').each((j, a) => {
+              const $a = $(a);
+              const name = $a.find('strong').text().trim();
+              const sector = $a.find('.company-sectors').text().trim() || 'Other';
+              const logoUrl = $a.find('img').attr('src');
+              const id = $a.attr('data-membershipid') || $a.attr('data-membershipID') || `m-${i}-${j}`;
+              
+              // Resolve logo URL
+              let fullLogoUrl = null;
+              if (logoUrl) {
+                if (logoUrl.startsWith('http')) {
+                  fullLogoUrl = logoUrl;
+                } else {
+                  fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+                }
+              }
+              
+              if (name) {
+                currentList.push({ name, sector, logo: fullLogoUrl, id });
+              }
             });
           }
         });
-        return members;
+
+        return { council, corporate };
       };
 
-      const fetchCouncilCompanies = async () => {
-        const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/council/';
-        const response = await fetchWithRetry(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const html = await response.text();
-        const $ = cheerio.load(html);
-        
-        const companies = new Set<string>();
-        $('dt.BlockRow').each((i, el) => {
-          const company = $(el).find('[itemprop="worksFor"]').text().trim();
-          if (company) companies.add(company);
-          
-          // Also check title if worksFor is empty, sometimes the company is in the description or title area
-          const description = $(el).find('.description').text().trim();
-          if (description && description.includes('at ')) {
-            const parts = description.split('at ');
-            if (parts.length > 1) companies.add(parts[1].trim());
-          }
-        });
-        return Array.from(companies);
-      };
+      const { council, corporate } = await fetchMembers();
 
-      const [corporate, councilCompanyNames] = await Promise.all([
-        fetchCorporate(),
-        fetchCouncilCompanies()
-      ]);
-
-      if (corporate.length === 0) {
-        throw new Error('No members found in GlueUp response');
+      if (council.length === 0 && corporate.length === 0) {
+        throw new Error('No members found in LBBC memberships page');
       }
 
-      // Distinguish council members from corporate members
-      const council = corporate.filter(m => 
-        councilCompanyNames.some(name => m.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(m.name.toLowerCase()))
-      );
-
-      const nonCouncilCorporate = corporate.filter(m => !council.find(c => c.id === m.id));
-      
       const result = { 
         council, 
-        corporate: nonCouncilCorporate,
+        corporate,
         timestamp: now,
-        source: 'glueup'
+        source: 'lbbc-org'
       };
 
       res.json(result);
