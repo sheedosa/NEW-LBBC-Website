@@ -379,26 +379,40 @@ async function createServer() {
   app.use("/*/api/members", membersHandler);
   app.use("/*/api/events", eventsHandler);
 
-  if (process.env.NODE_ENV === "production") {
-    const distPath = path.join(__dirname, 'dist');
+  // Serve static files from the dist directory
+  const distPath = path.join(__dirname, 'dist');
+  console.log(`[Server] Checking for dist at: ${distPath}`);
+  
+  if (fs.existsSync(distPath)) {
+    console.log(`[Server] Serving static files from: ${distPath}`);
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      console.log(`[Server] Catch-all route hit: ${req.url}`);
-      const indexPath = path.join(distPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        res.status(404).send('Application build not found. Please ensure "npm run build" has completed successfully.');
-      }
-    });
   } else {
-    // In dev, we usually use vite middleware, but for Hostinger we want a simple JS file
-    // So we'll just serve static if dist exists
-    const distPath = path.join(__dirname, 'dist');
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-    }
+    console.warn(`[Server] WARNING: 'dist' directory not found at ${distPath}`);
   }
+
+  // Catch-all route to serve the frontend
+  app.get('*', (req, res) => {
+    console.log(`[Server] Catch-all route hit: ${req.url}`);
+    const indexPath = path.join(distPath, 'index.html');
+    
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send(`
+        <html>
+          <body style="font-family: sans-serif; padding: 2rem; line-height: 1.6;">
+            <h1 style="color: #e11d48;">LBBC Server is Running</h1>
+            <p>The Node.js server is active, but the frontend build (dist/index.html) was not found.</p>
+            <p><strong>Current Directory:</strong> ${process.cwd()}</p>
+            <p><strong>Expected Path:</strong> ${indexPath}</p>
+            <hr/>
+            <p>Please ensure you have run <code>npm run build</code> and uploaded the <code>dist</code> folder.</p>
+            <a href="/api/debug-glueup" style="color: #2563eb;">Check Server Diagnostics</a>
+          </body>
+        </html>
+      `);
+    }
+  });
 
   app.use((err, req, res, next) => {
     console.error('[Server Error]', err);
@@ -409,10 +423,14 @@ async function createServer() {
 }
 
 const PORT = process.env.PORT || 3000;
+
 createServer().then(app => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`--- LBBC SERVER IS LIVE ---`);
+    console.log(`Port: ${PORT}`);
+    console.log(`Directory: ${__dirname}`);
+    console.log(`Time: ${new Date().toISOString()}`);
   });
 }).catch(err => {
-  console.error('Failed to start server:', err);
+  console.error('CRITICAL: Failed to start server:', err);
 });
