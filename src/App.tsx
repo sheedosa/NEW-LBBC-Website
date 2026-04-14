@@ -1177,15 +1177,25 @@ const MemberDirectory = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await fetch('/api/members');
+        const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members';
+        const response = await fetch(apiPath);
+        
+        let data;
         if (response.ok) {
-          const data = await response.json();
-          const all = [...(data.council || []), ...(data.corporate || [])];
-          // Prioritize those with logos
-          const withLogos = all.filter(m => m.logo);
-          const withoutLogos = all.filter(m => !m.logo);
-          setMembers([...withLogos, ...withoutLogos].slice(0, 20)); // Limit to 20 for the carousel
+          data = await response.json();
+        } else {
+          console.warn('Carousel API failed, trying static fallback...');
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/members.json';
+          const staticRes = await fetch(staticPath);
+          if (!staticRes.ok) throw new Error('Both API and static fallback failed');
+          data = await staticRes.json();
         }
+
+        const all = [...(data.council || []), ...(data.corporate || [])];
+        // Prioritize those with logos
+        const withLogos = all.filter(m => m.logo);
+        const withoutLogos = all.filter(m => !m.logo);
+        setMembers([...withLogos, ...withoutLogos].slice(0, 20)); // Limit to 20 for the carousel
       } catch (err) {
         console.error('Error fetching members for carousel:', err);
       } finally {
