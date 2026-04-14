@@ -1439,6 +1439,14 @@ const MemberDirectory = () => {
   );
 };
 
+const ensureAbsoluteUrl = (url: string | null | undefined) => {
+  if (!url) return undefined;
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('//')) return `https:${url}`;
+  if (url.startsWith('/')) return `https://lbbc.glueup.com${url}`;
+  return `https://lbbc.glueup.com/${url}`;
+};
+
 const UpcomingEvents = () => {
   const { t } = useLanguage();
   const [events, setEvents] = useState<any[]>([]);
@@ -1567,7 +1575,7 @@ const UpcomingEvents = () => {
                 <div className="flex items-center gap-6">
                   {event.link ? (
                     <a 
-                      href={event.link}
+                      href={ensureAbsoluteUrl(event.link)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
@@ -1583,7 +1591,7 @@ const UpcomingEvents = () => {
                   )}
                   {event.link && (
                     <a 
-                      href={event.link}
+                      href={ensureAbsoluteUrl(event.link)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-slate-400 hover:text-lbbc-green font-bold text-[10px] uppercase tracking-widest transition-all w-fit"
@@ -1658,10 +1666,10 @@ const LatestNews = () => {
             <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-4 block">{t.news.tag}</span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.news.title}</h2>
           </div>
-          <button className="text-lbbc-green font-bold text-xs md:text-sm uppercase tracking-widest flex items-center justify-center gap-2 group">
+          <Link to="/resources#news" className="text-lbbc-green font-bold text-xs md:text-sm uppercase tracking-widest flex items-center justify-center gap-2 group">
             {t.news.cta}
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
@@ -1913,7 +1921,45 @@ const EventsPage = () => {
         setPastEvents(data.past || []);
       } catch (err) {
         console.error('Error fetching events page:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load events');
+        // Final fallback to hardcoded data if everything fails
+        const fallback = {
+          upcoming: [
+            {
+              id: 'f-e-1',
+              title: "Realising Libya's Energy Ambitions",
+              location: 'London, UK',
+              date: 'MAY 13, 2026',
+              description: 'The Conference will hear from the Chairman of the National Oil Corporation of Libya and a senior delegation from the NOC and NOC Operating Companies.',
+              type: 'Conference',
+              image: 'https://picsum.photos/seed/energy1/800/500',
+              link: 'https://lbbc.glueup.com/event/realising-libyas-energy-ambitions-173494/'
+            },
+            {
+              id: 'f-e-2',
+              title: 'Libya Energy Transition Summit',
+              location: 'London, UK',
+              date: 'JUNE 16, 2026',
+              description: 'Exploring the strategic shift towards renewable energy and sustainable infrastructure in Libya\'s evolving energy landscape.',
+              type: 'Summit',
+              image: 'https://picsum.photos/seed/energy2/800/500',
+              link: 'https://lbbc.glueup.com/organization/5915/events/'
+            }
+          ],
+          past: [
+            {
+              id: 'f-p-1',
+              title: 'LBBC Webinar: Understanding Libya\'s Banking Landscape',
+              location: 'Online Webinar',
+              date: 'MARCH 25, 2026',
+              description: 'A deep dive into LCs, payment systems, and best practices for financial transactions in the Libyan market.',
+              type: 'Webinar',
+              image: 'https://picsum.photos/seed/banking/800/500',
+              link: 'https://lbbc.glueup.com/organization/5915/events/'
+            }
+          ]
+        };
+        setUpcomingEvents(fallback.upcoming);
+        setPastEvents(fallback.past);
       } finally {
         setIsLoading(false);
       }
@@ -2044,7 +2090,7 @@ const EventsPage = () => {
                       <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
                         {event.link ? (
                           <a 
-                            href={event.link}
+                            href={ensureAbsoluteUrl(event.link)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full sm:w-auto bg-lbbc-green text-white px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg active:scale-95 text-center"
@@ -2058,7 +2104,7 @@ const EventsPage = () => {
                         )}
                         {event.link ? (
                           <a 
-                            href={event.link}
+                            href={ensureAbsoluteUrl(event.link)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full sm:w-auto border border-slate-200 text-slate-900 px-8 py-3.5 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2 text-center"
@@ -2663,15 +2709,6 @@ const ResourcesPage = () => {
                 </div>
               </Link>
             ))}
-          </div>
-          
-          <div className="mt-12 md:mt-20 flex flex-col sm:flex-row justify-center gap-4 md:gap-6 px-4">
-            <button className="w-full sm:w-auto bg-lbbc-green text-white px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red transition-all uppercase tracking-widest shadow-xl">
-              {t.news.more}
-            </button>
-            <button className="w-full sm:w-auto bg-white border-2 border-lbbc-green text-lbbc-green px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red hover:border-lbbc-red hover:text-white transition-all uppercase tracking-widest">
-              {t.news.exclusive}
-            </button>
           </div>
         </div>
       </section>

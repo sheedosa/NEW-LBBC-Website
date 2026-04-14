@@ -348,7 +348,12 @@ async function createServer() {
           location,
           description,
           image,
-          link: link ? (link.startsWith('http') ? link : (link.startsWith('/') ? `https://lbbc.glueup.com${link}` : `https://lbbc.glueup.com/${link}`)) : null,
+          link: link ? (
+            link.startsWith('http') ? link : 
+            link.startsWith('//') ? `https:${link}` :
+            link.startsWith('/') ? `https://lbbc.glueup.com${link}` : 
+            `https://lbbc.glueup.com/${link}`
+          ) : null,
           type: 'Event'
         };
 
@@ -380,7 +385,12 @@ async function createServer() {
           location,
           description,
           image,
-          link: link ? (link.startsWith('http') ? link : (link.startsWith('/') ? `https://lbbc.glueup.com${link}` : `https://lbbc.glueup.com/${link}`)) : null,
+          link: link ? (
+            link.startsWith('http') ? link : 
+            link.startsWith('//') ? `https:${link}` :
+            link.startsWith('/') ? `https://lbbc.glueup.com${link}` : 
+            `https://lbbc.glueup.com/${link}`
+          ) : null,
           type: 'Event'
         };
 

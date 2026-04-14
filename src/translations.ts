@@ -168,7 +168,7 @@ export const translations = {
     news: {
       tag: 'NEWS & INSIGHTS',
       title: 'Latest from the LBBC',
-      cta: 'All News & Media',
+      cta: 'Discover More News',
       more: 'Discover More News',
       exclusive: 'Join for Exclusive Insights'
     },
@@ -565,7 +565,7 @@ export const translations = {
     news: {
       tag: 'الأخبار والرؤى',
       title: 'آخر أخبار المجلس',
-      cta: 'كل الأخبار والإعلام',
+      cta: 'اكتشف المزيد من الأخبار',
       more: 'اكتشف المزيد من الأخبار',
       exclusive: 'انضم للحصول على رؤى حصرية'
     },
