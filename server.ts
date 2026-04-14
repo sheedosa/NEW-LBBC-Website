@@ -12,6 +12,12 @@ const __dirname = path.dirname(__filename);
 async function createServer() {
   const app = express();
 
+  // Request logging for debugging on Hostinger
+  app.use((req, res, next) => {
+    console.log(`[Server] ${new Date().toISOString()} ${req.method} ${req.url}`);
+    next();
+  });
+
   const fetchWithRetry = async (url: string, retries = 3): Promise<any> => {
     for (let i = 0; i < retries; i++) {
       const controller = new AbortController();
@@ -76,7 +82,7 @@ async function createServer() {
   });
 
   // API Route to fetch and parse GlueUp members
-  app.get("/api/members", async (req, res) => {
+  app.get(["/api/members", "/api/members/"], async (req, res) => {
     const now = Date.now();
     
     // Fallback data in case GlueUp is down
@@ -194,7 +200,7 @@ async function createServer() {
     }
   });
 
-  app.get("/api/events", async (req, res) => {
+  app.get(["/api/events", "/api/events/"], async (req, res) => {
     const now = Date.now();
     
     // Fallback events in case GlueUp is down
@@ -333,7 +339,22 @@ async function createServer() {
   });
 
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", env: process.env.NODE_ENV });
+    res.json({ 
+      status: "ok", 
+      env: process.env.NODE_ENV,
+      cwd: process.cwd(),
+      dirname: __dirname
+    });
+  });
+
+  // Specific 404 for API routes to distinguish from frontend 404s
+  app.use("/api/*", (req, res) => {
+    console.warn(`[Server] API Route not found: ${req.originalUrl}`);
+    res.status(404).json({ 
+      error: "API route not found", 
+      path: req.originalUrl,
+      method: req.method
+    });
   });
 
   // Vite middleware for development
@@ -345,12 +366,17 @@ async function createServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
+    // Use __dirname instead of process.cwd() for more reliable path resolution on Hostinger
+    const distPath = path.join(__dirname, 'dist');
     console.log(`[Server] Serving static files from: ${distPath}`);
-    console.log(`[Server] Current working directory: ${process.cwd()}`);
     
     if (!fs.existsSync(distPath)) {
-      console.error(`ERROR: 'dist' directory not found at ${distPath}. Ensure 'npm run build' is executed.`);
+      console.error(`ERROR: 'dist' directory not found at ${distPath}.`);
+      // Try fallback to process.cwd() if __dirname fails
+      const fallbackPath = path.join(process.cwd(), 'dist');
+      if (fs.existsSync(fallbackPath)) {
+        console.log(`[Server] Found dist at fallback path: ${fallbackPath}`);
+      }
     }
 
     app.use(express.static(distPath));
@@ -359,10 +385,34 @@ async function createServer() {
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
       } else {
-        res.status(404).send('Application build not found. Please ensure "npm run build" has completed successfully.');
+        // Try fallback index path
+        const fallbackIndex = path.join(process.cwd(), 'dist', 'index.html');
+        if (fs.existsSync(fallbackIndex)) {
+          res.sendFile(fallbackIndex);
+        } else {
+          res.status(404).send('Application build not found. Please ensure "npm run build" has completed successfully.');
+        }
       }
     });
   }
+
+  // Global error handler
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error('[Server Error]', err);
+    res.status(500).json({ 
+      error: 'Internal Server Error', 
+      message: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  });
+
+  // Log all registered routes for debugging
+  console.log('[Server] Registering routes...');
+  app._router.stack.forEach((r: any) => {
+    if (r.route && r.route.path) {
+      console.log(`[Server] Registered route: ${r.route.path}`);
+    }
+  });
 
   return app;
 }

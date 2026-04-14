@@ -1278,7 +1278,11 @@ const UpcomingEvents = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch('/api/events');
-        if (!response.ok) throw new Error('Failed to fetch events');
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'No error details');
+          console.error(`Home Events API Error (${response.status}):`, errorText);
+          throw new Error(`Server returned ${response.status}`);
+        }
         const data = await response.json();
         setEvents(data.upcoming || []);
       } catch (err) {
@@ -1727,7 +1731,11 @@ const EventsPage = () => {
       setError(null);
       try {
         const response = await fetch('/api/events');
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'No error details');
+          console.error(`Events Page API Error (${response.status}):`, errorText);
+          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
+        }
         const data = await response.json();
         setUpcomingEvents(data.upcoming || []);
         setPastEvents(data.past || []);
@@ -1805,6 +1813,10 @@ const EventsPage = () => {
             ) : error ? (
               <div className="bg-red-50 p-8 rounded-xl text-center border border-red-100">
                 <p className="text-red-600 font-bold mb-4">{error}</p>
+                <div className="text-[10px] text-slate-400 mb-6 font-mono bg-white/50 p-2 rounded max-w-md mx-auto">
+                  URL: {window.location.href}<br/>
+                  API: /api/events
+                </div>
                 <button 
                   onClick={() => window.location.reload()}
                   className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
@@ -2108,7 +2120,11 @@ const DirectoryPage = () => {
     
     try {
       const response = await fetch('/api/members');
-      if (!response.ok) throw new Error(`Server returned ${response.status}`);
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'No error details');
+        console.error(`API Error (${response.status}):`, errorText);
+        throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
+      }
       const data = await response.json();
       
       setCouncilMembers(data.council || []);
@@ -2231,7 +2247,11 @@ const DirectoryPage = () => {
                 <ShieldCheck className="text-red-500" size={32} />
               </div>
               <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{t.directory.error}</h3>
-              <p className="text-slate-500 mb-8">{error}</p>
+              <p className="text-slate-500 mb-4">{error}</p>
+              <div className="text-[10px] text-slate-400 mb-8 font-mono bg-slate-50 p-2 rounded">
+                URL: {window.location.href}<br/>
+                API: /api/members
+              </div>
               <button 
                 onClick={() => fetchMembers()}
                 className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
