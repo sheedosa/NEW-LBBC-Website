@@ -1277,7 +1277,8 @@ const UpcomingEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('api/events');
+        const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events';
+        const response = await fetch(apiPath);
         if (!response.ok) {
           const errorText = await response.text().catch(() => 'No error details');
           console.error(`Home Events API Error (${response.status}):`, errorText);
@@ -1730,7 +1731,8 @@ const EventsPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('api/events');
+        const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events';
+        const response = await fetch(apiPath);
         if (!response.ok) {
           const errorText = await response.text().catch(() => 'No error details');
           console.error(`Events Page API Error (${response.status}):`, errorText);
@@ -1813,16 +1815,28 @@ const EventsPage = () => {
             ) : error ? (
               <div className="bg-red-50 p-8 rounded-xl text-center border border-red-100">
                 <p className="text-red-600 font-bold mb-4">{error}</p>
-                <div className="text-[10px] text-slate-400 mb-6 font-mono bg-white/50 p-2 rounded max-w-md mx-auto">
+                <div className="text-[10px] text-slate-400 mb-6 font-mono bg-white/50 p-2 rounded max-w-md mx-auto text-left overflow-hidden">
                   URL: {window.location.href}<br/>
-                  API: /api/events
+                  API: {window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events'}<br/>
+                  Time: {new Date().toLocaleTimeString()}
                 </div>
-                <button 
-                  onClick={() => window.location.reload()}
-                  className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
-                >
-                  Retry
-                </button>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
+                  >
+                    Retry
+                  </button>
+                  <button 
+                    onClick={() => {
+                      const debugPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/debug-glueup';
+                      window.open(debugPath, '_blank');
+                    }}
+                    className="px-6 py-2 border border-red-200 text-red-600 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all"
+                  >
+                    Server Info
+                  </button>
+                </div>
               </div>
             ) : upcomingEvents.length === 0 ? (
               <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
@@ -2115,25 +2129,31 @@ const DirectoryPage = () => {
   ].sort();
 
   const fetchMembers = async () => {
-    setIsLoading(true);
-    setError(null);
-    
     try {
-      const response = await fetch('api/members');
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'No error details');
-        console.error(`API Error (${response.status}):`, errorText);
-        throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
-      }
-      const data = await response.json();
+      const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members';
+      setIsLoading(true);
+      setError(null);
       
-      setCouncilMembers(data.council || []);
-      setCorporateMembers(data.corporate || []);
+      try {
+        console.log('Fetching members from:', apiPath);
+        const response = await fetch(apiPath);
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => 'No error details');
+          console.error(`API Error (${response.status}):`, errorText);
+          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
+        }
+        const data = await response.json();
+        
+        setCouncilMembers(data.council || []);
+        setCorporateMembers(data.corporate || []);
+      } catch (err) {
+        console.error('Error fetching members:', err);
+        setError(err instanceof Error ? err.message : t.directory.errorText);
+      } finally {
+        setIsLoading(false);
+      }
     } catch (err) {
-      console.error('Error fetching members:', err);
-      setError(err instanceof Error ? err.message : t.directory.errorText);
-    } finally {
-      setIsLoading(false);
+      console.error('Outer fetch error:', err);
     }
   };
 
@@ -2248,16 +2268,28 @@ const DirectoryPage = () => {
               </div>
               <h3 className="text-xl font-black text-slate-900 mb-2 uppercase tracking-tight">{t.directory.error}</h3>
               <p className="text-slate-500 mb-4">{error}</p>
-              <div className="text-[10px] text-slate-400 mb-8 font-mono bg-slate-50 p-2 rounded">
+              <div className="text-[10px] text-slate-400 mb-8 font-mono bg-slate-50 p-2 rounded text-left overflow-hidden">
                 URL: {window.location.href}<br/>
-                API: /api/members
+                API: {window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members'}<br/>
+                Time: {new Date().toLocaleTimeString()}
               </div>
-              <button 
-                onClick={() => fetchMembers()}
-                className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
-              >
-                {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
-              </button>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <button 
+                  onClick={() => fetchMembers()}
+                  className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
+                >
+                  {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
+                </button>
+                <button 
+                  onClick={() => {
+                    const debugPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/debug-glueup';
+                    window.open(debugPath, '_blank');
+                  }}
+                  className="px-8 py-3 border border-slate-200 text-slate-600 font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-all"
+                >
+                  Server Info
+                </button>
+              </div>
             </div>
           ) : (
             <>

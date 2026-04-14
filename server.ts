@@ -19,6 +19,14 @@ async function createServer() {
   // Request logging for debugging on Hostinger
   app.use((req, res, next) => {
     console.log(`[Server] ${new Date().toISOString()} ${req.method} ${req.url} (Base: ${req.baseUrl}, Original: ${req.originalUrl})`);
+    
+    // Normalize API requests that might have a subfolder prefix
+    if (req.url.includes('/api/') && !req.url.startsWith('/api/')) {
+      const normalizedUrl = req.url.substring(req.url.indexOf('/api/'));
+      console.log(`[Server] Normalizing API path: ${req.url} -> ${normalizedUrl}`);
+      req.url = normalizedUrl;
+    }
+    
     next();
   });
 
@@ -82,6 +90,8 @@ async function createServer() {
       env: process.env.NODE_ENV,
       cwd: process.cwd(),
       dirname: __dirname,
+      nodeVersion: process.version,
+      platform: process.platform,
       dns: {},
       fetch: {}
     };
@@ -114,15 +124,24 @@ async function createServer() {
       diagnostics.fetch.error = String(err);
     }
 
+    try {
+      const distPath = path.join(__dirname, 'dist');
+      diagnostics.dist = {
+        exists: fs.existsSync(distPath),
+        path: distPath,
+        files: fs.existsSync(distPath) ? fs.readdirSync(distPath).slice(0, 10) : []
+      };
+    } catch (err) {
+      diagnostics.distError = String(err);
+    }
+
     res.json(diagnostics);
   });
 
-  // Use a more flexible route matching for API to handle potential subfolder hosting
-  const apiRouter = express.Router();
-
   // API Route to fetch and parse GlueUp members
-  apiRouter.get(["/members", "/members/"], async (req, res) => {
+  const membersHandler = async (req: any, res: any) => {
     const now = Date.now();
+    console.log(`[Server] Handling members request: ${req.url}`);
     
     // Fallback data in case GlueUp is down
     const fallbackData = {
@@ -237,10 +256,11 @@ async function createServer() {
         error: error instanceof Error ? error.message : String(error)
       });
     }
-  });
+  };
 
-  apiRouter.get(["/events", "/events/"], async (req, res) => {
+  const eventsHandler = async (req: any, res: any) => {
     const now = Date.now();
+    console.log(`[Server] Handling events request: ${req.url}`);
     
     // Fallback events in case GlueUp is down
     const fallbackEvents = {
@@ -375,9 +395,21 @@ async function createServer() {
       console.error('Error fetching events from GlueUp:', error);
       res.json({ ...fallbackEvents, source: 'fallback', error: String(error) });
     }
+  };
+
+  app.get("/api/test", (req, res) => {
+    res.send("API is working");
   });
 
-  apiRouter.get("/health", (req, res) => {
+  // Direct routes on app for maximum compatibility
+  app.get(["/api/members", "/api/members/"], membersHandler);
+  app.get(["/api/events", "/api/events/"], eventsHandler);
+  
+  // Also support routes without /api prefix just in case normalization fails
+  app.get(["/members", "/members/"], membersHandler);
+  app.get(["/events", "/events/"], eventsHandler);
+
+  app.get("/api/health", (req, res) => {
     res.json({ 
       status: "ok", 
       env: process.env.NODE_ENV,
@@ -387,8 +419,9 @@ async function createServer() {
   });
 
   // Mount the API router with flexibility for subfolders
-  app.use("/api", apiRouter);
-  app.use("/*/api", apiRouter);
+  // (Keeping these as backups, but direct routes above are primary)
+  app.use("/*/api/members", membersHandler);
+  app.use("/*/api/events", eventsHandler);
 
   // Specific 404 for API routes to distinguish from frontend 404s
   app.use("/api/*", (req, res) => {
@@ -424,6 +457,7 @@ async function createServer() {
 
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
+      console.log(`[Server] Catch-all route hit: ${req.url} (Original: ${req.originalUrl})`);
       const indexPath = path.join(distPath, 'index.html');
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
