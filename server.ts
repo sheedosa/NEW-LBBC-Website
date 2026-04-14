@@ -397,9 +397,8 @@ async function createServer() {
     }
   };
 
-  app.get("/api/test", (req, res) => {
-    res.send("API is working");
-  });
+  app.get("/api/test", (req, res) => res.send("API is working"));
+  app.get("/node-check", (req, res) => res.send("Node.js server is ALIVE and handling requests at " + new Date().toISOString()));
 
   // Direct routes on app for maximum compatibility
   app.get(["/api/members", "/api/members/"], membersHandler);

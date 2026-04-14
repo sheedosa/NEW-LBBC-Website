@@ -1829,6 +1829,15 @@ const EventsPage = () => {
                   </button>
                   <button 
                     onClick={() => {
+                      const checkPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'node-check';
+                      window.open(checkPath, '_blank');
+                    }}
+                    className="px-6 py-2 border border-red-200 text-red-600 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all"
+                  >
+                    Node Check
+                  </button>
+                  <button 
+                    onClick={() => {
                       const debugPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/debug-glueup';
                       window.open(debugPath, '_blank');
                     }}
@@ -2279,6 +2288,15 @@ const DirectoryPage = () => {
                   className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
                 >
                   {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
+                </button>
+                <button 
+                  onClick={() => {
+                    const checkPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'node-check';
+                    window.open(checkPath, '_blank');
+                  }}
+                  className="px-8 py-3 border border-slate-200 text-slate-600 font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-all"
+                >
+                  Node Check
                 </button>
                 <button 
                   onClick={() => {
