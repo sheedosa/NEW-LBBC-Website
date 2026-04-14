@@ -5,7 +5,11 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import * as cheerio from "cheerio";
 import fetch from "node-fetch";
+import https from "https";
+import dns from "dns";
+import { promisify } from "util";
 
+const lookup = promisify(dns.lookup);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -14,26 +18,33 @@ async function createServer() {
 
   // Request logging for debugging on Hostinger
   app.use((req, res, next) => {
-    console.log(`[Server] ${new Date().toISOString()} ${req.method} ${req.url}`);
+    console.log(`[Server] ${new Date().toISOString()} ${req.method} ${req.url} (Base: ${req.baseUrl}, Original: ${req.originalUrl})`);
     next();
   });
 
   const fetchWithRetry = async (url: string, retries = 3): Promise<any> => {
+    const agent = new https.Agent({
+      rejectUnauthorized: false, // Sometimes needed on shared hosting with outdated CA bundles
+      keepAlive: true
+    });
+
     for (let i = 0; i < retries; i++) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
 
       try {
         console.log(`[Scraper] Attempt ${i + 1} fetching: ${url}`);
         const response = await fetch(url, {
           signal: controller.signal as any,
+          agent,
           headers: { 
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache',
-            'Referer': 'https://lbbc.org.uk/'
+            'Referer': 'https://lbbc.org.uk/',
+            'Connection': 'keep-alive'
           }
         });
         clearTimeout(timeoutId);
@@ -47,7 +58,7 @@ async function createServer() {
         
         if (response.status === 502 || response.status === 503 || response.status === 504 || response.status === 429) {
           if (i < retries - 1) {
-            const delay = 1500 * (i + 1);
+            const delay = 2000 * (i + 1);
             console.log(`[Scraper] Retrying in ${delay}ms...`);
             await new Promise(resolve => setTimeout(resolve, delay));
             continue;
@@ -58,31 +69,59 @@ async function createServer() {
         clearTimeout(timeoutId);
         console.error(`[Scraper] Fetch error for ${url} on attempt ${i + 1}:`, err);
         if (i === retries - 1) throw err;
-        await new Promise(resolve => setTimeout(resolve, 1500 * (i + 1)));
+        await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1)));
       }
     }
     throw new Error('Max retries reached');
   };
 
+  // Diagnostic endpoint
   app.get("/api/debug-glueup", async (req, res) => {
+    const diagnostics: any = {
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV,
+      cwd: process.cwd(),
+      dirname: __dirname,
+      dns: {},
+      fetch: {}
+    };
+
+    try {
+      const glueupHost = 'lbbc.glueup.com';
+      const addr = await lookup(glueupHost);
+      diagnostics.dns[glueupHost] = addr;
+    } catch (err) {
+      diagnostics.dns.error = String(err);
+    }
+
     try {
       const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      
       const response = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0' }
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: controller.signal as any
       });
-      res.json({
+      clearTimeout(timeoutId);
+      
+      diagnostics.fetch = {
         status: response.status,
         ok: response.ok,
-        headers: response.headers.raw ? response.headers.raw() : {},
-        url: url
-      });
+        headers: response.headers.raw ? response.headers.raw() : {}
+      };
     } catch (err) {
-      res.status(500).json({ error: String(err) });
+      diagnostics.fetch.error = String(err);
     }
+
+    res.json(diagnostics);
   });
 
+  // Use a more flexible route matching for API to handle potential subfolder hosting
+  const apiRouter = express.Router();
+
   // API Route to fetch and parse GlueUp members
-  app.get(["/api/members", "/api/members/"], async (req, res) => {
+  apiRouter.get(["/members", "/members/"], async (req, res) => {
     const now = Date.now();
     
     // Fallback data in case GlueUp is down
@@ -200,7 +239,7 @@ async function createServer() {
     }
   });
 
-  app.get(["/api/events", "/api/events/"], async (req, res) => {
+  apiRouter.get(["/events", "/events/"], async (req, res) => {
     const now = Date.now();
     
     // Fallback events in case GlueUp is down
@@ -338,7 +377,7 @@ async function createServer() {
     }
   });
 
-  app.get("/api/health", (req, res) => {
+  apiRouter.get("/health", (req, res) => {
     res.json({ 
       status: "ok", 
       env: process.env.NODE_ENV,
@@ -346,6 +385,10 @@ async function createServer() {
       dirname: __dirname
     });
   });
+
+  // Mount the API router with flexibility for subfolders
+  app.use("/api", apiRouter);
+  app.use("/*/api", apiRouter);
 
   // Specific 404 for API routes to distinguish from frontend 404s
   app.use("/api/*", (req, res) => {

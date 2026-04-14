@@ -1277,7 +1277,7 @@ const UpcomingEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch('/api/events');
+        const response = await fetch('api/events');
         if (!response.ok) {
           const errorText = await response.text().catch(() => 'No error details');
           console.error(`Home Events API Error (${response.status}):`, errorText);
@@ -1730,7 +1730,7 @@ const EventsPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('/api/events');
+        const response = await fetch('api/events');
         if (!response.ok) {
           const errorText = await response.text().catch(() => 'No error details');
           console.error(`Events Page API Error (${response.status}):`, errorText);
@@ -2119,7 +2119,7 @@ const DirectoryPage = () => {
     setError(null);
     
     try {
-      const response = await fetch('/api/members');
+      const response = await fetch('api/members');
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'No error details');
         console.error(`API Error (${response.status}):`, errorText);
