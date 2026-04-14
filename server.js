@@ -87,61 +87,6 @@ async function createServer() {
     throw new Error('Max retries reached');
   };
 
-  // Diagnostic endpoint
-  app.get("/api/debug-glueup", async (req, res) => {
-    const diagnostics = {
-      timestamp: new Date().toISOString(),
-      env: process.env.NODE_ENV,
-      cwd: process.cwd(),
-      dirname: __dirname,
-      nodeVersion: process.version,
-      platform: process.platform,
-      dns: {},
-      fetch: {}
-    };
-
-    try {
-      const glueupHost = 'lbbc.glueup.com';
-      const addr = await lookup(glueupHost);
-      diagnostics.dns[glueupHost] = addr;
-    } catch (err) {
-      diagnostics.dns.error = String(err);
-    }
-
-    try {
-      const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const response = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0' },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      
-      diagnostics.fetch = {
-        status: response.status,
-        ok: response.ok,
-        headers: response.headers.raw ? response.headers.raw() : {}
-      };
-    } catch (err) {
-      diagnostics.fetch.error = String(err);
-    }
-
-    try {
-      const distPath = path.join(__dirname, 'dist');
-      diagnostics.dist = {
-        exists: fs.existsSync(distPath),
-        path: distPath,
-        files: fs.existsSync(distPath) ? fs.readdirSync(distPath).slice(0, 10) : []
-      };
-    } catch (err) {
-      diagnostics.distError = String(err);
-    }
-
-    res.json(diagnostics);
-  });
-
   // API Route to fetch and parse GlueUp members
   const membersHandler = async (req, res) => {
     const now = Date.now();
@@ -360,7 +305,6 @@ async function createServer() {
   };
 
   app.get("/api/test", (req, res) => res.send("API is working"));
-  app.get("/node-check", (req, res) => res.send("Node.js server is ALIVE and handling requests at " + new Date().toISOString()));
 
   app.get(["/api/members", "/api/members/"], membersHandler);
   app.get(["/api/events", "/api/events/"], eventsHandler);

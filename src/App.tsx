@@ -1279,16 +1279,22 @@ const UpcomingEvents = () => {
       try {
         const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events';
         const response = await fetch(apiPath);
+        
         if (!response.ok) {
-          const errorText = await response.text().catch(() => 'No error details');
-          console.error(`Home Events API Error (${response.status}):`, errorText);
-          throw new Error(`Server returned ${response.status}`);
+          console.warn('Home API failed, trying static fallback...');
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/events.json';
+          const staticRes = await fetch(staticPath);
+          if (!staticRes.ok) throw new Error('Both API and static fallback failed');
+          const data = await staticRes.json();
+          setEvents(data.upcoming || []);
+          return;
         }
+        
         const data = await response.json();
         setEvents(data.upcoming || []);
       } catch (err) {
         console.error('Error fetching events for home:', err);
-        // Fallback to static data if API fails completely
+        // Final fallback to hardcoded data if everything fails
         setEvents([
           {
             id: 'f1',
@@ -1733,11 +1739,18 @@ const EventsPage = () => {
       try {
         const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events';
         const response = await fetch(apiPath);
+        
         if (!response.ok) {
-          const errorText = await response.text().catch(() => 'No error details');
-          console.error(`Events Page API Error (${response.status}):`, errorText);
-          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
+          console.warn('Events Page API failed, trying static fallback...');
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/events.json';
+          const staticRes = await fetch(staticPath);
+          if (!staticRes.ok) throw new Error(`Server returned ${response.status} and static fallback failed`);
+          const data = await staticRes.json();
+          setUpcomingEvents(data.upcoming || []);
+          setPastEvents(data.past || []);
+          return;
         }
+        
         const data = await response.json();
         setUpcomingEvents(data.upcoming || []);
         setPastEvents(data.past || []);
@@ -1820,32 +1833,12 @@ const EventsPage = () => {
                   API: {window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events'}<br/>
                   Time: {new Date().toLocaleTimeString()}
                 </div>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <button 
-                    onClick={() => window.location.reload()}
-                    className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
-                  >
-                    Retry
-                  </button>
-                  <button 
-                    onClick={() => {
-                      const checkPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'node-check';
-                      window.open(checkPath, '_blank');
-                    }}
-                    className="px-6 py-2 border border-red-200 text-red-600 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all"
-                  >
-                    Node Check
-                  </button>
-                  <button 
-                    onClick={() => {
-                      const debugPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/debug-glueup';
-                      window.open(debugPath, '_blank');
-                    }}
-                    className="px-6 py-2 border border-red-200 text-red-600 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all"
-                  >
-                    Server Info
-                  </button>
-                </div>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-red-600 text-white rounded-sm text-xs font-black uppercase tracking-widest"
+                >
+                  Retry
+                </button>
               </div>
             ) : upcomingEvents.length === 0 ? (
               <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
@@ -2146,13 +2139,19 @@ const DirectoryPage = () => {
       try {
         console.log('Fetching members from:', apiPath);
         const response = await fetch(apiPath);
-        if (!response.ok) {
-          const errorText = await response.text().catch(() => 'No error details');
-          console.error(`API Error (${response.status}):`, errorText);
-          throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 50)}`);
-        }
-        const data = await response.json();
         
+        if (!response.ok) {
+          console.warn('API failed, trying static fallback...');
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/members.json';
+          const staticRes = await fetch(staticPath);
+          if (!staticRes.ok) throw new Error(`Server returned ${response.status} and static fallback failed`);
+          const data = await staticRes.json();
+          setCouncilMembers(data.council || []);
+          setCorporateMembers(data.corporate || []);
+          return;
+        }
+        
+        const data = await response.json();
         setCouncilMembers(data.council || []);
         setCorporateMembers(data.corporate || []);
       } catch (err) {
@@ -2282,32 +2281,12 @@ const DirectoryPage = () => {
                 API: {window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members'}<br/>
                 Time: {new Date().toLocaleTimeString()}
               </div>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <button 
-                  onClick={() => fetchMembers()}
-                  className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
-                >
-                  {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
-                </button>
-                <button 
-                  onClick={() => {
-                    const checkPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'node-check';
-                    window.open(checkPath, '_blank');
-                  }}
-                  className="px-8 py-3 border border-slate-200 text-slate-600 font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-all"
-                >
-                  Node Check
-                </button>
-                <button 
-                  onClick={() => {
-                    const debugPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/debug-glueup';
-                    window.open(debugPath, '_blank');
-                  }}
-                  className="px-8 py-3 border border-slate-200 text-slate-600 font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-all"
-                >
-                  Server Info
-                </button>
-              </div>
+              <button 
+                onClick={() => fetchMembers()}
+                className="px-8 py-3 bg-lbbc-green text-white font-black uppercase tracking-widest rounded-sm hover:bg-lbbc-red transition-all"
+              >
+                {t.nav.home === 'Home' ? 'Retry Connection' : 'إعادة محاولة الاتصال'}
+              </button>
             </div>
           ) : (
             <>

@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build",
+    "build": "node scripts/scrape-glueup.js && vite build",
+    "scrape": "node scripts/scrape-glueup.js",
     "start": "node server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist",
