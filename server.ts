@@ -4,49 +4,76 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import * as cheerio from "cheerio";
+import fetch from "node-fetch";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function createServer() {
   const app = express();
-  const PORT = 3000;
 
-  const fetchWithRetry = async (url: string, retries = 2): Promise<Response> => {
+  const fetchWithRetry = async (url: string, retries = 3): Promise<any> => {
     for (let i = 0; i < retries; i++) {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout to stay under Vercel's 10s limit
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
       try {
+        console.log(`[Scraper] Attempt ${i + 1} fetching: ${url}`);
         const response = await fetch(url, {
-          signal: controller.signal,
+          signal: controller.signal as any,
           headers: { 
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Cache-Control': 'no-cache'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Referer': 'https://lbbc.org.uk/'
           }
         });
         clearTimeout(timeoutId);
         
-        if (response.ok) return response;
+        if (response.ok) {
+          console.log(`[Scraper] Successfully fetched ${url}`);
+          return response;
+        }
         
-        // If we get a gateway error, retry or move on
-        if (response.status === 502 || response.status === 503 || response.status === 504) {
+        console.warn(`[Scraper] Fetch failed for ${url} with status ${response.status}`);
+        
+        if (response.status === 502 || response.status === 503 || response.status === 504 || response.status === 429) {
           if (i < retries - 1) {
-            await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+            const delay = 1500 * (i + 1);
+            console.log(`[Scraper] Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
             continue;
           }
         }
         return response;
       } catch (err) {
         clearTimeout(timeoutId);
+        console.error(`[Scraper] Fetch error for ${url} on attempt ${i + 1}:`, err);
         if (i === retries - 1) throw err;
-        await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+        await new Promise(resolve => setTimeout(resolve, 1500 * (i + 1)));
       }
     }
     throw new Error('Max retries reached');
   };
+
+  app.get("/api/debug-glueup", async (req, res) => {
+    try {
+      const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
+      const response = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0' }
+      });
+      res.json({
+        status: response.status,
+        ok: response.ok,
+        headers: response.headers.raw ? response.headers.raw() : {},
+        url: url
+      });
+    } catch (err) {
+      res.status(500).json({ error: String(err) });
+    }
+  });
 
   // API Route to fetch and parse GlueUp members
   app.get("/api/members", async (req, res) => {
@@ -206,22 +233,35 @@ async function createServer() {
     };
 
     try {
-      // Using the full-view widget URL as requested for more complete data
-      const url = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
-      const response = await fetchWithRetry(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const html = await response.text();
-      const $ = cheerio.load(html);
+      // Fetch upcoming and past events in parallel for better performance
+      const upcomingUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
+      const pastUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view?listType=past';
+
+      const [upcomingRes, pastRes] = await Promise.all([
+        fetchWithRetry(upcomingUrl),
+        fetchWithRetry(pastUrl)
+      ]);
+
+      if (!upcomingRes.ok || !pastRes.ok) throw new Error(`HTTP error! status: ${upcomingRes.status} / ${pastRes.status}`);
+      
+      const [upcomingHtml, pastHtml] = await Promise.all([
+        upcomingRes.text(),
+        pastRes.text()
+      ]);
+
+      const $upcoming = cheerio.load(upcomingHtml);
+      const $past = cheerio.load(pastHtml);
       
       const upcoming: any[] = [];
       const past: any[] = [];
 
-      $('.events-list li').each((i, el) => {
-        const title = $(el).find('h2.content').text().trim();
-        const date = $(el).find('time.content').text().trim();
-        const location = $(el).find('.area.content').text().trim();
-        const description = $(el).find('.description').text().trim() || '';
-        const imgStyle = $(el).find('.event-image').attr('style') || '';
+      // Parse upcoming events
+      $upcoming('.events-list li').each((i, el) => {
+        const title = $upcoming(el).find('h2.content').text().trim();
+        const date = $upcoming(el).find('time.content').text().trim();
+        const location = $upcoming(el).find('.area.content').text().trim();
+        const description = $upcoming(el).find('.description').text().trim() || '';
+        const imgStyle = $upcoming(el).find('.event-image').attr('style') || '';
         const imgMatch = imgStyle.match(/url\((.*?)\)/);
         let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
         
@@ -229,11 +269,11 @@ async function createServer() {
           image = `https://lbbc.glueup.com${image}`;
         }
 
-        const link = $(el).find('a').attr('href');
-        const isPast = $(el).hasClass('past');
+        const link = $upcoming(el).find('a').attr('href');
+        const isPast = $upcoming(el).hasClass('past');
 
         const event = {
-          id: `e-${i}`,
+          id: `e-u-${i}`,
           title,
           date,
           location,
@@ -245,6 +285,39 @@ async function createServer() {
 
         if (isPast) past.push(event);
         else upcoming.push(event);
+      });
+
+      // Parse past events from the specific past widget
+      $past('.events-list li').each((i, el) => {
+        const title = $past(el).find('h2.content').text().trim();
+        const date = $past(el).find('time.content').text().trim();
+        const location = $past(el).find('.area.content').text().trim();
+        const description = $past(el).find('.description').text().trim() || '';
+        const imgStyle = $past(el).find('.event-image').attr('style') || '';
+        const imgMatch = imgStyle.match(/url\((.*?)\)/);
+        let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
+        
+        if (image && !image.startsWith('http')) {
+          image = `https://lbbc.glueup.com${image}`;
+        }
+
+        const link = $past(el).find('a').attr('href');
+
+        const event = {
+          id: `e-p-${i}`,
+          title,
+          date,
+          location,
+          description,
+          image,
+          link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
+          type: 'Event'
+        };
+
+        // Avoid duplicates if any past events were already caught in the upcoming list
+        if (!past.find(p => p.title === event.title)) {
+          past.push(event);
+        }
       });
 
       // If we found nothing, use fallback
@@ -273,6 +346,8 @@ async function createServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+    console.log(`[Server] Serving static files from: ${distPath}`);
+    console.log(`[Server] Current working directory: ${process.cwd()}`);
     
     if (!fs.existsSync(distPath)) {
       console.error(`ERROR: 'dist' directory not found at ${distPath}. Ensure 'npm run build' is executed.`);

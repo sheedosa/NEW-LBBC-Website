@@ -13,10 +13,12 @@ const __dirname = path.dirname(__filename);
 
 console.log('Initializing LBBC Production Server...');
 
-// Check if dist exists, if not, try to build it
+// Check if dist exists and has content, if not, try to build it
 const distPath = path.join(__dirname, 'dist');
-if (!fs.existsSync(distPath)) {
-  console.log('Dist folder not found. Attempting to build frontend...');
+const needsBuild = !fs.existsSync(distPath) || fs.readdirSync(distPath).length === 0;
+
+if (needsBuild) {
+  console.log('Dist folder not found or empty. Attempting to build frontend...');
   try {
     execSync('npm run build', { stdio: 'inherit' });
     console.log('Build completed successfully.');

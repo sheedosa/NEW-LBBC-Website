@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { X, Building2, Zap, Globe, ShieldCheck, Briefcase, ArrowRight, ChevronRight } from 'lucide-react';
 
