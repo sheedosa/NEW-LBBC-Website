@@ -138,10 +138,47 @@ async function createServer() {
     res.json(diagnostics);
   });
 
+  async function fetchMemberDetails(id: string) {
+    try {
+      const res = await fetch('https://lbbc.org.uk/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `action=lbbc_gu_memberships_ajax_action&membershipID=${id}`
+      });
+      if (!res.ok) return null;
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   // API Route to fetch and parse GlueUp members
   const membersHandler = async (req: any, res: any) => {
     const now = Date.now();
     console.log(`[Server] Handling members request: ${req.url}`);
+
+    // Try to serve from local cache first if it exists and is less than 24 hours old
+    const cachePath = path.join(__dirname, 'public', 'data', 'members.json');
+    if (fs.existsSync(cachePath)) {
+      try {
+        const stats = fs.statSync(cachePath);
+        const age = now - stats.mtimeMs;
+        if (age < 24 * 60 * 60 * 1000) {
+          console.log('[Server] Serving members from cache');
+          const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+          return res.json(data);
+        }
+      } catch (e) {
+        console.warn('[Server] Error reading cache file:', e);
+      }
+    }
     
     // Fallback data in case GlueUp is down
     const fallbackData = {
@@ -203,7 +240,7 @@ async function createServer() {
               }
               
               if (name) {
-                currentList.push({ name, sector, logo: fullLogoUrl, id });
+                currentList.push({ name, sector, logo: fullLogoUrl, id, members: [] });
               }
             });
           }
@@ -212,20 +249,96 @@ async function createServer() {
         return { council, corporate };
       };
 
-      const { council, corporate } = await fetchMembers();
+        const { council, corporate } = await fetchMembers();
 
-      if (council.length === 0 && corporate.length === 0) {
-        throw new Error('No members found in LBBC memberships page');
-      }
+        if (council.length === 0 && corporate.length === 0) {
+          throw new Error('No members found in LBBC memberships page');
+        }
 
-      const result = { 
-        council, 
-        corporate,
-        timestamp: now,
-        source: 'lbbc-org'
-      };
+        console.log(`[Server] Found ${council.length + corporate.length} members. Fetching individuals for linking...`);
+        
+        // Fetch individuals
+        const individuals: any[] = [];
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        for (let i = 0; i < letters.length; i += 5) {
+          const batch = letters.slice(i, i + 5);
+          await Promise.all(batch.map(async (letter) => {
+            const indUrl = `https://lbbc.glueup.com/organization/5915/widget/membership-directory/individual/?letter=${letter}`;
+            try {
+              const indRes = await fetch(indUrl, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+              });
+              if (indRes.ok) {
+                const indHtml = await indRes.text();
+                const $ind = cheerio.load(indHtml);
+                $ind('.BlockRow').each((_, el) => {
+                  const personName = $ind(el).find('.title').text().trim();
+                  const companyName = $ind(el).find('.description').text().trim();
+                  if (personName && companyName) {
+                    individuals.push({ personName, companyName });
+                  }
+                });
+              }
+            } catch (e) {
+              console.warn(`[Server] Failed to fetch individuals for letter ${letter}`);
+            }
+          }));
+        }
+        console.log(`[Server] Found ${individuals.length} individuals. Enriching with details...`);
+        
+        // Enrich with details
+        const enrichList = async (list: any[]) => {
+          // Process in batches
+          for (let i = 0; i < list.length; i += 10) {
+            const batch = list.slice(i, i + 10);
+            await Promise.all(batch.map(async (member) => {
+              // Link individuals
+              const memberNameLower = member.name.toLowerCase();
+              member.members = individuals
+                .filter(ind => {
+                  const coLower = ind.companyName.toLowerCase();
+                  return coLower.includes(memberNameLower) || memberNameLower.includes(coLower);
+                })
+                .map(ind => ind.personName);
 
-      res.json(result);
+              if (member.id && !member.id.startsWith('m-')) {
+                const details = await fetchMemberDetails(member.id);
+                if (details) {
+                  member.description = details.description;
+                  member.website = details.website;
+                  member.industry_txt = details.industry_txt;
+                  if (details.logo_uri && details.logo_uri.isSrc) {
+                    member.logo = details.logo_uri.src;
+                  }
+                }
+              }
+            }));
+            // Short delay between batches
+            await new Promise(r => setTimeout(r, 500));
+          }
+        };
+
+        await enrichList(council);
+        await enrichList(corporate);
+
+        const result = { 
+          council, 
+          corporate,
+          timestamp: now,
+          source: 'lbbc-org'
+        };
+
+        // Update cache
+        try {
+          if (!fs.existsSync(path.dirname(cachePath))) {
+            fs.mkdirSync(path.dirname(cachePath), { recursive: true });
+          }
+          fs.writeFileSync(cachePath, JSON.stringify(result, null, 2));
+        } catch (e) {
+          console.error('[Server] Failed to update cache:', e);
+        }
+
+        res.json(result);
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
         console.warn('GlueUp fetch timed out after 15s. Using fallback data.');
@@ -323,7 +436,7 @@ async function createServer() {
         }
 
         const link = $upcoming(el).find('h2.content a').attr('href') || 
-                     $upcoming(el).find('a[href]').first().attr('href');
+                     $upcoming(el).find('a').attr('href');
         const isPast = $upcoming(el).hasClass('past');
 
         const event = {
@@ -361,7 +474,7 @@ async function createServer() {
         }
 
         const link = $past(el).find('h2.content a').attr('href') || 
-                     $past(el).find('a[href]').first().attr('href');
+                     $past(el).find('a').attr('href');
 
         const event = {
           id: `e-p-${i}`,

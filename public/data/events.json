@@ -1,0 +1,79 @@
+{
+  "upcoming": [
+    {
+      "id": "e-0-0.898145143865954",
+      "title": "Libya Energy Forum: Realising Energy Ambitions",
+      "date": "May 13, 2026 (09:00 - 17:00) (GMT+1)",
+      "location": "London, England, United Kingdom",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/2752095d-16ba-4a67-bc29-ad9cf76e56ba.jpg",
+      "link": "https://lbbc.glueup.com/event/libya-energy-forum-realising-energy-ambitions-173494/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-1-0.2242468446703194",
+      "title": "Libya Energy Transition Summit",
+      "date": "Jun 16, 2026 (09:00 - 17:00) (GMT+1)",
+      "location": "London, England, United Kingdom",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/6a1748b6-b194-43f2-b4b2-e6a6076cbea0.png",
+      "link": "https://lbbc.glueup.com/event/libya-energy-transition-summit-168108/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-2-0.18237673593962334",
+      "title": "LBBC Summer Reception",
+      "date": "Jun 18, 2026 (12:00 - 14:30) (GMT+1)",
+      "location": "England, United Kingdom",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/09764cbc-e284-42cd-b6bd-69fe760497ef.png",
+      "link": "https://lbbc.glueup.com/event/lbbc-summer-reception-160914/?pk_campaign=widget-event-list",
+      "type": "Event"
+    }
+  ],
+  "past": [
+    {
+      "id": "e-0-0.9992757924055842",
+      "title": "LBBC Webinar: Understanding Libya's Banking Landscape: LCs, Payment Systems and Best Practices",
+      "date": "Mar 12, 2026 (10:00 - 11:00) (GMT+0)",
+      "location": "",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/ff235f53-d817-4ad2-9809-4d530355a06e.jpg",
+      "link": "https://lbbc.glueup.com/event/lbbc-webinar-understanding-libyas-banking-landscape-lcs-payment-systems-and-best-practices-172397/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-1-0.8514723817839116",
+      "title": "LBBC Webinar and Q&A with Tim Eaton, Chatham House",
+      "date": "Feb 18, 2026 (10:00 - 11:00) (GMT+0)",
+      "location": "",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/d129ffa3-4a0f-460e-abf9-6db6a906fd59.png",
+      "link": "https://lbbc.glueup.com/event/lbbc-webinar-and-q-a-with-tim-eaton-chatham-house-166370/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-2-0.7883872911211058",
+      "title": "Libya-UK Reception: Celebrating Collaboration in Business, Culture & Heritage",
+      "date": "Dec 1, 2025 (18:30 - 21:00) (GMT+0)",
+      "location": "London,  SW1Y 5AH, United Kingdom",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/b8e83b8d-0625-4e90-89b1-43cd8f4aedd0.png",
+      "link": "https://lbbc.glueup.com/event/libya-uk-reception-celebrating-collaboration-in-business-culture-heritage-161297/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-3-0.870706296902799",
+      "title": "Libya Energy Transition Conference: Renewable Investment Opportunities",
+      "date": "Nov 26, 2025 (12:30 - 17:00) (GMT+0)",
+      "location": "London, United Kingdom",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/eadcb398-19de-4122-b1af-73b7b6c4ca17.png",
+      "link": "https://lbbc.glueup.com/event/libya-energy-transition-conference-renewable-investment-opportunities-156386/?pk_campaign=widget-event-list",
+      "type": "Event"
+    },
+    {
+      "id": "e-4-0.08221900566674312",
+      "title": "LBBC Webinar: Essential Guide to Libya's Regional Commercial Requirements",
+      "date": "Oct 8, 2025 (11:00 - 12:00) (GMT+1)",
+      "location": "",
+      "image": "https://lbbc.glueup.com/resources/public/images/fixed-width/600/91d353c1-5a3c-4616-972d-95f8f1cb67bb.jpg",
+      "link": "https://lbbc.glueup.com/event/lbbc-webinar-essential-guide-to-libyas-regional-commercial-requirements-155255/?pk_campaign=widget-event-list",
+      "type": "Event"
+    }
+  ],
+  "timestamp": 1776346027344
+}

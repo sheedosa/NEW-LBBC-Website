@@ -43,18 +43,20 @@ import { translations } from './translations';
 
 const newsData = [
   {
-    id: 'lbbc-aba-partnership',
-    image: 'https://lh3.googleusercontent.com/d/176Ry53dtybn4l49PqhI7zXpDVT8sePCa',
+    id: 'lbbc-eic-partnership',
+    image: 'https://lh3.googleusercontent.com/d/1nN2e19HBGnxoO9FwxAb7xYQHp5ndlS-G',
     category: 'PARTNERSHIPS',
-    title: 'LBBC Partners with Arab Bankers Association',
-    date: 'APRIL 10, 2026',
-    content: `The Libyan British Business Council is pleased to announce a new partnership with the Arab Bankers Association (ABA), marking a valuable step in strengthening links between the UK–Libya business community and the wider Arab and British financial sectors.
+    title: 'LBBC Partners with the Energy Industries Council (EIC)',
+    date: 'APRIL 16, 2026',
+    content: `The Libyan British Business Council is pleased to announce a new partnership with the [Energy Industries Council (EIC)](https://www.the-eic.com), strengthening links between the UK–Libya business community and one of the energy sector’s leading international trade associations.
 
-The Arab Bankers Association is a London-based, not-for-profit professional organisation whose members work in banks and related industries across the Arab world and the United Kingdom. Through its programmes and events, the ABA promotes stronger relations, information sharing and understanding between Arab and British financial institutions.
+The EIC is a London-headquartered global trade association for companies that supply goods and services across the energy industries. It supports a broad range of energy operators and service providers through market intelligence, business events, and sector-focused engagement, with members across 127 countries.
 
-For the LBBC, whose role is to promote bilateral trade and business relations between the UK and Libya, this partnership broadens the network of expertise and dialogue available to members, particularly in areas where finance, trade and investment intersect. It also creates opportunities for greater engagement with banking and financial sector stakeholders whose perspectives are increasingly important to companies looking at Libya’s evolving market.
+For the LBBC, our role is to promote bilateral trade and business relations between the UK and Libya and this partnership creates added value for members operating in or exploring Libya’s energy market. It broadens access to relevant networks, market insight and industry dialogue at a time when interest in Libya’s upstream, gas and wider energy opportunities continues to grow.
 
-Together, the LBBC and the ABA look forward to encouraging informed discussion, expanding relevant networks, and creating new opportunities for engagement between members of both organisations.`
+The partnership also provides a closer connection to the energy business community focused on Libya and creates an additional channel for dialogue around market entry, project opportunities and the practical conditions needed to support long-term business engagement in Libya. 
+
+The LBBC and the EIC look forward to encouraging informed discussion on Libya energy, broadening relevant connections and creating new opportunities for engagement between members of both organisations.`
   },
   {
     id: 'noc-chairman-keynote',
@@ -303,7 +305,15 @@ const Navbar = () => {
       ]
     },
     { name: t.nav.directory, href: '/directory' },
-    { name: t.nav.resources, href: '/resources' },
+    { 
+      name: t.nav.resources, 
+      href: '/resources',
+      dropdown: [
+        { name: t.nav.guides, href: '/resources#toolkit' },
+        { name: t.nav.newsInsights, href: '/resources#news' },
+        { name: t.nav.mediaGallery, href: '/resources#gallery' },
+      ]
+    },
     { name: t.nav.contact, href: '/contact' },
   ];
 
@@ -1067,13 +1077,14 @@ Bob has over 25 years of management experience, in both private and public secto
   ];
 
   const partners = [
-    { name: 'British Embassy', logo: 'https://lh3.googleusercontent.com/d/1psnVwfbGNU2WSPuGdnl2djUYQl23ATpf' },
-    { name: 'UK FCDO', logo: 'https://lh3.googleusercontent.com/d/1jo0v_igiizeIZelan6FOd9NSrnLMCMxc' },
+    { name: 'British Embassy', logo: 'https://lh3.googleusercontent.com/d/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl' },
+    { name: 'UK FCDO', logo: 'https://lh3.googleusercontent.com/d/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA' },
     { name: 'UK DIT', logo: 'https://lh3.googleusercontent.com/d/1WITAc3xTAWHEMWnfMZXvr8HR3beKE-S2' },
     { name: 'NOC', logo: 'https://lh3.googleusercontent.com/d/1298kn4VMFdwtdchqygp_Edk5XbaBty8B' },
     { name: 'REAOL', logo: 'https://lh3.googleusercontent.com/d/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg' },
-    { name: 'ARAB BANKERS ASSOCIATION', logo: 'https://lh3.googleusercontent.com/d/1QiJ_LHu_hWYY4U08i2-uQhJ_IKCfd1UM' },
-    { name: 'EIC', logo: 'https://lh3.googleusercontent.com/d/1Ub0tAlDhewWlWegKMDOxPY8gHUk7vmwc' }
+    { name: 'ARAB BANKERS ASSOCIATION', logo: 'https://lh3.googleusercontent.com/d/1SG9DMnjp0UJAz6Akdl2ie5yHiNyjEcW5' },
+    { name: 'EIC', logo: 'https://lh3.googleusercontent.com/d/16lXOVQpw5HTD8EU2ZwP2dT3Iwl44teja' },
+    { name: 'LEGACY', logo: 'https://lh3.googleusercontent.com/d/1wOfJy8X8F_NxWU16vEquTjxDMaTws2Fs' }
   ];
 
   return (
@@ -1295,7 +1306,7 @@ Bob has over 25 years of management experience, in both private and public secto
                     <img 
                       src={partner.logo} 
                       alt={partner.name} 
-                      className="max-h-full max-w-full object-contain transition-all duration-500 group-hover:scale-110"
+                      className="max-h-[70%] max-w-[85%] object-contain transition-all duration-500 group-hover:scale-110"
                       referrerPolicy="no-referrer"
                     />
                   )}
@@ -1750,8 +1761,8 @@ const Footer = () => {
               <div className="group">
                 <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 transition-all group-hover:scale-[1.02] shadow-lg">
                   <img 
-                    src="https://lh3.googleusercontent.com/d/1psnVwfbGNU2WSPuGdnl2djUYQl23ATpf" 
-                    alt="FCDO" 
+                    src="https://lh3.googleusercontent.com/d/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl" 
+                    alt="British Embassy" 
                     className="max-h-full max-w-full object-contain" 
                     referrerPolicy="no-referrer" 
                     loading="lazy"
@@ -1761,8 +1772,8 @@ const Footer = () => {
               <div className="group">
                 <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 transition-all group-hover:scale-[1.02] shadow-lg">
                   <img 
-                    src="https://lh3.googleusercontent.com/d/1jo0v_igiizeIZelan6FOd9NSrnLMCMxc" 
-                    alt="British Embassy" 
+                    src="https://lh3.googleusercontent.com/d/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA" 
+                    alt="UK FCDO" 
                     className="max-h-full max-w-full object-contain" 
                     referrerPolicy="no-referrer" 
                     loading="lazy"
@@ -2185,7 +2196,7 @@ const EventsPage = () => {
                     </p>
                     {event.link ? (
                       <a 
-                        href={event.link}
+                        href={ensureAbsoluteUrl(event.link)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-slate-900 font-bold text-[10px] uppercase tracking-widest border-b-2 border-lbbc-red/20 hover:border-lbbc-red pb-1 transition-all w-fit"
@@ -2320,6 +2331,7 @@ const DirectoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'council' | 'corporate'>('council');
+  const [selectedMember, setSelectedMember] = useState<any>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -2509,7 +2521,8 @@ const DirectoryPage = () => {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: (idx % 20) * 0.03 }}
-                      className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-lbbc-green/20 transition-all group flex flex-col items-center justify-center text-center aspect-square relative overflow-hidden"
+                      onClick={() => setSelectedMember(member)}
+                      className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-lbbc-green/20 transition-all group flex flex-col items-center justify-center text-center aspect-square relative overflow-hidden cursor-pointer"
                     >
                       <div className="w-full h-16 md:h-20 flex items-center justify-center mb-4">
                         {member.logo ? (
@@ -2528,6 +2541,13 @@ const DirectoryPage = () => {
                       <h3 className="text-[10px] md:text-[11px] font-black text-slate-900 leading-tight px-2 line-clamp-2 uppercase tracking-tight">{member.name}</h3>
                       <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-2 group-hover:text-lbbc-green transition-colors">{member.sector}</span>
                       
+                      {member.members && member.members.length > 0 && (
+                        <div className="absolute top-2 right-2 flex items-center gap-1 bg-lbbc-green/10 text-lbbc-green px-1.5 py-0.5 rounded-full">
+                          <User size={8} />
+                          <span className="text-[7px] font-black">{member.members.length}</span>
+                        </div>
+                      )}
+
                       {/* Accent line */}
                       <div className="absolute bottom-0 left-0 w-full h-1 bg-lbbc-green transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     </motion.div>
@@ -2553,16 +2573,103 @@ const DirectoryPage = () => {
           )}
         </div>
       </section>
+
+      {/* Member Details Modal */}
+      <AnimatePresence>
+        {selectedMember && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden relative max-h-[90vh] flex flex-col"
+            >
+              <button 
+                onClick={() => setSelectedMember(null)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full hover:bg-slate-200 transition-colors z-10"
+              >
+                <X size={16} />
+              </button>
+              
+              <div className="p-8 md:p-10 overflow-y-auto">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8 pb-8 border-b border-slate-100 text-center sm:text-left">
+                  <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 flex items-center justify-center bg-slate-50 rounded-xl p-4 border border-slate-100">
+                    {selectedMember.logo ? (
+                      <img src={selectedMember.logo} alt={selectedMember.name} className="max-w-full max-h-full object-contain" referrerPolicy="no-referrer" />
+                    ) : (
+                      <Building2 size={40} className="text-slate-300" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight mb-3">{selectedMember.name}</h2>
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                      <span className="inline-block px-3 py-1 bg-lbbc-green/10 text-lbbc-green font-bold text-[10px] uppercase tracking-widest rounded-sm">
+                        {selectedMember.industry_txt || selectedMember.sector}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {selectedMember.description && (
+                  <div className="mb-8">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t.directory.about}</h3>
+                    <p className="text-slate-600 leading-relaxed text-sm md:text-base whitespace-pre-line">
+                      {selectedMember.description}
+                    </p>
+                  </div>
+                )}
+                
+                {selectedMember.members && selectedMember.members.length > 0 && (
+                  <div className="mb-8">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t.directory.associatedProfessionals}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedMember.members.map((person: string, i: number) => (
+                        <div key={i} className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-full">
+                          <User size={12} className="text-lbbc-green" />
+                          <span className="text-xs font-bold text-slate-700">{person}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {selectedMember.website && (
+                  <div>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t.directory.website}</h3>
+                    <a 
+                      href={selectedMember.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-lbbc-green hover:text-lbbc-red font-bold text-sm transition-colors break-all"
+                    >
+                      {selectedMember.website}
+                      <ExternalLink size={14} className="flex-shrink-0" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
 const ResourcesPage = () => {
   const { t } = useLanguage();
+  const { hash } = useLocation();
   const [visiblePdfs, setVisiblePdfs] = useState(6);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
     
     // Load Flickr script
     const script = document.createElement('script');
@@ -2619,11 +2726,11 @@ const ResourcesPage = () => {
         </div>
       </section>
 
-      <section className="py-12 md:py-16 bg-slate-50/50">
+      <section id="toolkit" className="py-12 md:py-16 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="mb-12 md:mb-16 max-w-4xl">
             <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-4 block">{t.resources.toolkitTag}</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight mb-8">{t.resources.toolkitTitle}</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-8">{t.resources.toolkitTitle}</h2>
             <p className="text-lg md:text-xl text-slate-600 leading-relaxed font-medium">
               {t.resources.toolkitDesc}
             </p>
@@ -2677,13 +2784,75 @@ const ResourcesPage = () => {
         </div>
       </section>
 
+      {/* Supporting British Business Section */}
+      <section className="py-20 md:py-28 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-16 md:gap-24">
+            <div className="lg:w-1/2 space-y-8">
+              <div>
+                <span className="text-lbbc-red font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] block mb-4">
+                  {t.resources.supporting.tag}
+                </span>
+                <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight mb-8">
+                  {t.resources.supporting.title}
+                </h2>
+                <div className="space-y-6 text-slate-600 text-lg md:text-xl leading-relaxed">
+                  <p>{t.resources.supporting.p1}</p>
+                  <p>{t.resources.supporting.p2}</p>
+                </div>
+              </div>
+              <div className="pt-4">
+                <Link 
+                  to="/membership" 
+                  className="inline-flex items-center gap-3 bg-lbbc-green text-white px-10 py-5 rounded-sm font-black text-xs uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-2xl shadow-lbbc-green/20 group"
+                >
+                  {t.resources.supporting.cta}
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+            <div className="lg:w-1/2 relative">
+              <div className="absolute -top-12 -left-12 w-64 h-64 bg-lbbc-green/5 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-lbbc-red/5 rounded-full blur-3xl"></div>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-100">
+                <img 
+                  src="https://lh3.googleusercontent.com/d/1_o6UrgupeE--e0CUK6DP9FjWipNVGHG5" 
+                  alt="UK-Libya Partnership" 
+                  className="w-full h-auto object-cover"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Partners Row */}
+          <div className="mt-24 md:mt-32 pt-16 border-t border-slate-100">
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-16 transition-all duration-700">
+              {[
+                { name: 'British Embassy', id: '15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl' },
+                { name: 'UK FCDO', id: '14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA' },
+                { name: 'UK DIT', id: '1WITAc3xTAWHEMWnfMZXvr8HR3beKE-S2' },
+                { name: 'NOC', id: '1298kn4VMFdwtdchqygp_Edk5XbaBty8B' },
+                { name: 'REAOL', id: '1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg' },
+                { name: 'ARAB BANKERS ASSOCIATION', id: '1SG9DMnjp0UJAz6Akdl2ie5yHiNyjEcW5' },
+                { name: 'EIC', id: '16lXOVQpw5HTD8EU2ZwP2dT3Iwl44teja' },
+                { name: 'LEGACY', id: '1wOfJy8X8F_NxWU16vEquTjxDMaTws2Fs' }
+              ].map((p, i) => (
+                <img key={i} src={`https://lh3.googleusercontent.com/d/${p.id}`} alt={p.name} className="h-8 md:h-12 w-auto transition-all" referrerPolicy="no-referrer" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* News Section */}
-      <section id="news" className="py-12 md:py-20 bg-white">
+      <section id="news" className="py-12 md:py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
             <div className="max-w-2xl text-center md:text-left">
               <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-4 block">{t.news.tag}</span>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.news.title}</h2>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.news.title}</h2>
             </div>
           </div>
 
@@ -2714,7 +2883,7 @@ const ResourcesPage = () => {
       </section>
 
       {/* Media Gallery Section */}
-      <section className="py-20 md:py-32 bg-slate-950 relative overflow-hidden text-white">
+      <section id="gallery" className="py-20 md:py-32 bg-slate-950 relative overflow-hidden text-white">
         {/* Background Accents */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-lbbc-green/5 to-transparent pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-lbbc-green/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -2796,14 +2965,15 @@ const ResourcesPage = () => {
                 <div className="w-full aspect-[4/3] flex items-center justify-center overflow-hidden rounded-xl bg-slate-950 relative">
                   <a 
                     data-flickr-embed="true" 
-                    href="https://www.flickr.com/photos/legacy_libya/54125705951/in/album-72177720321794535/" 
-                    title="LBBC Delegation: Education Discussion Panel"
+                    data-context="true"
+                    href="https://www.flickr.com/photos/legacy_libya/54125991549/in/photostream/" 
+                    title="LBBC Delegation: LibyaBuild Benghazi"
                     className="w-full h-full"
                   >
                     <img 
-                      src="https://live.staticflickr.com/65535/54125705951_49ef065abb_w.jpg" 
+                      src="https://live.staticflickr.com/65535/54125991549_65f81a748b_w.jpg" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      alt="LBBC Delegation: Education Discussion Panel"
+                      alt="LBBC Delegation: LibyaBuild Benghazi"
                       referrerPolicy="no-referrer"
                     />
                   </a>
@@ -2811,7 +2981,7 @@ const ResourcesPage = () => {
               </div>
               <div className="mt-6 space-y-2">
                 <h3 className="text-sm md:text-base font-bold text-white group-hover:text-lbbc-red transition-colors leading-tight">
-                  Benghazi Business Delegation Panels & LibyaBuild
+                  LBBC Delegation: LibyaBuild Benghazi
                 </h3>
                 <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">Album 02</p>
               </div>
@@ -2844,12 +3014,6 @@ const ResourcesPage = () => {
               </div>
             </div>
           </motion.div>
-          
-          <div className="mt-12 text-center md:text-left">
-            <p className="text-white/60 text-xs md:text-sm font-medium max-w-xl leading-relaxed">
-              {t.gallery.desc}
-            </p>
-          </div>
         </div>
       </section>
     </div>
@@ -2894,16 +3058,6 @@ const MembershipPage = () => {
   const [activeFaqCategory, setActiveFaqCategory] = useState(faqCategories[0].id);
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   
-  const partners = [
-    { name: 'British Embassy', logo: 'https://lh3.googleusercontent.com/d/1psnVwfbGNU2WSPuGdnl2djUYQl23ATpf' },
-    { name: 'UK FCDO', logo: 'https://lh3.googleusercontent.com/d/1jo0v_igiizeIZelan6FOd9NSrnLMCMxc' },
-    { name: 'UK DIT', logo: 'https://lh3.googleusercontent.com/d/1WITAc3xTAWHEMWnfMZXvr8HR3beKE-S2' },
-    { name: 'NOC', logo: 'https://lh3.googleusercontent.com/d/1298kn4VMFdwtdchqygp_Edk5XbaBty8B' },
-    { name: 'REAOL', logo: 'https://lh3.googleusercontent.com/d/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg' },
-    { name: 'ARAB BANKERS ASSOCIATION', logo: 'https://lh3.googleusercontent.com/d/1QiJ_LHu_hWYY4U08i2-uQhJ_IKCfd1UM' },
-    { name: 'EIC', logo: 'https://lh3.googleusercontent.com/d/1Ub0tAlDhewWlWegKMDOxPY8gHUk7vmwc' }
-  ];
-
   useEffect(() => {
     if (hash) {
       const element = document.getElementById(hash.substring(1));
@@ -3891,6 +4045,106 @@ const SpotlightPage = () => {
   );
 };
 
+const ComingSoonPage = () => {
+  const { setLanguage } = useLanguage();
+  return (
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-lbbc-green/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-lbbc-red/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
+      
+      <div className="max-w-4xl w-full px-6 relative z-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="mb-12"
+        >
+          <img 
+            src="https://lh3.googleusercontent.com/d/1PGomWa780IpyKLEScVCwx5SOUtqGimcM" 
+            alt="LBBC Logo" 
+            className="h-20 md:h-24 mx-auto" 
+            referrerPolicy="no-referrer" 
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="space-y-8"
+        >
+          <div>
+            <h1 className="text-4xl md:text-7xl font-black text-slate-900 mb-4 tracking-tighter">
+              Arabic Page Coming Soon
+            </h1>
+            <h2 className="text-3xl md:text-6xl font-black text-lbbc-green tracking-tight" dir="rtl">
+              النسخة العربية ستتوفر قريباً
+            </h2>
+          </div>
+
+          <div className="w-24 h-1 bg-lbbc-red mx-auto"></div>
+
+          <div className="space-y-6">
+            <p className="text-lg md:text-2xl text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto">
+              Our Arabic website is currently under development to provide you with the best experience. Please check back later.
+            </p>
+            <p className="text-lg md:text-2xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto" dir="rtl">
+              نسختنا العربية قيد التطوير حالياً لتقديم أفضل تجربة لكم. يرجى العودة لاحقاً.
+            </p>
+          </div>
+
+          <div className="pt-8">
+            <button 
+              onClick={() => setLanguage('en')}
+              className="inline-flex items-center gap-3 bg-slate-900 text-white px-10 py-5 rounded-sm font-black text-xs uppercase tracking-widest hover:bg-lbbc-green transition-all shadow-2xl active:scale-95 group"
+            >
+              <ArrowUpRight size={18} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
+              Return to English Site / العودة إلى الموقع الإنجليزي
+            </button>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="absolute bottom-12 left-0 right-0 text-center">
+        <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">
+          Libyan British Business Council © 2026
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const AppContent = () => {
+  const { language } = useLanguage();
+
+  if (language === 'ar') {
+    return <ComingSoonPage />;
+  }
+
+  return (
+    <Router>
+      <ScrollToTop />
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/directory" element={<DirectoryPage />} />
+          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/membership" element={<MembershipPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/spotlight/capterio" element={<SpotlightPage />} />
+          <Route path="/news/:id" element={<NewsDetailPage />} />
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
+  );
+};
+
 export default function App() {
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
@@ -3912,24 +4166,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <Router>
-        <ScrollToTop />
-        <div className="min-h-screen bg-white">
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/directory" element={<DirectoryPage />} />
-            <Route path="/resources" element={<ResourcesPage />} />
-            <Route path="/membership" element={<MembershipPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/spotlight/capterio" element={<SpotlightPage />} />
-            <Route path="/news/:id" element={<NewsDetailPage />} />
-          </Routes>
-          <Footer />
-        </div>
-      </Router>
+      <AppContent />
     </LanguageProvider>
   );
 }

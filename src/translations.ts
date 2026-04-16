@@ -16,6 +16,9 @@ export const translations = {
       archive: 'Events Archive',
       directory: 'Directory',
       resources: 'Resources',
+      guides: 'Guides and Guidance',
+      newsInsights: 'News and Insights',
+      mediaGallery: 'Media Gallery',
       contact: 'Contact',
       joinUs: 'Join Us',
       login: 'Login'
@@ -110,7 +113,10 @@ export const translations = {
       errorText: 'Failed to load directory. Please try again.',
       intro: 'The LBBC operates two levels of membership – Council and Corporate. Our network represents a wide range of organizations, from global corporations to specialized SMEs, all committed to the UK-Libya trade relationship.',
       noResults: 'No {tab} members found matching your search.',
-      clearFilters: 'Clear All Filters'
+      clearFilters: 'Clear All Filters',
+      about: 'About',
+      associatedProfessionals: 'Associated Professionals',
+      website: 'Website'
     },
     partners: {
       tag: 'OUR PARTNERS',
@@ -178,6 +184,13 @@ export const translations = {
       toolkitTag: 'GUIDES AND TRADE DOCUMENTS',
       toolkitTitle: 'The UK-Libya Business Toolkit',
       toolkitDesc: 'The LBBC offers a range of practical trade resources, documentation and insights to support UK-Libya trade. This public resource library offers an overview of the guides, regulatory updates, and expertise we provide members to help navigate the market landscape, build partnerships and unlock new commercial opportunities.',
+      supporting: {
+        tag: 'BRITISH EMBASSY AND UK DBT',
+        title: 'Supporting British Business in Libya',
+        p1: "The LBBC works closely with the British Embassy in Libya and the UK's Department for Business and Trade to connect British companies with opportunities in Libya, and Libyan companies with the UK market.",
+        p2: "We provide initial guidance to any business looking to explore these opportunities, with our full range of services — including market intelligence, business introductions, and networking — available to LBBC members.",
+        cta: 'Join the LBBC'
+      },
       clickToOpen: '*click to open',
       download: 'Download PDF',
       loadMore: 'Load More Resources'
@@ -413,6 +426,9 @@ export const translations = {
       archive: 'أرشيف الفعاليات',
       directory: 'الدليل',
       resources: 'المصادر',
+      guides: 'الأدلة والإرشادات',
+      newsInsights: 'الأخبار والرؤى',
+      mediaGallery: 'معرض الوسائط',
       contact: 'اتصل بنا',
       joinUs: 'انضم إلينا',
       login: 'تسجيل الدخول'
@@ -512,7 +528,10 @@ export const translations = {
       errorText: 'فشل تحميل الدليل. يرجى المحاولة مرة أخرى.',
       intro: 'يدير مجلس الأعمال الليبي البريطاني مستويين من العضوية - المجلس والشركات. تمثل شبكتنا مجموعة واسعة من المنظمات، من الشركات العالمية إلى الشركات الصغيرة والمتوسطة المتخصصة، وجميعها ملتزمة بالعلاقة التجارية بين المملكة المتحدة وليبيا.',
       noResults: 'لم يتم العثور على أعضاء {tab} يطابقون بحثك.',
-      clearFilters: 'مسح جميع المرشحات'
+      clearFilters: 'مسح جميع المرشحات',
+      about: 'حول',
+      associatedProfessionals: 'المهنيون المرتبطون',
+      website: 'الموقع الإلكتروني'
     },
     events: {
       tag: 'التقويم',
@@ -575,6 +594,13 @@ export const translations = {
       toolkitTag: 'الأدلة ووثائق التجارة',
       toolkitTitle: 'مجموعة أدوات الأعمال بين المملكة المتحدة وليبيا',
       toolkitDesc: 'يقدم مجلس الأعمال الليبي البريطاني مجموعة من الموارد التجارية العملية والوثائق والرؤى لدعم التجارة بين المملكة المتحدة وليبيا. تقدم مكتبة الموارد العامة هذه نظرة عامة على الأدلة والتحديثات التنظيمية والخبرة التي نقدمها للأعضاء للمساعدة في التنقل في مشهد السوق وبناء الشراكات وفتح فرص تجارية جديدة.',
+      supporting: {
+        tag: 'السفارة البريطانية وإدارة الأعمال والتجارة البريطانية',
+        title: 'دعم الأعمال البريطانية في ليبيا',
+        p1: 'يعمل مجلس الأعمال الليبي البريطاني بشكل وثيق مع السفارة البريطانية في ليبيا ووزارة الأعمال والتجارة البريطانية لربط الشركات البريطانية بالفرص المتاحة في ليبيا، والشركات الليبية بالسوق البريطاني.',
+        p2: 'نحن نقدم إرشادات أولية لأي شركة تتطلع إلى استكشاف هذه الفرص، مع مجموعتنا الكاملة من الخدمات - بما في ذلك معلومات السوق، وتقديم الأعمال، والتواصل - المتاحة لأعضاء المجلس.',
+        cta: 'انضم إلى المجلس'
+      },
       clickToOpen: '*انقر للفتح',
       download: 'تحميل PDF',
       loadMore: 'تحميل المزيد من المصادر'
