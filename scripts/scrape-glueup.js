@@ -102,53 +102,12 @@ async function scrapeMembers() {
 
     console.log(`[Build Scraper] Found ${council.length + corporate.length} corporate members. Fetching details...`);
     
-    // Fetch individual members to link them
-    const individuals = [];
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    console.log('[Build Scraper] Fetching individual members for linking...');
-    
-    // Fetch letters in parallel batches of 5
-    for (let i = 0; i < letters.length; i += 5) {
-      const batch = letters.slice(i, i + 5);
-      await Promise.all(batch.map(async (letter) => {
-        const indUrl = `https://lbbc.glueup.com/organization/5915/widget/membership-directory/individual/?letter=${letter}`;
-        try {
-          const indRes = await fetch(indUrl, {
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-          });
-          if (indRes.ok) {
-            const indHtml = await indRes.text();
-            const $ind = cheerio.load(indHtml);
-            $ind('.BlockRow').each((_, el) => {
-              const personName = $ind(el).find('.title').text().trim();
-              const companyName = $ind(el).find('.description').text().trim();
-              if (personName && companyName) {
-                individuals.push({ personName, companyName });
-              }
-            });
-          }
-        } catch (e) {
-          console.warn(`[Build Scraper] Failed to fetch individuals for letter ${letter}`);
-        }
-      }));
-    }
-    console.log(`[Build Scraper] Found ${individuals.length} individuals.`);
-
     // Fetch details in batches
     const fetchDetailsForList = async (list) => {
       // Increased batch size and concurrency
       for (let i = 0; i < list.length; i += 15) {
         const batch = list.slice(i, i + 15);
         await Promise.all(batch.map(async (member) => {
-          // Link individuals
-          const memberNameLower = member.name.toLowerCase();
-          member.members = individuals
-            .filter(ind => {
-              const coLower = ind.companyName.toLowerCase();
-              return coLower.includes(memberNameLower) || memberNameLower.includes(coLower);
-            })
-            .map(ind => ind.personName);
-
           if (member.id && !member.id.startsWith('m-')) {
             const details = await fetchMemberDetails(member.id);
             if (details) {

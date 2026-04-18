@@ -115,7 +115,6 @@ export const translations = {
       noResults: 'No {tab} members found matching your search.',
       clearFilters: 'Clear All Filters',
       about: 'About',
-      associatedProfessionals: 'Associated Professionals',
       website: 'Website'
     },
     partners: {
@@ -530,7 +529,6 @@ export const translations = {
       noResults: 'لم يتم العثور على أعضاء {tab} يطابقون بحثك.',
       clearFilters: 'مسح جميع المرشحات',
       about: 'حول',
-      associatedProfessionals: 'المهنيون المرتبطون',
       website: 'الموقع الإلكتروني'
     },
     events: {

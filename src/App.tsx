@@ -37,6 +37,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation, useParams } from 'react-router-dom';
 import Markdown from 'react-markdown';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { translations } from './translations';
 
 // --- News Data ---
@@ -108,6 +109,33 @@ LBBC members seeking support with UK business travel may contact the Secretariat
   }
 ];
 
+// --- SEO Component ---
+
+interface SEOProps {
+  title: string;
+  description?: string;
+  canonical?: string;
+  type?: string;
+}
+
+const SEO = ({ title, description, canonical, type = 'website' }: SEOProps) => {
+  const fullTitle = `${title} | LBBC`;
+  const siteDescription = description || "The premier network for bilateral UK-Libya commercial partnership. Fostering trade, investment, and strategic dialogue.";
+  
+  return (
+    <Helmet>
+      <title>{fullTitle}</title>
+      <meta name="description" content={siteDescription} />
+      <meta property="og:title" content={fullTitle} />
+      <meta property="og:description" content={siteDescription} />
+      <meta property="twitter:title" content={fullTitle} />
+      <meta property="twitter:description" content={siteDescription} />
+      {canonical && <link rel="canonical" href={`https://lbbc.org.uk/#${canonical}`} />}
+      <meta property="og:type" content={type} />
+    </Helmet>
+  );
+};
+
 const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
@@ -124,6 +152,12 @@ const NewsDetailPage = () => {
 
   return (
     <div className="pt-20">
+      <SEO 
+        title={newsItem.title} 
+        description={newsItem.content.substring(0, 160)} 
+        canonical={`news/${newsItem.id}`}
+        type="article"
+      />
       {/* Hero Section */}
       <section className="relative h-[40vh] md:h-[60vh] flex items-center justify-center overflow-hidden bg-slate-900">
         <img 
@@ -1089,6 +1123,11 @@ Bob has over 25 years of management experience, in both private and public secto
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.about} 
+        description="Learn about the Libyan British Business Council, our leadership, board of directors, and our mission to foster UK-Libya trade."
+        canonical="about"
+      />
       {/* Header Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -1330,6 +1369,11 @@ Bob has over 25 years of management experience, in both private and public secto
 const HomePage = () => {
   return (
     <main>
+      <SEO 
+        title="Home" 
+        description="The Libyan British Business Council (LBBC) promotes bilateral trade and investment between the United Kingdom and Libya."
+        canonical=""
+      />
       <Hero />
       <About />
       <MemberDirectory />
@@ -1993,6 +2037,11 @@ const EventsPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.events} 
+        description="Stay updated on upcoming LBBC events, trade missions, and conferences focused on UK-Libya business opportunities."
+        canonical="events"
+      />
       {/* Header Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -2398,6 +2447,11 @@ const DirectoryPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.directory} 
+        description="Explore the LBBC Member Directory to find leading British and Libyan companies across various sectors."
+        canonical="directory"
+      />
       {/* Hero Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -2541,13 +2595,6 @@ const DirectoryPage = () => {
                       <h3 className="text-[10px] md:text-[11px] font-black text-slate-900 leading-tight px-2 line-clamp-2 uppercase tracking-tight">{member.name}</h3>
                       <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-2 group-hover:text-lbbc-green transition-colors">{member.sector}</span>
                       
-                      {member.members && member.members.length > 0 && (
-                        <div className="absolute top-2 right-2 flex items-center gap-1 bg-lbbc-green/10 text-lbbc-green px-1.5 py-0.5 rounded-full">
-                          <User size={8} />
-                          <span className="text-[7px] font-black">{member.members.length}</span>
-                        </div>
-                      )}
-
                       {/* Accent line */}
                       <div className="absolute bottom-0 left-0 w-full h-1 bg-lbbc-green transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                     </motion.div>
@@ -2619,20 +2666,6 @@ const DirectoryPage = () => {
                   </div>
                 )}
                 
-                {selectedMember.members && selectedMember.members.length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t.directory.associatedProfessionals}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedMember.members.map((person: string, i: number) => (
-                        <div key={i} className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-full">
-                          <User size={12} className="text-lbbc-green" />
-                          <span className="text-xs font-bold text-slate-700">{person}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
                 {selectedMember.website && (
                   <div>
                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{t.directory.website}</h3>
@@ -2701,6 +2734,11 @@ const ResourcesPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.resources} 
+        description="Access exclusive market insights, trade guides, news updates, and media galleries for the UK-Libya business community."
+        canonical="resources"
+      />
       {/* Hero Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -3071,6 +3109,11 @@ const MembershipPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.membership} 
+        description="Join the LBBC network to access strategic dialogue, networking opportunities, and business support for the Libyan market."
+        canonical="membership"
+      />
       {/* Hero Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -3712,6 +3755,11 @@ const ContactPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={t.nav.contact} 
+        description="Get in touch with the Libyan British Business Council for inquiries about membership, events, or trade support."
+        canonical="contact"
+      />
       {/* Header Banner */}
       <section className="relative h-[250px] md:h-[300px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -3956,6 +4004,11 @@ const SpotlightPage = () => {
 
   return (
     <div className="pt-32">
+      <SEO 
+        title={`${story.title} | Spotlight`} 
+        description={story.p1.substring(0, 160)}
+        canonical="spotlight/capterio"
+      />
       {/* Hero Section */}
       <section className="relative h-[300px] md:h-[400px] flex items-center overflow-hidden bg-slate-900">
         <img 
@@ -4049,6 +4102,11 @@ const ComingSoonPage = () => {
   const { setLanguage } = useLanguage();
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center relative overflow-hidden">
+      <SEO 
+        title="Arabic Page Coming Soon | قريباً الصفحة العربية" 
+        description="The Arabic version of the LBBC website is currently in development. Our team is working to bring you the best experience in Arabic."
+        canonical=""
+      />
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-lbbc-green/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
       <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-lbbc-red/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
@@ -4165,9 +4223,11 @@ export default function App() {
   }, []);
 
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <HelmetProvider>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </HelmetProvider>
   );
 }
 

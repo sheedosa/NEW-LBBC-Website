@@ -255,36 +255,7 @@ async function createServer() {
           throw new Error('No members found in LBBC memberships page');
         }
 
-        console.log(`[Server] Found ${council.length + corporate.length} members. Fetching individuals for linking...`);
-        
-        // Fetch individuals
-        const individuals: any[] = [];
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        for (let i = 0; i < letters.length; i += 5) {
-          const batch = letters.slice(i, i + 5);
-          await Promise.all(batch.map(async (letter) => {
-            const indUrl = `https://lbbc.glueup.com/organization/5915/widget/membership-directory/individual/?letter=${letter}`;
-            try {
-              const indRes = await fetch(indUrl, {
-                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
-              });
-              if (indRes.ok) {
-                const indHtml = await indRes.text();
-                const $ind = cheerio.load(indHtml);
-                $ind('.BlockRow').each((_, el) => {
-                  const personName = $ind(el).find('.title').text().trim();
-                  const companyName = $ind(el).find('.description').text().trim();
-                  if (personName && companyName) {
-                    individuals.push({ personName, companyName });
-                  }
-                });
-              }
-            } catch (e) {
-              console.warn(`[Server] Failed to fetch individuals for letter ${letter}`);
-            }
-          }));
-        }
-        console.log(`[Server] Found ${individuals.length} individuals. Enriching with details...`);
+        console.log(`[Server] Found ${council.length + corporate.length} members. Enriching with details...`);
         
         // Enrich with details
         const enrichList = async (list: any[]) => {
@@ -292,15 +263,6 @@ async function createServer() {
           for (let i = 0; i < list.length; i += 10) {
             const batch = list.slice(i, i + 10);
             await Promise.all(batch.map(async (member) => {
-              // Link individuals
-              const memberNameLower = member.name.toLowerCase();
-              member.members = individuals
-                .filter(ind => {
-                  const coLower = ind.companyName.toLowerCase();
-                  return coLower.includes(memberNameLower) || memberNameLower.includes(coLower);
-                })
-                .map(ind => ind.personName);
-
               if (member.id && !member.id.startsWith('m-')) {
                 const details = await fetchMemberDetails(member.id);
                 if (details) {
