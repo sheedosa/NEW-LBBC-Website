@@ -1957,13 +1957,12 @@ const EventsPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        // Use absolute-root path for reliability on shared hosting
-        const apiPath = '/api/events';
+        const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/events';
         const response = await fetch(apiPath);
         
         if (!response.ok) {
           console.warn('Events Page API failed, trying static fallback...');
-          const staticPath = '/data/events.json';
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/events.json';
           const staticRes = await fetch(staticPath);
           if (!staticRes.ok) throw new Error(`Server returned ${response.status} and static fallback failed`);
           const data = await staticRes.json();
@@ -1973,7 +1972,6 @@ const EventsPage = () => {
         }
         
         const data = await response.json();
-        console.log('Successfully fetched events. Source:', data.source || 'server');
         setUpcomingEvents(data.upcoming || []);
         setPastEvents(data.past || []);
       } catch (err) {
@@ -2398,19 +2396,17 @@ const DirectoryPage = () => {
 
   const fetchMembers = async () => {
     try {
+      const apiPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members';
       setIsLoading(true);
       setError(null);
-      
-      // Use absolute-root path for reliability on shared hosting
-      const apiPath = '/api/members';
       
       try {
         console.log('Fetching members from:', apiPath);
         const response = await fetch(apiPath);
         
         if (!response.ok) {
-          console.warn('API failed with status:', response.status, 'Trying static fallback...');
-          const staticPath = '/data/members.json';
+          console.warn('API failed, trying static fallback...');
+          const staticPath = window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'data/members.json';
           const staticRes = await fetch(staticPath);
           if (!staticRes.ok) throw new Error(`Server returned ${response.status} and static fallback failed`);
           const data = await staticRes.json();
@@ -2420,19 +2416,16 @@ const DirectoryPage = () => {
         }
         
         const data = await response.json();
-        console.log('Successfully fetched members. Source:', data.source || 'server');
-        
         setCouncilMembers(data.council || []);
         setCorporateMembers(data.corporate || []);
       } catch (err) {
-        console.error('Fetch attempt failed:', err);
-        setError(t.directory.errorText || 'Failed to load member data');
+        console.error('Error fetching members:', err);
+        setError(err instanceof Error ? err.message : t.directory.errorText);
       } finally {
         setIsLoading(false);
       }
     } catch (err) {
       console.error('Outer fetch error:', err);
-      setIsLoading(false);
     }
   };
 
@@ -2554,7 +2547,7 @@ const DirectoryPage = () => {
               <p className="text-slate-500 mb-4">{error}</p>
               <div className="text-[10px] text-slate-400 mb-8 font-mono bg-slate-50 p-2 rounded text-left overflow-hidden">
                 URL: {window.location.href}<br/>
-                API: /api/members<br/>
+                API: {window.location.origin + (window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/') + 'api/members'}<br/>
                 Time: {new Date().toLocaleTimeString()}
               </div>
               <button 

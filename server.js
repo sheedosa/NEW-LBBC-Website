@@ -87,199 +87,104 @@ async function createServer() {
     throw new Error('Max retries reached');
   };
 
-  // Diagnostic endpoint
-  app.get("/api/debug-glueup", async (req, res) => {
-    const diagnostics = {
-      timestamp: new Date().toISOString(),
-      env: process.env.NODE_ENV,
-      cwd: process.cwd(),
-      dirname: __dirname,
-      nodeVersion: process.version,
-      platform: process.platform,
-      dns: {},
-      fetch: {}
-    };
-
-    try {
-      const glueupHost = 'lbbc.glueup.com';
-      const addr = await lookup(glueupHost);
-      diagnostics.dns[glueupHost] = addr;
-    } catch (err) {
-      diagnostics.dns.error = String(err);
-    }
-
-    try {
-      const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-      
-      const response = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0' },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      
-      diagnostics.fetch = {
-        status: response.status,
-        ok: response.ok,
-        headers: response.headers.raw ? response.headers.raw() : {}
-      };
-    } catch (err) {
-      diagnostics.fetch.error = String(err);
-    }
-
-    res.json(diagnostics);
-  });
-
-  // Simple debug endpoint for members
-  app.get("/api/debug-members", (req, res) => {
-    const cachePaths = [
-      path.join(__dirname, 'public', 'data', 'members.json'),
-      path.join(__dirname, 'dist', 'data', 'members.json'),
-      path.join(__dirname, 'data', 'members.json')
-    ];
-    
-    const results = cachePaths.map(p => ({
-      path: p,
-      exists: fs.existsSync(p),
-      size: fs.existsSync(p) ? fs.statSync(p).size : 0,
-      mtime: fs.existsSync(p) ? fs.statSync(p).mtime : null
-    }));
-    
-    res.json({
-      timestamp: new Date().toISOString(),
-      cachePaths: results,
-      cwd: process.cwd(),
-      __dirname: __dirname
-    });
-  });
-
   // API Route to fetch and parse GlueUp members
   const membersHandler = async (req, res) => {
     const now = Date.now();
     console.log(`[Server] Handling members request: ${req.url}`);
-
-    // Try to serve from local cache first if it exists and is less than 24 hours old
-    // We check both public/data/members.json and data/members.json (relative to dist)
-    const cachePaths = [
-      path.join(__dirname, 'public', 'data', 'members.json'),
-      path.join(__dirname, 'dist', 'data', 'members.json'),
-      path.join(__dirname, 'data', 'members.json')
-    ];
-
-    for (const cachePath of cachePaths) {
-      if (fs.existsSync(cachePath)) {
-        try {
-          const stats = fs.statSync(cachePath);
-          const age = now - stats.mtimeMs;
-          // Refresh every 12 hours
-          if (age < 12 * 60 * 60 * 1000) {
-            console.log(`[Server] Serving members from cache: ${cachePath}`);
-            const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-            return res.json({ ...data, source: 'cache', age: Math.round(age / 1000 / 60) + ' min' });
-          }
-        } catch (e) {
-          console.warn(`[Server] Error reading cache file ${cachePath}:`, e);
-        }
-      }
-    }
     
     const fallbackData = {
       council: [
         { name: 'Bank ABC', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/15cpsQqPmBPGxIFDMENHLFMWWSMlX5RWS', id: 'fallback-1' },
         { name: 'BACB', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/1AncCRiOHV69RThwwxusFjd44kk5Kfm3X', id: 'fallback-2' },
-        { name: 'ALFA Holding Group', sector: 'Healthcare', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/216c1dba-14ec-45ec-85e0-11fd4db01608.png', id: 'fallback-3' },
-        { name: 'ALMARAJ Company for Oil and Gas', sector: 'Energy', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/9806499a-9764-468a-8610-811656885662.png', id: 'fallback-4' },
-        { name: 'Metlen', sector: 'Energy', logo: 'https://lh3.googleusercontent.com/d/1qZgdrszXG_q9DaIw9Pi15tK-FibGgnZa', id: 'fallback-5' },
-        { name: 'Promergon', sector: 'Infrastructure', logo: 'https://lh3.googleusercontent.com/d/1tT9Mi34vXyls13GG54cIzrmBsPls301F', id: 'fallback-6' }
+        { name: 'Metlen', sector: 'Energy', logo: 'https://lh3.googleusercontent.com/d/1qZgdrszXG_q9DaIw9Pi15tK-FibGgnZa', id: 'fallback-3' },
+        { name: 'Promergon', sector: 'Infrastructure', logo: 'https://lh3.googleusercontent.com/d/1tT9Mi34vXyls13GG54cIzrmBsPls301F', id: 'fallback-4' }
       ],
       corporate: [
-        { name: 'Medship Group', sector: 'Logistics', logo: 'https://lh3.googleusercontent.com/d/1x4pHfOpvq7iOxhS_o9FwIZTDIYoxNbaw', id: 'fallback-7' },
-        { name: 'Crowd Digital', sector: 'Technology', logo: 'https://lh3.googleusercontent.com/d/1anu1ZRZmC7BDJWW4CTWwB_ZpWtCddibV', id: 'fallback-8' },
-        { name: 'Libya Holdings', sector: 'Investment', logo: 'https://lh3.googleusercontent.com/d/1Xs5dfuvlmR6CnN60XJJaMq6_OSOuRUhZ', id: 'fallback-9' }
+        { name: 'Medship Group', sector: 'Logistics', logo: 'https://lh3.googleusercontent.com/d/1x4pHfOpvq7iOxhS_o9FwIZTDIYoxNbaw', id: 'fallback-5' },
+        { name: 'Crowd Digital', sector: 'Technology', logo: 'https://lh3.googleusercontent.com/d/1anu1ZRZmC7BDJWW4CTWwB_ZpWtCddibV', id: 'fallback-6' },
+        { name: 'Libya Holdings', sector: 'Investment', logo: 'https://lh3.googleusercontent.com/d/1Xs5dfuvlmR6CnN60XJJaMq6_OSOuRUhZ', id: 'fallback-7' }
       ]
     };
 
     try {
-      // Scraper function
-      const fetchFromGlueUp = async () => {
+      const fetchCorporate = async () => {
         const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
-        const councilUrl = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/council/';
-        
-        const [corpRes, councilRes] = await Promise.all([
-          fetchWithRetry(url),
-          fetchWithRetry(councilUrl)
-        ]);
-
-        if (!corpRes.ok) throw new Error(`Corp Fetch failed: ${corpRes.status}`);
-        
-        const html = await corpRes.text();
+        const response = await fetchWithRetry(url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const html = await response.text();
         const $ = cheerio.load(html);
-        const corporate = [];
         
+        const members = [];
         $('dt.BlockRow').each((i, el) => {
           const name = $(el).find('.title').text().trim();
           const sector = $(el).find('.description').text().trim() || 'Other';
           const logoUrl = $(el).find('img').attr('src');
+          
+          let fullLogoUrl = null;
+          if (logoUrl) {
+            if (logoUrl.startsWith('http')) {
+              fullLogoUrl = logoUrl;
+            } else {
+              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+            }
+          }
+          
           if (name) {
-            corporate.push({
+            members.push({
               name,
               sector,
-              logo: logoUrl ? (logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`) : null,
+              logo: fullLogoUrl,
               id: $(el).attr('data-id') || `m-${i}`
             });
           }
         });
-
-        const councilHtml = await councilRes.text();
-        const $c = cheerio.load(councilHtml);
-        const councilNames = new Set();
-        $c('dt.BlockRow').each((i, el) => {
-          const company = $c(el).find('[itemprop="worksFor"]').text().trim();
-          if (company) councilNames.add(company.toLowerCase());
-        });
-
-        const council = corporate.filter(m => councilNames.has(m.name.toLowerCase()));
-        const cleanCorporate = corporate.filter(m => !councilNames.has(m.name.toLowerCase()));
-
-        return { council, corporate: cleanCorporate };
+        return members;
       };
 
-      const result = await fetchFromGlueUp();
+      const fetchCouncilCompanies = async () => {
+        const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/council/';
+        const response = await fetchWithRetry(url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        
+        const companies = new Set();
+        $('dt.BlockRow').each((i, el) => {
+          const company = $(el).find('[itemprop="worksFor"]').text().trim();
+          if (company) companies.add(company);
+          
+          const description = $(el).find('.description').text().trim();
+          if (description && description.includes('at ')) {
+            const parts = description.split('at ');
+            if (parts.length > 1) companies.add(parts[1].trim());
+          }
+        });
+        return Array.from(companies);
+      };
+
+      const [corporate, councilCompanyNames] = await Promise.all([
+        fetchCorporate(),
+        fetchCouncilCompanies()
+      ]);
+
+      if (corporate.length === 0) {
+        throw new Error('No members found in GlueUp response');
+      }
+
+      const council = corporate.filter(m => 
+        councilCompanyNames.some(name => m.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(m.name.toLowerCase()))
+      );
+
+      const nonCouncilCorporate = corporate.filter(m => !council.find(c => c.id === m.id));
       
-      if (result.council.length === 0 && result.corporate.length === 0) {
-        throw new Error('Parsed empty member list');
-      }
-
-      const responseData = { ...result, timestamp: now, source: 'live' };
-
-      // Try to update cache
-      try {
-        const cacheFile = cachePaths[0]; // Save to public/data/members.json
-        if (!fs.existsSync(path.dirname(cacheFile))) {
-          fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
-        }
-        fs.writeFileSync(cacheFile, JSON.stringify(responseData, null, 2));
-        console.log(`[Server] Updated cache: ${cacheFile}`);
-      } catch (e) {
-        console.warn('[Server] Could not update cache:', e);
-      }
-
-      res.json(responseData);
+      res.json({ 
+        council, 
+        corporate: nonCouncilCorporate,
+        timestamp: now,
+        source: 'glueup'
+      });
     } catch (error) {
-      console.error('Error fetching members live:', error);
-      
-      // If live fails, try to return STALE cache of ANY age
-      for (const cachePath of cachePaths) {
-        if (fs.existsSync(cachePath)) {
-          try {
-            console.log(`[Server] Fetch failed, serving STALE cache: ${cachePath}`);
-            const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-            return res.json({ ...data, source: 'stale-cache', error: String(error) });
-          } catch (e) {}
-        }
-      }
-
+      console.error('Error fetching members from GlueUp:', error);
       res.json({
         ...fallbackData,
         timestamp: now,
@@ -293,27 +198,6 @@ async function createServer() {
     const now = Date.now();
     console.log(`[Server] Handling events request: ${req.url}`);
     
-    // Try cache first
-    const cachePaths = [
-      path.join(__dirname, 'public', 'data', 'events.json'),
-      path.join(__dirname, 'dist', 'data', 'events.json'),
-      path.join(__dirname, 'data', 'events.json')
-    ];
-
-    for (const cachePath of cachePaths) {
-      if (fs.existsSync(cachePath)) {
-        try {
-          const stats = fs.statSync(cachePath);
-          const age = now - stats.mtimeMs;
-          if (age < 12 * 60 * 60 * 1000) {
-            console.log(`[Server] Serving events from cache: ${cachePath}`);
-            const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-            return res.json({ ...data, source: 'cache', age: Math.round(age / 1000 / 60) + ' min' });
-          }
-        } catch (e) {}
-      }
-    }
-
     const fallbackEvents = {
       upcoming: [
         {
@@ -330,79 +214,92 @@ async function createServer() {
     };
 
     try {
-      const fetchEventsFromGlueUp = async () => {
-        const upcomingUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
-        const pastUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view?listType=past';
+      const upcomingUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
+      const pastUrl = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view?listType=past';
 
-        const [upcomingRes, pastRes] = await Promise.all([
-          fetchWithRetry(upcomingUrl),
-          fetchWithRetry(pastUrl)
-        ]);
+      const [upcomingRes, pastRes] = await Promise.all([
+        fetchWithRetry(upcomingUrl),
+        fetchWithRetry(pastUrl)
+      ]);
 
-        if (!upcomingRes.ok) throw new Error(`Events Fetch failed: ${upcomingRes.status}`);
-        
-        const [upcomingHtml, pastHtml] = await Promise.all([
-          upcomingRes.text(),
-          pastRes.text()
-        ]);
-
-        const parseEvents = (html) => {
-          const $ = cheerio.load(html);
-          const events = [];
-          $('.events-list li').each((i, el) => {
-            const title = $(el).find('h2.content').text().trim();
-            const date = $(el).find('time.content').text().trim();
-            const location = $(el).find('.area.content').text().trim();
-            const description = $(el).find('.description').text().trim() || '';
-            const imgStyle = $(el).find('.event-image').attr('style') || '';
-            const imgMatch = imgStyle.match(/url\((.*?)\)/);
-            let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
-            if (image && !image.startsWith('http')) image = `https://lbbc.glueup.com${image}`;
-            
-            const link = $(el).find('a').attr('href');
-            if (title) {
-              events.push({
-                id: `e-${i}-${Math.random()}`,
-                title, date, location, description, image,
-                link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
-                type: 'Event'
-              });
-            }
-          });
-          return events;
-        };
-
-        return { 
-          upcoming: parseEvents(upcomingHtml),
-          past: parseEvents(pastHtml)
-        };
-      };
-
-      const result = await fetchEventsFromGlueUp();
-      const responseData = { ...result, timestamp: now, source: 'live' };
-
-      // Update cache
-      try {
-        const cacheFile = cachePaths[0];
-        if (!fs.existsSync(path.dirname(cacheFile))) {
-          fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
-        }
-        fs.writeFileSync(cacheFile, JSON.stringify(responseData, null, 2));
-      } catch (e) {}
-
-      res.json(responseData);
-    } catch (error) {
-      console.error('Error fetching events live:', error);
+      if (!upcomingRes.ok || !pastRes.ok) throw new Error(`HTTP error! status: ${upcomingRes.status} / ${pastRes.status}`);
       
-      // Try stale cache
-      for (const cachePath of cachePaths) {
-        if (fs.existsSync(cachePath)) {
-          try {
-            const data = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-            return res.json({ ...data, source: 'stale-cache' });
-          } catch (e) {}
+      const [upcomingHtml, pastHtml] = await Promise.all([
+        upcomingRes.text(),
+        pastRes.text()
+      ]);
+
+      const $upcoming = cheerio.load(upcomingHtml);
+      const $past = cheerio.load(pastHtml);
+      
+      const upcoming = [];
+      const past = [];
+
+      $upcoming('.events-list li').each((i, el) => {
+        const title = $upcoming(el).find('h2.content').text().trim();
+        const date = $upcoming(el).find('time.content').text().trim();
+        const location = $upcoming(el).find('.area.content').text().trim();
+        const description = $upcoming(el).find('.description').text().trim() || '';
+        const imgStyle = $upcoming(el).find('.event-image').attr('style') || '';
+        const imgMatch = imgStyle.match(/url\((.*?)\)/);
+        let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
+        
+        if (image && !image.startsWith('http')) {
+          image = `https://lbbc.glueup.com${image}`;
         }
-      }
+
+        const link = $upcoming(el).find('a').attr('href');
+        const isPast = $upcoming(el).hasClass('past');
+
+        const event = {
+          id: `e-u-${i}`,
+          title,
+          date,
+          location,
+          description,
+          image,
+          link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
+          type: 'Event'
+        };
+
+        if (isPast) past.push(event);
+        else upcoming.push(event);
+      });
+
+      $past('.events-list li').each((i, el) => {
+        const title = $past(el).find('h2.content').text().trim();
+        const date = $past(el).find('time.content').text().trim();
+        const location = $past(el).find('.area.content').text().trim();
+        const description = $past(el).find('.description').text().trim() || '';
+        const imgStyle = $past(el).find('.event-image').attr('style') || '';
+        const imgMatch = imgStyle.match(/url\((.*?)\)/);
+        let image = imgMatch ? imgMatch[1].replace(/['"]/g, '').trim() : null;
+        
+        if (image && !image.startsWith('http')) {
+          image = `https://lbbc.glueup.com${image}`;
+        }
+
+        const link = $past(el).find('a').attr('href');
+
+        const event = {
+          id: `e-p-${i}`,
+          title,
+          date,
+          location,
+          description,
+          image,
+          link: link ? (link.startsWith('http') ? link : `https://lbbc.glueup.com${link}`) : null,
+          type: 'Event'
+        };
+
+        if (!past.find(p => p.title === event.title)) {
+          past.push(event);
+        }
+      });
+
+      res.json({ upcoming, past, source: 'glueup' });
+    } catch (error) {
+      console.error('Error fetching events from GlueUp:', error);
       res.json({ ...fallbackEvents, source: 'fallback', error: String(error) });
     }
   };

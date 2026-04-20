@@ -1,0 +1,29 @@
+[
+  {
+    "id": "lbbc-001",
+    "name": "Lithuanian-British Business Council",
+    "category": "Non-Profit",
+    "location": "London, UK / Vilnius, Lithuania",
+    "description": "The premier business community fostering innovation and strategic growth between Lithuania and the United Kingdom.",
+    "website": "https://lbbc.co.uk",
+    "image": "https://picsum.photos/seed/lbbc/400/250"
+  },
+  {
+    "id": "member-002",
+    "name": "Amber Global Logistics",
+    "category": "Logistics",
+    "location": "Klaipėda, Lithuania",
+    "description": "Specializing in multi-modal freight solutions across the Baltic and North Sea regions.",
+    "website": "#",
+    "image": "https://picsum.photos/seed/cargo/400/250"
+  },
+  {
+    "id": "member-003",
+    "name": "Vilnius FinTech Hub",
+    "category": "Finance",
+    "location": "Vilnius, Lithuania",
+    "description": "A leading accelerator for digital banking and payment technology in Northern Europe.",
+    "website": "#",
+    "image": "https://picsum.photos/seed/bank/400/250"
+  }
+]
