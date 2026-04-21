@@ -57,58 +57,104 @@ async function fetchMemberDetails(id) {
 
 async function scrapeMembers() {
   try {
-    const url = 'https://lbbc.org.uk/lbbc-memberships/';
-    const response = await fetchWithRetry(url);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const html = await response.text();
+    let html = '';
+    let usedLocal = false;
+
+    try {
+      const url = 'https://lbbc.org.uk/lbbc-memberships/';
+      const response = await fetchWithRetry(url);
+      html = await response.text();
+    } catch (e) {
+      console.warn('[Build Scraper] Live URL failed or timed out, checking for local fallbacks...');
+    }
+
+    // If live fetch failed or returned empty, try local files
+    if (!html || html.length < 500) {
+      const localFiles = ['lbbc_memberships.html', 'corporate_dir.html', 'lbbc_council.html', 'lbbc_members.html'];
+      for (const file of localFiles) {
+        const filePath = path.join(__dirname, '..', file);
+        if (fs.existsSync(filePath)) {
+          console.log(`[Build Scraper] Using local fallback file: ${file}`);
+          html = fs.readFileSync(filePath, 'utf8');
+          usedLocal = true;
+          break;
+        }
+      }
+    }
+
+    if (!html) {
+      throw new Error('No member data source available (Live URL failed and no local files found)');
+    }
+
     const $ = cheerio.load(html);
-    
     const council = [];
     const corporate = [];
     let currentList = council;
 
-    // Find all headings and members
-    $('h3.team-title, .members-con').each((i, el) => {
-      const $el = $(el);
-      if ($el.is('h3.team-title')) {
-        const text = $el.text().trim();
-        if (text.includes('Council Members')) {
-          currentList = council;
-        } else if (text.includes('Corporate Members')) {
-          currentList = corporate;
-        }
-      } else {
-        $el.find('a.lbbcMemberMoreInfo').each((j, a) => {
-          const $a = $(a);
-          const name = $a.find('strong').text().trim();
-          const sector = $a.find('.company-sectors').text().trim() || 'Other';
-          const logoUrl = $a.find('img').attr('src');
-          const id = $a.attr('data-membershipid') || $a.attr('data-membershipID') || `m-${i}-${j}`;
-          
-          let fullLogoUrl = null;
-          if (logoUrl) {
-            if (logoUrl.startsWith('http')) {
-              fullLogoUrl = logoUrl;
-            } else {
-              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+    // Parser 1: Original LBBC Site Structure
+    if ($('h3.team-title, .members-con').length > 0) {
+      console.log('[Build Scraper] Detected LBBC site structure');
+      $('h3.team-title, .members-con').each((i, el) => {
+        const $el = $(el);
+        if ($el.is('h3.team-title')) {
+          const text = $el.text().trim();
+          if (text.includes('Council Members')) currentList = council;
+          else if (text.includes('Corporate Members')) currentList = corporate;
+        } else {
+          $el.find('a.lbbcMemberMoreInfo').each((j, a) => {
+            const $a = $(a);
+            const name = $a.find('strong').text().trim();
+            const sector = $a.find('.company-sectors').text().trim() || 'Other';
+            const logoUrl = $a.find('img').attr('src');
+            const id = $a.attr('data-membershipid') || $a.attr('data-membershipID') || `m-${i}-${j}`;
+            
+            let fullLogoUrl = null;
+            if (logoUrl) {
+              fullLogoUrl = logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
             }
-          }
-          if (name) {
-            currentList.push({ name, sector, logo: fullLogoUrl, id, members: [] });
-          }
-        });
-      }
-    });
+            if (name) currentList.push({ name, sector, logo: fullLogoUrl, id, members: [] });
+          });
+        }
+      });
+    }
 
-    console.log(`[Build Scraper] Found ${council.length + corporate.length} corporate members. Fetching details...`);
+    // Parser 2: GlueUp Widget Structure (Fallback / Direct Widget)
+    if (council.length === 0 && corporate.length === 0 && $('dl.BlockRows').length > 0) {
+      console.log('[Build Scraper] Detected GlueUp widget structure');
+      $('dl.BlockRows dt.BlockRow').each((i, el) => {
+        const $el = $(el);
+        const name = $el.find('.title').text().trim();
+        const sector = $el.find('.description').text().trim() || 'Other';
+        const logoUrl = $el.find('img').attr('src');
+        const id = $el.attr('data-id') || `w-${i}`;
+        
+        let fullLogoUrl = null;
+        if (logoUrl) {
+          fullLogoUrl = logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+        }
+        
+        // In the widget view we might only have one type at a time
+        // We'll put them in corporate by default if we don't know
+        if (name) corporate.push({ name, sector, logo: fullLogoUrl, id, members: [] });
+      });
+    }
+
+    // Parser 3: If we used lbbc_memberships.html, look for individuals too
+    // ... existing logic covers most cases ...
+
+    if (council.length === 0 && corporate.length === 0) {
+      throw new Error('[Build Scraper] No members parsed from any source. Aborting save to protect cache.');
+    }
+
+    console.log(`[Build Scraper] Found ${council.length} council and ${corporate.length} corporate members.`);
     
     // Fetch details in batches
     const fetchDetailsForList = async (list) => {
-      // Increased batch size and concurrency
-      for (let i = 0; i < list.length; i += 15) {
-        const batch = list.slice(i, i + 15);
+      console.log(`[Build Scraper] Fetching supplemental details for ${list.length} members...`);
+      for (let i = 0; i < list.length; i += 10) {
+        const batch = list.slice(i, i + 10);
         await Promise.all(batch.map(async (member) => {
-          if (member.id && !member.id.startsWith('m-')) {
+          if (member.id && !member.id.startsWith('m-') && !member.id.startsWith('w-')) {
             const details = await fetchMemberDetails(member.id);
             if (details) {
               member.description = details.description;
@@ -120,19 +166,43 @@ async function scrapeMembers() {
             }
           }
         }));
+        await new Promise(r => setTimeout(r, 200));
       }
     };
 
-    await fetchDetailsForList(council);
-    await fetchDetailsForList(corporate);
+    // Only attempt details fetch if we're not completely offline/disconnected
+    if (!usedLocal) {
+      await fetchDetailsForList(council);
+      await fetchDetailsForList(corporate);
+    }
 
-    const data = { council, corporate, timestamp: Date.now() };
+    const data = { 
+      council, 
+      corporate, 
+      timestamp: Date.now(),
+      source: usedLocal ? 'local-fallback' : 'live-scrape'
+    };
+    
     fs.writeFileSync(path.join(DATA_DIR, 'members.json'), JSON.stringify(data, null, 2));
-    console.log(`[Build Scraper] Saved ${council.length + corporate.length} members with details.`);
+    console.log(`[Build Scraper] Cache updated with ${council.length + corporate.length} members.`);
   } catch (err) {
     console.error('[Build Scraper] Members scraping failed:', err);
-    // Save empty fallback to prevent build failure
-    fs.writeFileSync(path.join(DATA_DIR, 'members.json'), JSON.stringify({ council: [], corporate: [], error: err.message }));
+    
+    const cachePath = path.join(DATA_DIR, 'members.json');
+    if (fs.existsSync(cachePath)) {
+      console.log('[Build Scraper] FAILURE: Preserving existing cache instead of overwriting with empty data.');
+    } else {
+      console.log('[Build Scraper] FAILURE: No existing cache found. Creating emergency fallback.');
+      fs.writeFileSync(cachePath, JSON.stringify({ 
+        council: [
+          { name: 'Bank ABC', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/15cpsQqPmBPGxIFDMENHLFMWWSMlX5RWS', id: 'f1' },
+          { name: 'BACB', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/1AncCRiOHV69RThwwxusFjd44kk5Kfm3X', id: 'f2' }
+        ], 
+        corporate: [], 
+        error: err.message,
+        timestamp: Date.now()
+      }));
+    }
   }
 }
 

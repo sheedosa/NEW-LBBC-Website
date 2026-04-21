@@ -90,107 +90,189 @@ async function createServer() {
   // API Route to fetch and parse GlueUp members
   const membersHandler = async (req, res) => {
     const now = Date.now();
+    const CACHE_DIR = path.join(__dirname, 'public', 'data');
+    const cachePath = path.join(CACHE_DIR, 'members.json');
+
     console.log(`[Server] Handling members request: ${req.url}`);
+
+    // Try to serve from local cache first
+    let cachedData = null;
+    if (fs.existsSync(cachePath)) {
+      try {
+        const fileContent = fs.readFileSync(cachePath, 'utf8');
+        cachedData = JSON.parse(fileContent);
+        
+        // If cache is fresh (less than 12 hours), serve it immediately
+        const stats = fs.statSync(cachePath);
+        const age = now - stats.mtimeMs;
+        if (age < 12 * 60 * 60 * 1000 && cachedData.council && cachedData.council.length > 0) {
+          console.log('[Server] Serving fresh members from cache');
+          return res.json(cachedData);
+        }
+      } catch (e) {
+        console.warn('[Server] Error reading cache file:', e);
+      }
+    }
     
+    // Fallback data in case everything fails
     const fallbackData = {
       council: [
         { name: 'Bank ABC', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/15cpsQqPmBPGxIFDMENHLFMWWSMlX5RWS', id: 'fallback-1' },
         { name: 'BACB', sector: 'Financial Services', logo: 'https://lh3.googleusercontent.com/d/1AncCRiOHV69RThwwxusFjd44kk5Kfm3X', id: 'fallback-2' },
-        { name: 'Metlen', sector: 'Energy', logo: 'https://lh3.googleusercontent.com/d/1qZgdrszXG_q9DaIw9Pi15tK-FibGgnZa', id: 'fallback-3' },
-        { name: 'Promergon', sector: 'Infrastructure', logo: 'https://lh3.googleusercontent.com/d/1tT9Mi34vXyls13GG54cIzrmBsPls301F', id: 'fallback-4' }
+        { name: 'ALFA Holding Group', sector: 'Healthcare', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/216c1dba-14ec-45ec-85e0-11fd4db01608.png', id: 'fallback-3' },
+        { name: 'ALMARAJ Company for Oil and Gas', sector: 'Energy', logo: 'https://lbbc.glueup.com/resources/public/images/logo/400x200/9806499a-9764-468a-8610-811656885662.png', id: 'fallback-4' }
       ],
       corporate: [
         { name: 'Medship Group', sector: 'Logistics', logo: 'https://lh3.googleusercontent.com/d/1x4pHfOpvq7iOxhS_o9FwIZTDIYoxNbaw', id: 'fallback-5' },
-        { name: 'Crowd Digital', sector: 'Technology', logo: 'https://lh3.googleusercontent.com/d/1anu1ZRZmC7BDJWW4CTWwB_ZpWtCddibV', id: 'fallback-6' },
-        { name: 'Libya Holdings', sector: 'Investment', logo: 'https://lh3.googleusercontent.com/d/1Xs5dfuvlmR6CnN60XJJaMq6_OSOuRUhZ', id: 'fallback-7' }
+        { name: 'Crowd Digital', sector: 'Technology', logo: 'https://lh3.googleusercontent.com/d/1anu1ZRZmC7BDJWW4CTWwB_ZpWtCddibV', id: 'fallback-6' }
       ]
     };
 
     try {
-      const fetchCorporate = async () => {
-        const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/corporate/';
-        const response = await fetchWithRetry(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const html = await response.text();
-        const $ = cheerio.load(html);
-        
-        const members = [];
-        $('dt.BlockRow').each((i, el) => {
-          const name = $(el).find('.title').text().trim();
-          const sector = $(el).find('.description').text().trim() || 'Other';
-          const logoUrl = $(el).find('img').attr('src');
-          
-          let fullLogoUrl = null;
-          if (logoUrl) {
-            if (logoUrl.startsWith('http')) {
-              fullLogoUrl = logoUrl;
-            } else {
-              fullLogoUrl = `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
-            }
-          }
-          
-          if (name) {
-            members.push({
-              name,
-              sector,
-              logo: fullLogoUrl,
-              id: $(el).attr('data-id') || `m-${i}`
-            });
-          }
-        });
-        return members;
-      };
-
-      const fetchCouncilCompanies = async () => {
-        const url = 'https://lbbc.glueup.com/organization/5915/widget/membership-directory/council/';
-        const response = await fetchWithRetry(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const html = await response.text();
-        const $ = cheerio.load(html);
-        
-        const companies = new Set();
-        $('dt.BlockRow').each((i, el) => {
-          const company = $(el).find('[itemprop="worksFor"]').text().trim();
-          if (company) companies.add(company);
-          
-          const description = $(el).find('.description').text().trim();
-          if (description && description.includes('at ')) {
-            const parts = description.split('at ');
-            if (parts.length > 1) companies.add(parts[1].trim());
-          }
-        });
-        return Array.from(companies);
-      };
-
-      const [corporate, councilCompanyNames] = await Promise.all([
-        fetchCorporate(),
-        fetchCouncilCompanies()
-      ]);
-
-      if (corporate.length === 0) {
-        throw new Error('No members found in GlueUp response');
+      // If we have any cached data, send it now but trigger a background fetch if it's stale
+      if (cachedData && cachedData.council && cachedData.council.length > 0) {
+        res.json(cachedData);
+        console.log('[Server] Serving stale cache, triggering background fetch...');
       }
 
-      const council = corporate.filter(m => 
-        councilCompanyNames.some(name => m.name.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(m.name.toLowerCase()))
-      );
+      const fetchMembers = async () => {
+        let scraperHtml = '';
+        let source = 'live-scrape';
 
-      const nonCouncilCorporate = corporate.filter(m => !council.find(c => c.id === m.id));
-      
-      res.json({ 
+        try {
+          const url = 'https://lbbc.org.uk/lbbc-memberships/';
+          const response = await fetchWithRetry(url);
+          if (response.ok) {
+            scraperHtml = await response.text();
+          }
+        } catch (e) {
+          console.warn('[Server Scraper] Live URL failed, trying local fallbacks...');
+        }
+
+        // If live failed, try local files
+        if (!scraperHtml || scraperHtml.length < 500) {
+          const localFiles = ['lbbc_memberships.html', 'corporate_dir.html', 'lbbc_council.html', 'lbbc_members.html'];
+          for (const file of localFiles) {
+            const filePath = path.join(__dirname, file);
+            if (fs.existsSync(filePath)) {
+              console.log(`[Server Scraper] Using local fallback file: ${file}`);
+              scraperHtml = fs.readFileSync(filePath, 'utf8');
+              source = 'local-fallback';
+              break;
+            }
+          }
+        }
+
+        if (!scraperHtml) throw new Error('No member data source available');
+
+        const $ = cheerio.load(scraperHtml);
+        const council = [];
+        const corporate = [];
+        let currentList = council;
+
+        // Parser 1: Original LBBC Site Structure
+        if ($('h3.team-title, .members-con').length > 0) {
+          $('h3.team-title, .members-con').each((i, el) => {
+            const $el = $(el);
+            if ($el.is('h3.team-title')) {
+              const text = $el.text().trim();
+              if (text.includes('Council Members')) currentList = council;
+              else if (text.includes('Corporate Members')) currentList = corporate;
+            } else {
+              $el.find('a.lbbcMemberMoreInfo').each((j, a) => {
+                const $a = $(a);
+                const name = $a.find('strong').text().trim();
+                const sector = $a.find('.company-sectors').text().trim() || 'Other';
+                const logoUrl = $a.find('img').attr('src');
+                const id = $a.attr('data-membershipid') || $a.attr('data-membershipID') || `m-${i}-${j}`;
+                
+                let fullLogoUrl = null;
+                if (logoUrl) {
+                  fullLogoUrl = logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+                }
+                if (name) currentList.push({ name, sector, logo: fullLogoUrl, id, members: [] });
+              });
+            }
+          });
+        }
+
+        // Parser 2: GlueUp Widget Structure
+        if (council.length === 0 && corporate.length === 0 && $('dl.BlockRows').length > 0) {
+          $('dl.BlockRows dt.BlockRow').each((i, el) => {
+            const $el = $(el);
+            const name = $el.find('.title').text().trim();
+            const sector = $el.find('.description').text().trim() || 'Other';
+            const logoUrl = $el.find('img').attr('src');
+            const id = $el.attr('data-id') || `w-${i}`;
+            let fullLogoUrl = null;
+            if (logoUrl) {
+              fullLogoUrl = logoUrl.startsWith('http') ? logoUrl : `https://lbbc.glueup.com${logoUrl.startsWith('/') ? '' : '/'}${logoUrl}`;
+            }
+            if (name) corporate.push({ name, sector, logo: fullLogoUrl, id, members: [] });
+          });
+        }
+
+        return { council, corporate, source };
+      };
+
+      const { council, corporate, source } = await fetchMembers();
+
+      if (council.length === 0 && corporate.length === 0) {
+        throw new Error('No members found during live scrape');
+      }
+
+      // Enrich with details
+      const enrichList = async (list) => {
+        for (let i = 0; i < list.length; i += 5) {
+          const batch = list.slice(i, i + 5);
+          await Promise.all(batch.map(async (member) => {
+            if (member.id && !member.id.startsWith('m-')) {
+              const details = await fetchMemberDetails(member.id);
+              if (details) {
+                member.description = details.description;
+                member.website = details.website;
+                if (details.logo_uri && details.logo_uri.isSrc) member.logo = details.logo_uri.src;
+              }
+            }
+          }));
+          await new Promise(r => setTimeout(r, 200));
+        }
+      };
+
+      await enrichList(council);
+      await enrichList(corporate);
+
+      const result = { 
         council, 
-        corporate: nonCouncilCorporate,
+        corporate,
         timestamp: now,
-        source: 'glueup'
-      });
+        source: 'live-scrape'
+      };
+
+      // CRITICAL: Only overwrite cache if we actually got data
+      if (council.length > 0 || corporate.length > 0) {
+        try {
+          if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
+          fs.writeFileSync(cachePath, JSON.stringify(result, null, 2));
+          console.log('[Server] Cache updated successfully');
+        } catch (e) {
+          console.error('[Server] Failed to update cache:', e);
+        }
+      }
+
+      if (!res.headersSent) {
+        res.json(result);
+      }
     } catch (error) {
-      console.error('Error fetching members from GlueUp:', error);
-      res.json({
-        ...fallbackData,
-        timestamp: now,
-        source: 'fallback',
-        error: error instanceof Error ? error.message : String(error)
-      });
+      console.error('[Server] Scrape error:', error);
+      if (!res.headersSent) {
+        res.json({
+          ...(cachedData || fallbackData),
+          timestamp: now,
+          source: cachedData ? 'stale-cache' : 'fallback',
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
     }
   };
 

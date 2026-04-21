@@ -1,7 +1,7 @@
 {
   "upcoming": [
     {
-      "id": "e-0-0.898145143865954",
+      "id": "e-0-0.02210097191780913",
       "title": "Libya Energy Forum: Realising Energy Ambitions",
       "date": "May 13, 2026 (09:00 - 17:00) (GMT+1)",
       "location": "London, England, United Kingdom",
@@ -10,7 +10,7 @@
       "type": "Event"
     },
     {
-      "id": "e-1-0.2242468446703194",
+      "id": "e-1-0.6194233904011035",
       "title": "Libya Energy Transition Summit",
       "date": "Jun 16, 2026 (09:00 - 17:00) (GMT+1)",
       "location": "London, England, United Kingdom",
@@ -19,7 +19,7 @@
       "type": "Event"
     },
     {
-      "id": "e-2-0.18237673593962334",
+      "id": "e-2-0.04880137334943635",
       "title": "LBBC Summer Reception",
       "date": "Jun 18, 2026 (12:00 - 14:30) (GMT+1)",
       "location": "England, United Kingdom",
@@ -30,7 +30,7 @@
   ],
   "past": [
     {
-      "id": "e-0-0.9992757924055842",
+      "id": "e-0-0.0679896490387033",
       "title": "LBBC Webinar: Understanding Libya's Banking Landscape: LCs, Payment Systems and Best Practices",
       "date": "Mar 12, 2026 (10:00 - 11:00) (GMT+0)",
       "location": "",
@@ -39,7 +39,7 @@
       "type": "Event"
     },
     {
-      "id": "e-1-0.8514723817839116",
+      "id": "e-1-0.7417991911051578",
       "title": "LBBC Webinar and Q&A with Tim Eaton, Chatham House",
       "date": "Feb 18, 2026 (10:00 - 11:00) (GMT+0)",
       "location": "",
@@ -48,7 +48,7 @@
       "type": "Event"
     },
     {
-      "id": "e-2-0.7883872911211058",
+      "id": "e-2-0.07754942744822779",
       "title": "Libya-UK Reception: Celebrating Collaboration in Business, Culture & Heritage",
       "date": "Dec 1, 2025 (18:30 - 21:00) (GMT+0)",
       "location": "London,  SW1Y 5AH, United Kingdom",
@@ -57,7 +57,7 @@
       "type": "Event"
     },
     {
-      "id": "e-3-0.870706296902799",
+      "id": "e-3-0.6819303038908027",
       "title": "Libya Energy Transition Conference: Renewable Investment Opportunities",
       "date": "Nov 26, 2025 (12:30 - 17:00) (GMT+0)",
       "location": "London, United Kingdom",
@@ -66,7 +66,7 @@
       "type": "Event"
     },
     {
-      "id": "e-4-0.08221900566674312",
+      "id": "e-4-0.7315672664246617",
       "title": "LBBC Webinar: Essential Guide to Libya's Regional Commercial Requirements",
       "date": "Oct 8, 2025 (11:00 - 12:00) (GMT+1)",
       "location": "",
@@ -75,5 +75,5 @@
       "type": "Event"
     }
   ],
-  "timestamp": 1776346027344
+  "timestamp": 1776766026404
 }
