@@ -136,7 +136,7 @@ export const DirectoryPage = () => {
   const getDescription = () => {
     if (memberDetail?.description) return memberDetail.description;
     if (selectedMember?.description) return selectedMember.description;
-    return "The Libyan British Business Council is pleased to represent this organization within our membership directory. Click 'Connect with Member' below for more information.";
+    return "The Libyan British Business Council is pleased to represent this organization within our membership directory.";
   };
 
   const getWebsite = () => {
