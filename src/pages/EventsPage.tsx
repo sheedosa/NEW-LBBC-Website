@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Mail, MapPin, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
+import { sponsorsEvents } from '../config';
 
 type Event = {
   id: string;
@@ -267,16 +268,7 @@ export const EventsPage = () => {
           </div>
           {/* Sponsor logo wall */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 mb-16">
-            {[
-              { src: '/images/sponsors/bank-abc.jpg', alt: 'Bank ABC' },
-              { src: '/images/sponsors/bacb.jpg', alt: 'BACB' },
-              { src: '/images/sponsors/metlen.jpg', alt: 'Metlen Energy & Metals' },
-              { src: '/images/sponsors/promergon.jpg', alt: 'Promergon' },
-              { src: '/images/sponsors/libya-holdings.jpg', alt: 'Libya Holdings' },
-              { src: '/images/sponsors/expertise-consultancy.webp', alt: 'Expertise Consultancy' },
-              { src: '/images/sponsors/medship-group.png', alt: 'Medship Group' },
-              { src: '/images/sponsors/crowd-digital.jpg', alt: 'Crowd Digital' },
-            ].map(sponsor => (
+            {sponsorsEvents.map(sponsor => (
               <div key={sponsor.alt}
                 className="bg-white rounded-2xl border border-slate-100 shadow-sm flex items-center justify-center p-5 md:p-6 h-32 md:h-36 hover:shadow-md transition-shadow">
                 <img src={sponsor.src} alt={sponsor.alt} loading="lazy"

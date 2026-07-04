@@ -5,6 +5,7 @@ import { FileText, Download, ExternalLink, ArrowRight, ArrowUpRight, Image as Im
 import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
 import { newsData } from '../data/news';
+import { resourceDocuments, galleryAlbums } from '../config';
 
 export const ResourcesPage = () => {
   const { t } = useLanguage();
@@ -26,14 +27,7 @@ export const ResourcesPage = () => {
     | { id: number; type?: 'pdf'; title: string; category: string; href?: string; btnLabel?: string; cover?: string }
     | { id: number; type: 'link'; title: string; category: string; href: string; btnLabel: string; logo: string };
 
-  const pdfs: Resource[] = [
-    { id: 1, type: 'pdf', title: 'Guide on Travel to Libya 2026', category: 'TRAVEL', href: '/resources/visiting-libya-travel-guide-2026.pdf', btnLabel: 'Travel Guide', cover: '/images/travel-guide-cover.jpg' },
-    { id: 2, type: 'link', title: 'Export Documentation Services by the ABCC', category: 'LOGISTICS', href: 'https://abcc.org.uk/trade-services/', btnLabel: 'Visit ABCC Trade Services', logo: '/images/partners/abcc-logo.jpg' },
-    { id: 3, type: 'link', title: 'Legal Guide on Doing Business in Libya', category: 'LEGAL', href: 'https://practiceguides.chambers.com/practice-guides/doing-business-in-2025/libya', btnLabel: 'View Legal Guide', logo: '/images/partners/zahaf-logo.webp' },
-    { id: 4, title: 'UK-Libya Trade Guide 2026', category: 'REGULATORY' },
-    { id: 5, title: 'Investment Opportunities in Energy', category: 'MARKET INSIGHT' },
-    { id: 6, title: 'Banking and Finance Sector Overview', category: 'FINANCE' },
-  ];
+  const pdfs = resourceDocuments as unknown as Resource[];
 
   const news = newsData;
 
@@ -246,32 +240,7 @@ export const ResourcesPage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-            {[
-              {
-                href: "https://www.flickr.com/photos/legacy_libya/albums/72177720333647017",
-                img: "https://live.staticflickr.com/65535/55270007271_5432eebf11_w.jpg",
-                title: "Libya Energy Forum in London at AES 2026",
-                label: "Album 01"
-              },
-              {
-                href: "https://www.flickr.com/photos/legacy_libya/albums/72177720325034652",
-                img: "https://live.staticflickr.com/65535/54447167750_dde7fdc886_w.jpg",
-                title: "NOC Libya Bid Round London Roadshow",
-                label: "Album 02"
-              },
-              {
-                href: "https://www.flickr.com/photos/legacy_libya/54125991549/",
-                img: "https://live.staticflickr.com/65535/54125991549_65f81a748b_w.jpg",
-                title: "LBBC Delegation: LibyaBuild Benghazi",
-                label: "Album 03"
-              },
-              {
-                href: "https://www.flickr.com/photos/legacy_libya/albums/72177720321806753",
-                img: "https://live.staticflickr.com/65535/54125538111_ddc0cf1cb5_w.jpg",
-                title: "Benghazi Business Delegation: AGOCO, Wahda Bank, LDRF Meetings",
-                label: "Album 04"
-              }
-            ].map((album, idx) => (
+            {galleryAlbums.map((album, idx) => (
               <a
                 key={idx}
                 href={album.href}

@@ -1,0 +1,13 @@
+{
+  "partners": [
+    { "name": "British Embassy", "url": "https://www.gov.uk/world/organisations/british-embassy-tripoli", "logo": "/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.png", "logoWebp": "/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.webp" },
+    { "name": "UK FCDO", "url": "https://www.gov.uk/government/organisations/foreign-commonwealth-development-office", "logo": "/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.png", "logoWebp": "/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.webp" },
+    { "name": "NOC", "url": "https://noc.ly/en/", "logo": "/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.png", "logoWebp": "/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.webp" },
+    { "name": "REAOL", "url": "https://reaol.gov.ly/en/", "logo": "/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.png", "logoWebp": "/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.webp" }
+  ],
+  "sponsors": [
+    { "name": "Bank ABC", "url": "https://www.bank-abc.com/en", "logo": "/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.png", "logoWebp": "/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.webp" },
+    { "name": "BACB", "url": "https://www.bacb.co.uk/", "logo": "/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.png", "logoWebp": "/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.webp" },
+    { "name": "LH Severus", "url": "https://lhseverus.com/", "logo": "/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.png", "logoWebp": "/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.webp" }
+  ]
+}

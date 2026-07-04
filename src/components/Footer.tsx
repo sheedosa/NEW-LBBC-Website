@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Linkedin, Facebook, Mail, Phone, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { footerPartners, footerSponsors, settings, telHref } from '../config';
 
 export const Footer = () => {
   const { t } = useLanguage();
@@ -41,38 +42,16 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-white mb-6 md:mb-8 uppercase tracking-widest text-xs md:text-sm border-b border-white/15 pb-4">{t.footer.partners}</h4>
             <div className="grid grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-              <a href="https://www.gov.uk/world/organisations/british-embassy-tripoli" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.webp" type="image/webp" />
-                    <img src="/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.png" alt="British Embassy" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
-              <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-development-office" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.webp" type="image/webp" />
-                    <img src="/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.png" alt="UK FCDO" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
-              <a href="https://noc.ly/en/" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.webp" type="image/webp" />
-                    <img src="/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.png" alt="NOC" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
-              <a href="https://reaol.gov.ly/en/" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.webp" type="image/webp" />
-                    <img src="/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.png" alt="REAOL" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
+              {footerPartners.map((p) => (
+                <a key={p.name} href={p.url} target="_blank" rel="noopener noreferrer" className="group">
+                  <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
+                    <picture>
+                      <source srcSet={p.logoWebp} type="image/webp" />
+                      <img src={p.logo} alt={p.name} className="max-h-full max-w-full object-contain" loading="lazy" />
+                    </picture>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
 
@@ -80,30 +59,16 @@ export const Footer = () => {
           <div>
             <h4 className="font-bold text-white mb-6 md:mb-8 uppercase tracking-widest text-xs md:text-sm border-b border-white/15 pb-4">{t.footer.sponsors}</h4>
             <div className="grid grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
-              <a href="https://www.bank-abc.com/en" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.webp" type="image/webp" />
-                    <img src="/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.png" alt="Bank ABC" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
-              <a href="https://www.bacb.co.uk/" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.webp" type="image/webp" />
-                    <img src="/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.png" alt="BACB" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
-              <a href="https://lhseverus.com/" target="_blank" rel="noopener noreferrer" className="group">
-                <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
-                  <picture>
-                    <source srcSet="/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.webp" type="image/webp" />
-                    <img src="/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.png" alt="LH Severus" className="max-h-full max-w-full object-contain" loading="lazy" />
-                  </picture>
-                </div>
-              </a>
+              {footerSponsors.map((s) => (
+                <a key={s.name} href={s.url} target="_blank" rel="noopener noreferrer" className="group">
+                  <div className="bg-white p-2 md:p-3 rounded-xl md:rounded-2xl w-full flex items-center justify-center h-20 md:h-24 overflow-hidden transition-all group-hover:scale-[1.02] shadow-lg">
+                    <picture>
+                      <source srcSet={s.logoWebp} type="image/webp" />
+                      <img src={s.logo} alt={s.name} className="max-h-full max-w-full object-contain" loading="lazy" />
+                    </picture>
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
 
@@ -111,17 +76,17 @@ export const Footer = () => {
             <h4 className="font-bold text-white mb-6 md:mb-8 uppercase tracking-widest text-xs md:text-sm border-b border-white/15 pb-4">{t.footer.contact}</h4>
             <div className="space-y-6 md:space-y-8">
               <div className="space-y-3 md:space-y-4">
-                <a href="mailto:events@lbbc.org.uk" className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
                   <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
                     <Mail size={14} className="text-white" />
                   </div>
-                  {t.footer.email}: events@lbbc.org.uk
+                  {t.footer.email}: {settings.email}
                 </a>
-                <a href="tel:+442077887935" className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
+                <a href={telHref(settings.phone)} className="flex items-center gap-3 md:gap-4 text-[11px] md:text-xs text-white hover:text-white transition-colors group font-bold">
                   <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
                     <Phone size={14} className="text-white" />
                   </div>
-                  {t.footer.tel}: +44 (0) 20 7788 7935
+                  {t.footer.tel}: {settings.phone}
                 </a>
               </div>
               <Link to="/contact" className="w-full block text-center py-3 md:py-4 bg-white text-lbbc-green rounded-sm text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-lbbc-red hover:text-white transition-all shadow-xl active:scale-95">
@@ -134,13 +99,13 @@ export const Footer = () => {
         <div className="pt-12 md:pt-16 border-t border-white/10 flex flex-col md:flex-row justify-between items-center md:items-end gap-10 md:gap-12">
           <div className="space-y-6 md:space-y-8 text-center md:text-start">
             <div className="flex justify-center md:justify-start gap-8 md:gap-10">
-              <a href="https://www.linkedin.com/company/libyan-british-business-council/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={24} /></a>
-              <a href="https://x.com/LBBCnews" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110">
+              <a href={settings.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={24} /></a>
+              <a href={settings.social.x} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="md:w-6 md:h-6">
                   <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932L18.901 1.153zM17.61 20.644h2.039L6.486 3.24H4.298L17.61 20.644z" />
                 </svg>
               </a>
-              <a href="https://www.facebook.com/LibyanBritishBusinessCouncil/#" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={24} /></a>
+              <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={24} /></a>
             </div>
             <p className="text-[9px] md:text-[11px] text-white uppercase tracking-[0.3em] font-bold">
               {t.footer.rights}

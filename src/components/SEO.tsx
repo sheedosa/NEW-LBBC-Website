@@ -1,7 +1,10 @@
 import { Helmet } from 'react-helmet-async';
+import { settings } from '../config';
 
 const SITE_URL = 'https://lbbc.org.uk';
-const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-default.png`;
+const DEFAULT_OG_IMAGE = settings.seo.defaultOgImage.startsWith('http')
+  ? settings.seo.defaultOgImage
+  : `${SITE_URL}${settings.seo.defaultOgImage}`;
 
 interface SEOProps {
   title: string;
@@ -13,7 +16,7 @@ interface SEOProps {
 
 export const SEO = ({ title, description, canonical, type = 'website', image }: SEOProps) => {
   const fullTitle = `${title} | LBBC`;
-  const siteDescription = description || "The premier network for bilateral UK-Libya commercial partnership. Fostering trade, investment, and strategic dialogue.";
+  const siteDescription = description || settings.seo.defaultDescription;
   const ogImage = image || DEFAULT_OG_IMAGE;
   const canonicalUrl = canonical ? `${SITE_URL}/#/${canonical}` : SITE_URL;
 

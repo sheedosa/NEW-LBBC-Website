@@ -43,6 +43,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/data/members.json public/data/events.json
           git commit -m "chore: refresh GlueUp member and event data [skip ci]"
+          # Rebase onto any CMS commits that landed since checkout so the push can't be
+          # rejected as non-fast-forward (scraper and CMS edit disjoint paths, so this is
+          # always a clean rebase).
+          git pull --rebase origin main
           git push origin main
 
       - name: No changes detected

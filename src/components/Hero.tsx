@@ -3,47 +3,21 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { heroSlides } from '../config';
 
 export const Hero = () => {
   const { t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
-  
-  const slides = [
-    {
-      id: 1,
-      image: '/images/1fzfMN6hXA9CDWB_2RMIU6azYmksCSkCe.png',
-      imageWebp: '/images/1fzfMN6hXA9CDWB_2RMIU6azYmksCSkCe.webp',
-      title: t.hero.slides[0].title,
-      subtitle: t.hero.slides[0].subtitle,
-      cta1: t.hero.slides[0].cta1,
-      cta2: t.hero.slides[0].cta2,
-      link1: '/membership',
-      link2: 'https://lbbc.glueup.com/home/'
-    },
-    {
-      id: 2,
-      image: '/images/lbbc-noc-mou-signing-v2.png',
-      imageWebp: '/images/lbbc-noc-mou-signing-v2.webp',
-      objectPosition: '75% center',
-      title: t.hero.slides[1].title,
-      subtitle: t.hero.slides[1].subtitle,
-      cta1: t.hero.slides[1].cta1,
-      cta2: t.hero.slides[1].cta2,
-      link1: '/news/lbbc-noc-mou-energy-forum',
-      link2: '/membership'
-    },
-    {
-      id: 3,
-      image: '/images/1PG3cPBxL9ce2a8nIgqmSPT1UWejsH8qZ.png',
-      imageWebp: '/images/1PG3cPBxL9ce2a8nIgqmSPT1UWejsH8qZ.webp',
-      title: t.hero.slides[2].title,
-      subtitle: t.hero.slides[2].subtitle,
-      cta1: t.hero.slides[2].cta1,
-      cta2: t.hero.slides[2].cta2,
-      link1: '/membership',
-      link2: 'https://lbbc.glueup.com/account/login?ret=S6bk1bwBqj5v4TlS%2B842Yg%3D%3D'
-    }
-  ];
+
+  // Slide imagery/links come from the CMS (content/hero.json); the text comes from the
+  // bilingual translations (t.hero.slides), merged by index.
+  const slides = heroSlides.map((s, i) => ({
+    ...s,
+    title: t.hero.slides[i]?.title,
+    subtitle: t.hero.slides[i]?.subtitle,
+    cta1: t.hero.slides[i]?.cta1,
+    cta2: t.hero.slides[i]?.cta2,
+  }));
 
   useEffect(() => {
     // Preload webp versions of all slides

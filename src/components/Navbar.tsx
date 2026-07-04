@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { settings } from '../config';
 import {
   Linkedin,
   Facebook,
@@ -103,19 +104,19 @@ export const Navbar = () => {
         <div className="absolute left-1/3 bottom-0 w-48 h-10 bg-[#1a3323]/60 rounded-full blur-xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center relative z-10">
           <div className="hidden sm:flex items-center gap-4 md:gap-6">
-            <a href="https://www.linkedin.com/company/libyan-british-business-council/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={14} /></a>
-            <a href="https://x.com/LBBCnews" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110">
+            <a href={settings.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Linkedin size={14} /></a>
+            <a href={settings.social.x} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932L18.901 1.153zM17.61 20.644h2.039L6.486 3.24H4.298L17.61 20.644z" />
               </svg>
             </a>
-            <a href="https://www.facebook.com/LibyanBritishBusinessCouncil/#" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={14} /></a>
+            <a href={settings.social.facebook} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-110"><Facebook size={14} /></a>
           </div>
           <div className="flex items-center justify-between w-full sm:w-auto gap-4 md:gap-10">
             <div className="hidden lg:flex items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">
-              <span className="flex items-center gap-2 hover:text-lbbc-red transition-colors cursor-default"><Phone size={10} className="text-white" /> +44 (0) 20 7788 7935</span>
+              <span className="flex items-center gap-2 hover:text-lbbc-red transition-colors cursor-default"><Phone size={10} className="text-white" /> {settings.phone}</span>
               <span className="w-px h-3 bg-white/20"></span>
-              <a href="mailto:events@lbbc.org.uk" className="flex items-center gap-2 hover:text-lbbc-red transition-colors"><Mail size={10} className="text-white" /> events@lbbc.org.uk</a>
+              <a href={`mailto:${settings.email}`} className="flex items-center gap-2 hover:text-lbbc-red transition-colors"><Mail size={10} className="text-white" /> {settings.email}</a>
             </div>
             <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-3 sm:gap-6">
               {/* Language Switcher */}

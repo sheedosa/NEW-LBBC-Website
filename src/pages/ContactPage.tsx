@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, ArrowRight, ChevronDown, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { settings, telHref } from '../config';
 import { SEO } from '../components/SEO';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
@@ -37,7 +38,7 @@ export const ContactPage = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          access_key: '84dde8ff-55a7-4ae0-9d75-9be5ef3a9a2d',
+          access_key: settings.web3formsKey,
           name: form.name,
           email: form.email,
           subject: `LBBC Website Enquiry — ${form.inquiry || 'General'}`,
@@ -103,12 +104,12 @@ export const ContactPage = () => {
                   <div className="flex items-start gap-4">
                     <div className="bg-slate-50 p-3 rounded-sm border border-slate-100"><Mail size={18} className="text-lbbc-green" /></div>
                     <div className="space-y-3">
-                      <p className="text-slate-600 text-sm font-medium"><span className="text-slate-400 text-[9px] uppercase tracking-widest block mb-0.5">{t.contact.general}</span><a href="mailto:events@lbbc.org.uk" className="hover:text-lbbc-green transition-colors">events@lbbc.org.uk</a></p>
+                      <p className="text-slate-600 text-sm font-medium"><span className="text-slate-400 text-[9px] uppercase tracking-widest block mb-0.5">{t.contact.general}</span><a href={`mailto:${settings.email}`} className="hover:text-lbbc-green transition-colors">{settings.email}</a></p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="bg-slate-50 p-3 rounded-sm border border-slate-100"><Phone size={18} className="text-lbbc-green" /></div>
-                    <div className="text-slate-600 text-sm font-medium"><span className="text-slate-400 text-[9px] uppercase tracking-widest block mb-0.5">{t.contact.tel}</span><a href="tel:+442071291251" className="hover:text-lbbc-green transition-colors">+44 (0) 20 7129 1251</a></div>
+                    <div className="text-slate-600 text-sm font-medium"><span className="text-slate-400 text-[9px] uppercase tracking-widest block mb-0.5">{t.contact.tel}</span><a href={telHref(settings.phoneContact)} className="hover:text-lbbc-green transition-colors">{settings.phoneContact}</a></div>
                   </div>
                 </div>
               </motion.div>
@@ -275,7 +276,7 @@ export const ContactPage = () => {
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.contact.socialTitle}</h2>
           </div>
           <div className="max-w-5xl mx-auto">
-            <div className="elfsight-app-a0003657-4b27-403a-aeda-0610cc0d2df4" data-elfsight-app-lazy></div>
+            <div className={`elfsight-app-${settings.elfsightAppId}`} data-elfsight-app-lazy></div>
           </div>
         </div>
       </section>

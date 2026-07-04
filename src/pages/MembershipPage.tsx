@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
 import { MemberDirectory } from '../components/HomeComponents';
 import { GovernanceModal } from '../components/Modals';
+import { settings } from '../config';
 
 export const MembershipPage = () => {
   const { t } = useLanguage();
@@ -20,24 +21,26 @@ export const MembershipPage = () => {
     {
       ...t.membership.council,
       color: 'lbbc-green',
-      price: location === 'uk' ? '£1,500' : '£500',
-      link: location === 'uk'
-        ? { label: t.membership.joinNow, url: 'https://lbbc.glueup.com/membership/21386/apply/' }
-        : { label: t.membership.joinNow, url: 'https://lbbc.glueup.com/membership/21396/apply/' }
+      price: location === 'uk' ? settings.membership.councilUk : settings.membership.councilLibya,
+      link: {
+        label: t.membership.joinNow,
+        url: location === 'uk' ? settings.membership.applyCouncilUk : settings.membership.applyCouncilLibya
+      }
     },
     {
       ...t.membership.corporate,
       color: 'lbbc-green',
-      price: location === 'uk' ? '£500' : '£250',
-      link: location === 'uk'
-        ? { label: t.membership.joinNow, url: 'https://lbbc.glueup.com/membership/21476/apply/' }
-        : { label: t.membership.joinNow, url: 'https://lbbc.glueup.com/membership/21397/apply/' }
+      price: location === 'uk' ? settings.membership.corporateUk : settings.membership.corporateLibya,
+      link: {
+        label: t.membership.joinNow,
+        url: location === 'uk' ? settings.membership.applyCorporateUk : settings.membership.applyCorporateLibya
+      }
     },
     {
       ...t.membership.soleTrader,
       color: 'lbbc-green',
-      price: '£250',
-      link: { label: t.membership.joinNow, url: 'https://lbbc.glueup.com/membership/21477/apply/' }
+      price: settings.membership.soleTrader,
+      link: { label: t.membership.joinNow, url: settings.membership.applySoleTrader }
     }
   ];
 

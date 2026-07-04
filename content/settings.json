@@ -1,0 +1,37 @@
+{
+  "email": "events@lbbc.org.uk",
+  "phone": "+44 (0) 20 7788 7935",
+  "phoneContact": "+44 (0) 20 7129 1251",
+  "social": {
+    "linkedin": "https://www.linkedin.com/company/libyan-british-business-council/",
+    "x": "https://x.com/LBBCnews",
+    "facebook": "https://www.facebook.com/LibyanBritishBusinessCouncil/#"
+  },
+  "glueup": {
+    "home": "https://lbbc.glueup.com/home/",
+    "login": "https://lbbc.glueup.com/account/login?ret=S6bk1bwBqj5v4TlS%2B842Yg%3D%3D"
+  },
+  "membership": {
+    "councilUk": "£1,500",
+    "councilLibya": "£500",
+    "corporateUk": "£500",
+    "corporateLibya": "£250",
+    "soleTrader": "£250",
+    "applyCouncilUk": "https://lbbc.glueup.com/membership/21386/apply/",
+    "applyCouncilLibya": "https://lbbc.glueup.com/membership/21396/apply/",
+    "applyCorporateUk": "https://lbbc.glueup.com/membership/21476/apply/",
+    "applyCorporateLibya": "https://lbbc.glueup.com/membership/21397/apply/",
+    "applySoleTrader": "https://lbbc.glueup.com/membership/21477/apply/"
+  },
+  "stats": {
+    "years": "20+",
+    "members": "150+",
+    "network": "1000+"
+  },
+  "seo": {
+    "defaultDescription": "The premier network for bilateral UK-Libya commercial partnership. Fostering trade, investment, and strategic dialogue.",
+    "defaultOgImage": "/images/og-default.png"
+  },
+  "web3formsKey": "84dde8ff-55a7-4ae0-9d75-9be5ef3a9a2d",
+  "elfsightAppId": "a0003657-4b27-403a-aeda-0610cc0d2df4"
+}

@@ -3,6 +3,7 @@ import { Mail, Phone, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
+import { settings, spotlight, telHref } from '../config';
 
 export const SpotlightPage = () => {
   const { t } = useLanguage();
@@ -17,7 +18,7 @@ export const SpotlightPage = () => {
       />
       {/* Hero Section */}
       <section className="relative h-[300px] md:h-[400px] flex items-center overflow-hidden bg-gradient-to-br from-[#1a3323] via-lbbc-green to-[#0f2117]">
-        <img src="/images/1-Z-120GLfzNq146Ri6nfEDakfstYNxUy.png" alt="Capterio Spotlight" className="absolute inset-0 w-full h-full object-cover opacity-50" referrerPolicy="no-referrer" />
+        <img src={spotlight.heroImage} alt="Capterio Spotlight" className="absolute inset-0 w-full h-full object-cover opacity-50" referrerPolicy="no-referrer" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 w-full">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-4xl">
@@ -61,11 +62,11 @@ export const SpotlightPage = () => {
               <div className="space-y-6">
                 <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs">{t.footer.contact}</h4>
                 <div className="space-y-4">
-                  <a href="mailto:events@lbbc.org.uk" className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
-                    <Mail size={18} className="text-lbbc-green" /> events@lbbc.org.uk
+                  <a href={`mailto:${settings.email}`} className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
+                    <Mail size={18} className="text-lbbc-green" /> {settings.email}
                   </a>
-                  <a href="tel:+442077887935" className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
-                    <Phone size={18} className="text-lbbc-green" /> +44 (0) 20 7788 7935
+                  <a href={telHref(settings.phone)} className="flex items-center gap-3 text-sm text-slate-600 hover:text-lbbc-green transition-colors font-bold">
+                    <Phone size={18} className="text-lbbc-green" /> {settings.phone}
                   </a>
                 </div>
               </div>

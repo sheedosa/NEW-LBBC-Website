@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { settings } from '../config';
 
 export const About = () => {
   const { t } = useLanguage();
@@ -18,15 +19,15 @@ export const About = () => {
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8 pt-2 md:pt-4">
               <div className="space-y-1 md:space-y-2">
-                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">20+</h4>
+                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">{settings.stats.years}</h4>
                 <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400">{t.about.stats.years}</p>
               </div>
               <div className="space-y-1 md:space-y-2">
-                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">150+</h4>
+                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">{settings.stats.members}</h4>
                 <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400">{t.about.stats.members}</p>
               </div>
               <div className="space-y-1 md:space-y-2">
-                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">1000+</h4>
+                <h4 className="text-2xl md:text-3xl font-black text-lbbc-green tracking-tighter">{settings.stats.network}</h4>
                 <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400">{t.about.stats.network}</p>
               </div>
             </div>
