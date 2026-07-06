@@ -1,0 +1,73 @@
+{
+  "slides": [
+    {
+      "image": "/images/1fzfMN6hXA9CDWB_2RMIU6azYmksCSkCe.png",
+      "imageWebp": "/images/1fzfMN6hXA9CDWB_2RMIU6azYmksCSkCe.webp",
+      "link1": "/membership",
+      "link2": "https://lbbc.glueup.com/home/"
+    },
+    {
+      "image": "/images/lbbc-noc-mou-signing-v2.png",
+      "imageWebp": "/images/lbbc-noc-mou-signing-v2.webp",
+      "objectPosition": "75% center",
+      "link1": "/news/lbbc-noc-mou-energy-forum",
+      "link2": "/membership"
+    },
+    {
+      "image": "/images/1PG3cPBxL9ce2a8nIgqmSPT1UWejsH8qZ.png",
+      "imageWebp": "/images/1PG3cPBxL9ce2a8nIgqmSPT1UWejsH8qZ.webp",
+      "link1": "/membership",
+      "link2": "https://lbbc.glueup.com/account/login?ret=S6bk1bwBqj5v4TlS%2B842Yg%3D%3D"
+    }
+  ],
+  "en": {
+    "hero": {
+      "tag": "ESTABLISHED 2004",
+      "slides": [
+        {
+          "title": "The Premier Network for Bilateral UK-Libya Commercial Partnership",
+          "subtitle": "Unlocking trade potential through a membership network built on high-level relationships, market transparency, and professional business support.",
+          "cta1": "Join the LBBC",
+          "cta2": "Member sign in"
+        },
+        {
+          "title": "National Oil Corporation and LBBC Sign MoU at the Libya Energy Forum",
+          "subtitle": "Explore the outcomes of the Libya Energy Forum, where the NOC's largest London delegation formalised its partnership with the LBBC.",
+          "cta1": "Read Full Story",
+          "cta2": "Join the LBBC"
+        },
+        {
+          "title": "On the Ground Access to Libya’s Key Decision-Makers",
+          "subtitle": "Navigate the Libyan market with confidence through our business delegations and direct connections to key economic stakeholders.",
+          "cta1": "Join the LBBC",
+          "cta2": "Member sign in"
+        }
+      ]
+    }
+  },
+  "ar": {
+    "hero": {
+      "tag": "تأسس عام 2004",
+      "slides": [
+        {
+          "title": "الشبكة الرائدة للشراكة التجارية الثنائية بين المملكة المتحدة وليبيا",
+          "subtitle": "إطلاق العنان للإمكانات التجارية من خلال شبكة عضوية مبنية على علاقات رفيعة المستوى وشفافية السوق ودعم الأعمال المهني.",
+          "cta1": "انضم إلى المجلس",
+          "cta2": "تسجيل دخول الأعضاء"
+        },
+        {
+          "title": "المؤسسة الوطنية للنفط والمجلس الليبي البريطاني للأعمال يوقعان مذكرة تفاهم في منتدى ليبيا للطاقة",
+          "subtitle": "استكشف نتائج منتدى ليبيا للطاقة، حيث رسّخ أكبر وفد للمؤسسة الوطنية للنفط في لندن شراكته مع المجلس الليبي البريطاني للأعمال.",
+          "cta1": "اقرأ القصة الكاملة",
+          "cta2": "انضم إلى المجلس"
+        },
+        {
+          "title": "الوصول الميداني إلى صناع القرار الرئيسيين في ليبيا",
+          "subtitle": "تنقل في السوق الليبي بثقة من خلال وفودنا التجارية واتصالاتنا المباشرة مع أصحاب المصلحة الاقتصاديين الرئيسيين.",
+          "cta1": "انضم إلى المجلس",
+          "cta2": "تسجيل دخول الأعضاء"
+        }
+      ]
+    }
+  }
+}

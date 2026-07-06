@@ -1,0 +1,60 @@
+{
+  "en": {
+    "directory": {
+      "tag": "DIRECTORY",
+      "title": "Our Members",
+      "cta": "View Full Directory",
+      "pageTitle": "A Diverse Network of Leading UK and Libyan Businesses",
+      "pageTag": "MEMBER DIRECTORY",
+      "searchPlaceholder": "Search by company name...",
+      "allSectors": "All Sectors",
+      "councilTab": "Council Members",
+      "corporateTab": "Corporate Members",
+      "loading": "Loading Directory...",
+      "error": "Connection Issue",
+      "errorText": "Failed to load directory. Please try again.",
+      "intro": "The LBBC operates two levels of membership – Council and Corporate. Our network represents a wide range of organizations, from global corporations to specialized SMEs, all committed to the UK-Libya trade relationship.",
+      "noResults": "No {tab} members found matching your search.",
+      "clearFilters": "Clear All Filters",
+      "about": "About",
+      "website": "Website",
+      "visitWebsite": "Visit Website",
+      "noDescription": "No company description available.",
+      "councilBadge": "Council",
+      "noMembers": "No members found",
+      "searchLabel": "Search by name or sector…",
+      "showing": "Showing",
+      "memberSingular": "member",
+      "memberPlural": "members"
+    }
+  },
+  "ar": {
+    "directory": {
+      "tag": "الدليل",
+      "title": "أعضاؤنا",
+      "cta": "عرض الدليل الكامل",
+      "pageTitle": "شبكة متنوعة من الشركات البريطانية والليبية الرائدة",
+      "pageTag": "دليل الأعضاء",
+      "searchPlaceholder": "البحث باسم الشركة...",
+      "allSectors": "جميع القطاعات",
+      "councilTab": "أعضاء المجلس",
+      "corporateTab": "أعضاء الشركات",
+      "loading": "جاري تحميل الدليل...",
+      "error": "مشكلة في الاتصال",
+      "errorText": "فشل تحميل الدليل. يرجى المحاولة مرة أخرى.",
+      "intro": "يدير مجلس الأعمال الليبي البريطاني مستويين من العضوية - المجلس والشركات. تمثل شبكتنا مجموعة واسعة من المنظمات، من الشركات العالمية إلى الشركات الصغيرة والمتوسطة المتخصصة، وجميعها ملتزمة بالعلاقة التجارية بين المملكة المتحدة وليبيا.",
+      "noResults": "لم يتم العثور على أعضاء {tab} يطابقون بحثك.",
+      "clearFilters": "مسح جميع المرشحات",
+      "about": "حول",
+      "website": "الموقع الإلكتروني",
+      "visitWebsite": "زيارة الموقع",
+      "noDescription": "لا يوجد وصف للشركة.",
+      "councilBadge": "مجلس",
+      "noMembers": "لم يتم العثور على أعضاء",
+      "searchLabel": "ابحث بالاسم أو القطاع…",
+      "showing": "عرض",
+      "memberSingular": "عضو",
+      "memberPlural": "أعضاء"
+    }
+  }
+}

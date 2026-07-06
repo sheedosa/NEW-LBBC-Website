@@ -1,31 +1,33 @@
-// Central access point for CMS-editable structured content (content/*.json).
-// Keeping these imports in one module limits churn if paths ever change.
+// Central access point for CMS-editable structured content. Content is organized by PAGE
+// (content/pages/*.json — mirroring the website layout in the CMS); this barrel re-exports
+// the structured parts so components import from one stable module.
 import settings from '../content/settings.json';
-import heroFile from '../content/hero.json';
-import spotlight from '../content/spotlight.json';
-import leadershipFile from '../content/team/leadership.json';
-import boardFile from '../content/team/board.json';
-import partnersFile from '../content/partners.json';
-import sponsorsFile from '../content/sponsors.json';
-import footerFile from '../content/footer.json';
-import resourcesFile from '../content/resources.json';
+import homePage from '../content/pages/home.json';
+import aboutPage from '../content/pages/about.json';
+import eventsPage from '../content/pages/events.json';
+import resourcesPage from '../content/pages/resources.json';
+import membershipPage from '../content/pages/membership.json';
+import spotlightPage from '../content/pages/spotlight.json';
+import globalPage from '../content/pages/global.json';
 
-export { settings, spotlight };
-export const heroSlides = heroFile.slides as Array<{
+export { settings };
+export const heroSlides = homePage.slides as Array<{
   image: string;
   imageWebp: string;
   link1: string;
   link2: string;
   objectPosition?: string;
 }>;
-export const leadership = leadershipFile.people;
-export const board = boardFile.people;
-export const partners = partnersFile.items;
-export const sponsorsEvents = sponsorsFile.events;
-export const footerPartners = footerFile.partners;
-export const footerSponsors = footerFile.sponsors;
-export const resourceDocuments = resourcesFile.documents;
-export const galleryAlbums = resourcesFile.albums;
+export const leadership = aboutPage.leadership;
+export const board = aboutPage.board;
+export const partners = aboutPage.partners;
+export const sponsorsEvents = eventsPage.sponsors;
+export const footerPartners = globalPage.footerPartners;
+export const footerSponsors = globalPage.footerSponsors;
+export const resourceDocuments = resourcesPage.documents;
+export const galleryAlbums = resourcesPage.albums;
+export const membershipPricing = membershipPage.pricing;
+export const spotlight = { heroImage: spotlightPage.heroImage };
 
 // Build a `tel:` href from a display phone number, e.g. "+44 (0) 20 7788 7935" -> "tel:+442077887935".
 export const telHref = (phone: string) => 'tel:' + phone.replace(/\(0\)/g, '').replace(/[^\d+]/g, '');

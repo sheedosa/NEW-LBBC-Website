@@ -1,0 +1,112 @@
+{
+  "sponsors": [
+    {
+      "src": "/images/sponsors/bank-abc.jpg",
+      "alt": "Bank ABC"
+    },
+    {
+      "src": "/images/sponsors/bacb.jpg",
+      "alt": "BACB"
+    },
+    {
+      "src": "/images/sponsors/metlen.jpg",
+      "alt": "Metlen Energy & Metals"
+    },
+    {
+      "src": "/images/sponsors/promergon.jpg",
+      "alt": "Promergon"
+    },
+    {
+      "src": "/images/sponsors/libya-holdings.jpg",
+      "alt": "Libya Holdings"
+    },
+    {
+      "src": "/images/sponsors/expertise-consultancy.webp",
+      "alt": "Expertise Consultancy"
+    },
+    {
+      "src": "/images/sponsors/medship-group.png",
+      "alt": "Medship Group"
+    },
+    {
+      "src": "/images/sponsors/crowd-digital.jpg",
+      "alt": "Crowd Digital"
+    }
+  ],
+  "en": {
+    "events": {
+      "tag": "CALENDAR",
+      "title": "Upcoming Events",
+      "cta": "View Full Calendar",
+      "register": "Register Interest",
+      "pageTag": "EVENTS",
+      "pageTitle": "Engage with the UK-Libya Business Community",
+      "calendarTitle": "Upcoming Events & Trade Missions",
+      "calendarDesc": "The LBBC hosts a variety of events, from high-level trade delegations to sector-specific webinars, all designed to connect our members with opportunities in Libya and the UK.",
+      "filterLabel": "Filter by Type",
+      "filterAll": "All Types",
+      "filterMission": "Trade Mission",
+      "filterWebinar": "Webinar",
+      "filterReception": "Reception",
+      "filterConference": "Conference",
+      "noResults": "No events found matching your search.",
+      "viewDetails": "View Event Details",
+      "archiveTag": "PAST EVENTS",
+      "archiveTitle": "Events Archive",
+      "archiveSubtitle": "Our Record of Business Engagement",
+      "archiveDesc": "Revisit past discussions, catch up on expert briefings, and track the ongoing developments within the Libyan and UK markets as a member of the LBBC. Whether you are joining us in person or exploring our previous sessions, the LBBC is your gateway to informed and effective business exchange.",
+      "viewSummary": "View Summary",
+      "seeMore": "See More Past Events",
+      "showLess": "Show Less",
+      "upcomingTab": "Upcoming Events",
+      "pastTab": "Past Events",
+      "noUpcoming": "No upcoming events scheduled",
+      "noPast": "No past events",
+      "registerNow": "Register Now",
+      "memberSignIn": "Member Sign In",
+      "joinLBBC": "Join the LBBC",
+      "sponsorsTag": "SPONSORS",
+      "sponsorsTitle": "Our Past Event Sponsors",
+      "sponsorsDesc": "Enhance your organisation’s profile by sponsoring an LBBC event. Our events provide targeted visibility among key decision-makers and industry peers. Contact our events team to discuss available opportunities.",
+      "contactUs": "Contact Us"
+    }
+  },
+  "ar": {
+    "events": {
+      "tag": "التقويم",
+      "title": "الفعاليات القادمة",
+      "cta": "عرض التقويم الكامل",
+      "register": "تسجيل الاهتمام",
+      "pageTag": "الفعاليات",
+      "pageTitle": "تواصل مع مجتمع الأعمال الليبي البريطاني",
+      "calendarTitle": "الفعاليات القادمة والبعثات التجارية",
+      "calendarDesc": "يستضيف المجلس مجموعة متنوعة من الفعاليات، من الوفود التجارية رفيعة المستوى إلى ندوات الويب المتخصصة في القطاعات، وكلها مصممة لربط أعضائنا بالفرص في ليبيا والمملكة المتحدة.",
+      "filterLabel": "تصفية حسب النوع",
+      "filterAll": "جميع الأنواع",
+      "filterMission": "بعثة تجارية",
+      "filterWebinar": "ندوة عبر الإنترنت",
+      "filterReception": "حفل استقبال",
+      "filterConference": "مؤتمر",
+      "noResults": "لم يتم العثور على فعاليات تطابق بحثك.",
+      "viewDetails": "عرض تفاصيل الفعالية",
+      "archiveTag": "الفعاليات السابقة",
+      "archiveTitle": "أرشيف الفعاليات",
+      "archiveSubtitle": "سجلنا في المشاركة التجارية",
+      "archiveDesc": "أعد زيارة المناقشات السابقة، واطلع على الإحاطات الخبيرة، وتتبع التطورات الجارية داخل الأسواق الليبية والبريطانية كعضو في المجلس. وسواء كنت تنضم إلينا شخصياً أو تستكشف جلساتنا السابقة، فإن المجلس هو بوابتك لتبادل تجاري مستنير وفعال.",
+      "viewSummary": "عرض الملخص",
+      "seeMore": "مشاهدة المزيد من الفعاليات السابقة",
+      "showLess": "عرض أقل",
+      "upcomingTab": "الفعاليات القادمة",
+      "pastTab": "الفعاليات السابقة",
+      "noUpcoming": "لا توجد فعاليات قادمة مجدولة",
+      "noPast": "لا توجد فعاليات سابقة",
+      "registerNow": "سجّل الآن",
+      "memberSignIn": "تسجيل دخول الأعضاء",
+      "joinLBBC": "انضم إلى المجلس",
+      "sponsorsTag": "الرعاة",
+      "sponsorsTitle": "رعاة فعالياتنا السابقة",
+      "sponsorsDesc": "عزز مكانة مؤسستك من خلال رعاية إحدى فعاليات المجلس. توفر فعالياتنا رؤية مستهدفة بين صناع القرار الرئيسيين والأقران في الصناعة. اتصل بفريق الفعاليات لدينا لمناقشة الفرص المتاحة.",
+      "contactUs": "اتصل بنا"
+    }
+  }
+}

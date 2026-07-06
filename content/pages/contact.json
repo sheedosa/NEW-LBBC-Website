@@ -1,0 +1,72 @@
+{
+  "en": {
+    "contact": {
+      "tag": "CONTACT US",
+      "title": "Your Point of Contact for Bilateral Business Relations",
+      "subtitle": "How Can We Support Your Business?",
+      "desc": "Complete the form and a member of our team will be in touch to discuss your requirements.",
+      "hq": "OUR HEADQUARTERS",
+      "general": "General Inquiries",
+      "membership": "Membership & Events",
+      "tel": "Telephone",
+      "form": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "job": "Job Title",
+        "company": "Company Name",
+        "inquiry": "Nature of Inquiry",
+        "select": "Select an option",
+        "opt1": "Membership",
+        "opt2": "Event Registration/Sponsorship",
+        "opt3": "Press & Media Inquiries",
+        "opt4": "General Trade Support",
+        "message": "Message",
+        "placeholder": "Please provide brief details on your commercial objectives or specific inquiry.",
+        "submit": "Submit Inquiry",
+        "sending": "Sending…",
+        "successTitle": "Enquiry Sent",
+        "successMsg": "Thank you for reaching out. A member of our team will be in touch with you shortly.",
+        "errorMsg": "Something went wrong. Please try again or email us directly at events@lbbc.org.uk.",
+        "tryAgain": "Send Another Message"
+      },
+      "socialTag": "STAY CONNECTED",
+      "socialTitle": "Connect For the Latest on UK-Libya Trade",
+      "disclaimer": "The LBBC is a non-political trade promotion organization. While we work closely with the British Embassy, UK government departments and key institutions in Libya, we do not provide political commentary, advocacy or legal advice. Our focus remains strictly on promoting commercial trade relations between Libya and the UK."
+    }
+  },
+  "ar": {
+    "contact": {
+      "tag": "اتصل بنا",
+      "title": "نقطة اتصالك للعلاقات التجارية الثنائية",
+      "subtitle": "كيف يمكننا دعم عملك؟",
+      "desc": "أكمل النموذج وسيتواصل معك أحد أعضاء فريقنا لمناقشة متطلباتك.",
+      "hq": "مقرنا الرئيسي",
+      "general": "استفسارات عامة",
+      "membership": "العضوية والفعاليات",
+      "tel": "الهاتف",
+      "form": {
+        "name": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "job": "المسمى الوظيفي",
+        "company": "اسم الشركة",
+        "inquiry": "طبيعة الاستفسار",
+        "select": "اختر خياراً",
+        "opt1": "العضوية",
+        "opt2": "تسجيل الفعاليات / الرعاية",
+        "opt3": "استفسارات الصحافة والإعلام",
+        "opt4": "دعم التجارة العامة",
+        "message": "الرسالة",
+        "placeholder": "يرجى تقديم تفاصيل موجزة عن أهدافك التجارية أو استفسارك المحدد.",
+        "submit": "إرسال الاستفسار",
+        "sending": "جارٍ الإرسال…",
+        "successTitle": "تم إرسال الاستفسار",
+        "successMsg": "شكراً لتواصلك معنا. سيتواصل معك أحد أعضاء فريقنا قريباً.",
+        "errorMsg": "حدث خطأ ما. يرجى المحاولة مرة أخرى أو مراسلتنا مباشرةً على events@lbbc.org.uk",
+        "tryAgain": "إرسال رسالة أخرى"
+      },
+      "socialTag": "ابق على اتصال",
+      "socialTitle": "تواصل للحصول على أحدث المعلومات حول التجارة بين المملكة المتحدة وليبيا",
+      "disclaimer": "المجلس هو منظمة غير سياسية لتعزيز التجارة. وبينما نعمل عن كثب مع السفارة البريطانية والإدارات الحكومية البريطانية والمؤسسات الرئيسية في ليبيا، فإننا لا نقدم تعليقات سياسية أو مناصرة أو مشورة قانونية. يظل تركيزنا منصباً بشكل صارم على تعزيز العلاقات التجارية التجارية بين ليبيا والمملكة المتحدة."
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "footerPartners": [
+    {
+      "name": "British Embassy",
+      "url": "https://www.gov.uk/world/organisations/british-embassy-tripoli",
+      "logo": "/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.png",
+      "logoWebp": "/images/15wu-9uxhuoq3tQF9RdMj5JKCm4UQlOXl.webp"
+    },
+    {
+      "name": "UK FCDO",
+      "url": "https://www.gov.uk/government/organisations/foreign-commonwealth-development-office",
+      "logo": "/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.png",
+      "logoWebp": "/images/14Vz7QDoZA0mY0wfWOYtv4oNXC-fWsfIA.webp"
+    },
+    {
+      "name": "NOC",
+      "url": "https://noc.ly/en/",
+      "logo": "/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.png",
+      "logoWebp": "/images/1298kn4VMFdwtdchqygp_Edk5XbaBty8B.webp"
+    },
+    {
+      "name": "REAOL",
+      "url": "https://reaol.gov.ly/en/",
+      "logo": "/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.png",
+      "logoWebp": "/images/1WjTH2bcM6soZgKQuXBbmGgwQobDMiFNg.webp"
+    }
+  ],
+  "footerSponsors": [
+    {
+      "name": "Bank ABC",
+      "url": "https://www.bank-abc.com/en",
+      "logo": "/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.png",
+      "logoWebp": "/images/19aNWVHPT2e7qVKzaGZ1FKDt7i7Ffygu-.webp"
+    },
+    {
+      "name": "BACB",
+      "url": "https://www.bacb.co.uk/",
+      "logo": "/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.png",
+      "logoWebp": "/images/1LGlEbIlkn_Dxfh9ZidHXLUpFopfhBTfW.webp"
+    },
+    {
+      "name": "LH Severus",
+      "url": "https://lhseverus.com/",
+      "logo": "/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.png",
+      "logoWebp": "/images/1BVL2nJgbXbjecGcFNW9WbU74MbOAnD0P.webp"
+    }
+  ],
+  "en": {
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "mission": "Our Mission",
+      "leadership": "Our Leadership",
+      "board": "Our Board of Directors",
+      "partners": "Our Partners",
+      "membership": "Membership",
+      "value": "Membership Value",
+      "tiers": "Membership Tiers",
+      "whyJoin": "Why Join",
+      "events": "Events",
+      "upcoming": "Upcoming Events",
+      "archive": "Events Archive",
+      "directory": "Directory",
+      "resources": "Resources",
+      "guides": "Guides and Guidance",
+      "newsInsights": "News and Insights",
+      "mediaGallery": "Media Gallery",
+      "contact": "Contact",
+      "joinUs": "Join Us",
+      "login": "Login"
+    },
+    "footer": {
+      "about": "The Libyan British Business Council (LBBC) is a non-profit membership organisation dedicated to promoting business relations and commercial partnerships between the UK and Libya.",
+      "quickLinks": "Quick Links",
+      "contact": "Contact Us",
+      "address": "LBBC Headquarters, London, United Kingdom",
+      "rights": "© 2026 Libyan British Business Council. All rights reserved.",
+      "navigate": "Navigate",
+      "partners": "Our Partners",
+      "sponsors": "Sponsors",
+      "becomePartner": "Become an LBBC Partner",
+      "becomeSponsor": "Become an LBBC Sponsor",
+      "email": "Email",
+      "tel": "Tel",
+      "name": "Libyan British Business Council"
+    }
+  },
+  "ar": {
+    "nav": {
+      "home": "الرئيسية",
+      "about": "عن المجلس",
+      "mission": "مهمتنا",
+      "leadership": "قيادتنا",
+      "board": "مجلس الإدارة",
+      "partners": "شركاؤنا",
+      "membership": "العضوية",
+      "value": "قيمة العضوية",
+      "tiers": "فئات العضوية",
+      "whyJoin": "لماذا تنضم إلينا؟",
+      "events": "الفعاليات",
+      "upcoming": "الفعاليات القادمة",
+      "archive": "أرشيف الفعاليات",
+      "directory": "الدليل",
+      "resources": "المصادر",
+      "guides": "الأدلة والإرشادات",
+      "newsInsights": "الأخبار والرؤى",
+      "mediaGallery": "معرض الوسائط",
+      "contact": "اتصل بنا",
+      "joinUs": "انضم إلينا",
+      "login": "تسجيل الدخول"
+    },
+    "footer": {
+      "about": "مجلس الأعمال الليبي البريطاني (LBBC) هو منظمة عضوية غير ربحية مكرسة لتعزيز العلاقات التجارية والشراكات التجارية بين المملكة المتحدة وليبيا.",
+      "quickLinks": "روابط سريعة",
+      "contact": "اتصل بنا",
+      "address": "المقر الرئيسي للمجلس، لندن، المملكة المتحدة",
+      "rights": "© 2026 مجلس الأعمال الليبي البريطاني. جميع الحقوق محفوظة.",
+      "navigate": "تصفح",
+      "partners": "شركاؤنا",
+      "sponsors": "الرعاة",
+      "becomePartner": "كن شريكاً للمجلس",
+      "becomeSponsor": "كن راعياً للمجلس",
+      "email": "البريد الإلكتروني",
+      "tel": "الهاتف",
+      "name": "مجلس الأعمال الليبي البريطاني"
+    }
+  }
+}

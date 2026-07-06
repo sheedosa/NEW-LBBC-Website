@@ -1,0 +1,45 @@
+{
+  "heroImage": "/images/1-Z-120GLfzNq146Ri6nfEDakfstYNxUy.png",
+  "en": {
+    "featured": {
+      "tag": "FEATURED STORY",
+      "title": "National Oil Corporation and LBBC Sign MoU at the Libya Energy Forum",
+      "text": "Explore the outcomes of the Libya Energy Forum, where the NOC's largest London delegation formalised its partnership with the LBBC through a landmark Memorandum of Understanding, strengthening UK–Libya energy ties.",
+      "cta": "Read Full Story",
+      "allNews": "All News",
+      "aboutLbbc": "About LBBC",
+      "aboutLbbcText": "The Libyan British Business Council (LBBC) is a non-profit membership organisation established to promote trade and investment between the United Kingdom and Libya.",
+      "fullStory": {
+        "title": "LBBC Member Spotlight: Capterio",
+        "p1": "This week, the LBBC spotlight is on our member Capterio, which has played a central role in the conversation on how Libya can turn gas flaring from waste into value.",
+        "p2": "As part of the UK–Libya Roundtable hosted by the LBBC at Libya Energy & Economic Summit 2026, Capterio’s CEO, Mark Jonathan Davis, joined Libyan and international stakeholders in Tripoli to explore practical pathways to capture and monetise flared gas in support of Libya’s economic goals.",
+        "p3": "Capterio is a UK-based flared solutions company that is focused on monetising waste gas. Using its satellite-based near real-time flare tracking technology, the company works with operators, governments and financiers to quantify flaring for every asset every day, helping to improve visibility, drive operational improvements and identify and prioritise flare capture projects.",
+        "p4": "In Libya, Capterio’s analysis shows that capturing around 7 BCM of currently flared gas each year could unlock an estimated US$2–3 billion in additional national revenues, strengthen domestic energy security and reduce emissions using technologies already available today.",
+        "p5": "Capterio’s participation at the Summit and Roundtable illustrates how specialist international expertise can support Libya’s ambitions to reduce flaring and monetise its gas resources more effectively.",
+        "p6": "Join the LBBC member network for access to exclusive networking events and insights from webinars, briefings and newsletters, and to help shape the next phase of UK–Libya trade.",
+        "cta": "Learn more about becoming an LBBC member here."
+      }
+    }
+  },
+  "ar": {
+    "featured": {
+      "tag": "القصة الرئيسية",
+      "title": "المؤسسة الوطنية للنفط والمجلس الليبي البريطاني للأعمال يوقعان مذكرة تفاهم في منتدى ليبيا للطاقة",
+      "text": "استكشف نتائج منتدى ليبيا للطاقة، حيث رسّخ أكبر وفد للمؤسسة الوطنية للنفط في لندن شراكته مع المجلس الليبي البريطاني للأعمال من خلال مذكرة تفاهم تاريخية، تعزّز العلاقات في قطاع الطاقة بين المملكة المتحدة وليبيا.",
+      "cta": "اقرأ القصة الكاملة",
+      "allNews": "كل الأخبار",
+      "aboutLbbc": "عن المجلس",
+      "aboutLbbcText": "المجلس الليبي البريطاني للأعمال هو منظمة عضوية غير ربحية تأسست لتعزيز التجارة والاستثمار بين المملكة المتحدة وليبيا.",
+      "fullStory": {
+        "title": "تسليط الضوء على عضو المجلس: كابتيريو",
+        "p1": "هذا الأسبوع، نسلط الضوء على عضو المجلس، شركة كابتيريو، التي لعبت دوراً مركزياً في الحوار حول كيفية تحويل حرق الغاز في ليبيا من هدر إلى قيمة.",
+        "p2": "وكجزء من المائدة المستديرة بين المملكة المتحدة وليبيا التي استضافها المجلس في قمة ليبيا للطاقة والاقتصاد 2026، انضم الرئيس التنفيذي لشركة كابتيريو، مارك جوناثان ديفيس، إلى أصحاب المصلحة الليبيين والدوليين في طرابلس لاستكشاف مسارات عملية لالتقاط واستغلال الغاز المصاحب دعماً للأهداف الاقتصادية لليبيا.",
+        "p3": "كابتيريو هي شركة حلول حرق غاز مقرها المملكة المتحدة تركز على استغلال الغاز المهدر. وباستخدام تقنيتها لتتبع حرق الغاز عبر الأقمار الصناعية في الوقت الفعلي تقريباً، تعمل الشركة مع المشغلين والحكومات والممولين لقياس حرق الغاز لكل أصل يومياً، مما يساعد على تحسين الرؤية ودفع التحسينات التشغيلية وتحديد وتحديد أولويات مشاريع التقاط الغاز المصاحب.",
+        "p4": "في ليبيا، يظهر تحليل كابتيريو أن التقاط حوالي 7 مليارات متر مكعب من الغاز الذي يتم حرقه حالياً كل عام يمكن أن يفتح ما يقدر بنحو 2-3 مليار دولار أمريكي من الإيرادات الوطنية الإضافية، ويعزز أمن الطاقة المحلي ويقلل الانبعاثات باستخدام التقنيات المتاحة بالفعل اليوم.",
+        "p5": "يوضح مشاركة كابتيريو في القمة والمائدة المستديرة كيف يمكن للخبرة الدولية المتخصصة أن تدعم طموحات ليبيا لتقليل حرق الغاز واستغلال مواردها من الغاز بشكل أكثر فعالية.",
+        "p6": "انضم إلى شبكة أعضاء المجلس للوصول إلى فعاليات تواصل حصرية ورؤى من الندوات عبر الإنترنت والإيجازات والنشرات الإخبارية، وللمساعدة في تشكيل المرحلة التالية من التجارة بين المملكة المتحدة وليبيا.",
+        "cta": "تعرف على المزيد حول كيف تصبح عضواً في المجلس هنا."
+      }
+    }
+  }
+}

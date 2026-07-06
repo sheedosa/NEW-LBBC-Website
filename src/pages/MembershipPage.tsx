@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
 import { MemberDirectory } from '../components/HomeComponents';
 import { GovernanceModal } from '../components/Modals';
-import { settings } from '../config';
+import { membershipPricing } from '../config';
 
 export const MembershipPage = () => {
   const { t } = useLanguage();
@@ -21,26 +21,26 @@ export const MembershipPage = () => {
     {
       ...t.membership.council,
       color: 'lbbc-green',
-      price: location === 'uk' ? settings.membership.councilUk : settings.membership.councilLibya,
+      price: location === 'uk' ? membershipPricing.councilUk : membershipPricing.councilLibya,
       link: {
         label: t.membership.joinNow,
-        url: location === 'uk' ? settings.membership.applyCouncilUk : settings.membership.applyCouncilLibya
+        url: location === 'uk' ? membershipPricing.applyCouncilUk : membershipPricing.applyCouncilLibya
       }
     },
     {
       ...t.membership.corporate,
       color: 'lbbc-green',
-      price: location === 'uk' ? settings.membership.corporateUk : settings.membership.corporateLibya,
+      price: location === 'uk' ? membershipPricing.corporateUk : membershipPricing.corporateLibya,
       link: {
         label: t.membership.joinNow,
-        url: location === 'uk' ? settings.membership.applyCorporateUk : settings.membership.applyCorporateLibya
+        url: location === 'uk' ? membershipPricing.applyCorporateUk : membershipPricing.applyCorporateLibya
       }
     },
     {
       ...t.membership.soleTrader,
       color: 'lbbc-green',
-      price: settings.membership.soleTrader,
-      link: { label: t.membership.joinNow, url: settings.membership.applySoleTrader }
+      price: membershipPricing.soleTrader,
+      link: { label: t.membership.joinNow, url: membershipPricing.applySoleTrader }
     }
   ];
 
