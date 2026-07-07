@@ -19,7 +19,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
-import https from 'https';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,20 +34,61 @@ if (!fs.existsSync(DATA_DIR)) {
 
 // ─── HTTP Helpers ───────────────────────────────────────────────
 
-const agent = new https.Agent({ rejectUnauthorized: false });
+const TIMEOUT_MS = 30000;
 
+// Realistic, current browser headers. GlueUp's edge (anti-bot) can 403 stale/thin UAs.
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
   'Accept-Language': 'en-GB,en;q=0.9',
+  'Accept-Encoding': 'gzip, deflate',
+  'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Windows"',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1',
+  'Connection': 'keep-alive',
   'Referer': `${BASE}/organization/${ORG_ID}/`,
 };
+
+// In-memory cookie jar shared across requests — GlueUp sets a session cookie on first hit.
+let cookieJar = '';
+function updateCookies(res) {
+  const raw = res.headers.raw?.()['set-cookie']
+    ?? (res.headers.get('set-cookie') ? [res.headers.get('set-cookie')] : []);
+  const pairs = raw.map(c => c.split(';')[0]).filter(Boolean);
+  if (!pairs.length) return;
+  const jar = new Map(cookieJar ? cookieJar.split('; ').map(p => [p.split('=')[0], p]) : []);
+  for (const p of pairs) jar.set(p.split('=')[0], p);
+  cookieJar = [...jar.values()].join('; ');
+}
+
+// Warm up: hit the org homepage first to obtain a session cookie before scraping widgets.
+async function warmUp() {
+  try {
+    const res = await fetch(`${BASE}/organization/${ORG_ID}/`, {
+      headers: HEADERS,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    updateCookies(res);
+    console.log(`[Scraper] Warm-up ${res.status}; session cookie: ${cookieJar ? 'YES' : 'NONE'}`);
+  } catch (err) {
+    console.warn(`[Scraper] Warm-up failed (continuing): ${err.message}`);
+  }
+}
 
 async function fetchPage(url, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       console.log(`[Scraper] Fetching: ${url} (attempt ${attempt})`);
-      const res = await fetch(url, { agent, headers: HEADERS, timeout: 30000 });
+      const res = await fetch(url, {
+        headers: { ...HEADERS, ...(cookieJar ? { Cookie: cookieJar } : {}) },
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      });
+      updateCookies(res);
       if (!res.ok) {
         console.warn(`[Scraper] HTTP ${res.status} for ${url}`);
         if (attempt < retries) {
@@ -158,7 +198,7 @@ async function fetchDetail(glueupId, cookieHeader) {
 
     const res = await fetch(AJAX_URL, {
       method: 'POST',
-      agent,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
       headers: {
         'User-Agent': HEADERS['User-Agent'],
         'X-Requested-With': 'XMLHttpRequest',
@@ -270,17 +310,11 @@ export async function scrapeMembers() {
     'Zahaf & Partners Law Firm',
   ]);
 
-  let sessionCookie = '';
-
   try {
-    // Fetch the main company directory — capture ALL session cookies for detail requests
-    const dirRes = await fetch(corporateUrl, { agent, headers: HEADERS, timeout: 30000 });
-    if (!dirRes.ok) throw new Error(`HTTP ${dirRes.status} for ${corporateUrl}`);
-    // node-fetch returns multiple Set-Cookie as a comma-joined string; split and rejoin as Cookie header
-    const rawCookies = dirRes.headers.raw?.()['set-cookie'] ?? [dirRes.headers.get('set-cookie') ?? ''];
-    sessionCookie = rawCookies.map(c => c.split(';')[0]).filter(Boolean).join('; ');
-    console.log(`[Scraper] Session cookie obtained: ${sessionCookie ? 'YES' : 'NONE'}`);
-    const html = await dirRes.text();
+    // Warm up (seed session cookie) then fetch the directory via the shared-cookie helper.
+    await warmUp();
+    const html = await fetchPage(corporateUrl);
+    console.log(`[Scraper] Session cookie: ${cookieJar ? 'YES' : 'NONE'}`);
 
     const allMembers = parseMembersFromHtml(html, 'corporate');
     console.log(`[Scraper] Parsed ${allMembers.length} total company members from directory`);
@@ -316,7 +350,7 @@ export async function scrapeMembers() {
   // Fetch about + website for every member in batches of 5
   console.log(`[Scraper] Fetching member details (about + website) for ${totalMembers} members…`);
   const allMembers = [...council, ...corporate];
-  const details = await batchMap(allMembers, 5, m => fetchDetail(m.glueupId, sessionCookie));
+  const details = await batchMap(allMembers, 5, m => fetchDetail(m.glueupId, cookieJar));
   details.forEach((detail, i) => {
     allMembers[i].about   = detail.about   || null;
     allMembers[i].website = detail.website || null;
@@ -406,6 +440,7 @@ export async function scrapeEvents() {
   let past = [];
 
   try {
+    if (!cookieJar) await warmUp();
     const [htmlUp, htmlPast] = await Promise.all([
       fetchPage(upcomingUrl),
       fetchPage(pastUrl),
@@ -415,6 +450,17 @@ export async function scrapeEvents() {
     past = parseEventsFromHtml(htmlPast);
 
     console.log(`[Scraper] Parsed ${upcoming.length} upcoming and ${past.length} past events`);
+
+    // Zero-row guard: a 200-OK page that parses to nothing usually means the markup changed
+    // (or an interstitial), NOT that the org has zero events. Preserve the cache instead of
+    // overwriting events.json with empty arrays.
+    if (upcoming.length + past.length === 0) {
+      const cachePath = path.join(DATA_DIR, 'events.json');
+      if (fs.existsSync(cachePath)) {
+        console.error('[Scraper] ABORT: 0 events parsed. Preserving existing events.json.');
+        return null;
+      }
+    }
   } catch (err) {
     console.error('[Scraper] Event scraping failed:', err.message);
     const cachePath = path.join(DATA_DIR, 'events.json');
@@ -512,21 +558,25 @@ export async function runScraper() {
   ]);
 
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-  
+
+  let failures = 0;
   results.forEach((result, i) => {
     const label = i === 0 ? 'Members' : 'Events';
     if (result.status === 'fulfilled') {
       if (result.value) {
         console.log(`[Scraper] ${label}: ✓ Updated`);
       } else {
-        console.log(`[Scraper] ${label}: ⚠ Preserved existing cache (scrape returned no data)`);
+        failures++;
+        console.error(`[Scraper] ${label}: ✗ Scrape returned NO data — existing cache preserved (this is a failure, not a no-op)`);
       }
     } else {
+      failures++;
       console.error(`[Scraper] ${label}: ✗ Failed — ${result.reason}`);
     }
   });
 
-  console.log(`[Scraper] === Refresh complete in ${elapsed}s ===`);
+  console.log(`[Scraper] === Refresh complete in ${elapsed}s (${failures} failure(s)) ===`);
+  return { failures };
 }
 
 // Run directly if executed as a script
@@ -536,8 +586,15 @@ const isDirectRun = process.argv[1] && (
 );
 
 if (isDirectRun) {
-  runScraper().catch(err => {
-    console.error('[Scraper] Fatal error:', err);
-    process.exit(1);
-  });
+  runScraper()
+    .then(({ failures }) => {
+      if (failures > 0) {
+        console.error(`[Scraper] ${failures} data source(s) failed to refresh — exiting non-zero so the run is visible (RED), not a silent green.`);
+        process.exit(1);
+      }
+    })
+    .catch(err => {
+      console.error('[Scraper] Fatal error:', err);
+      process.exit(1);
+    });
 }
