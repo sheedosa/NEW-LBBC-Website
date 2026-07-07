@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Building2, Calendar, MapPin, Newspaper, Clock, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { GlueUpWidget } from './GlueUpWidget';
 
 export const MemberDirectory = () => {
   const { t, language } = useLanguage();
@@ -97,46 +98,11 @@ export const MemberDirectory = () => {
 
 export const UpcomingEvents = () => {
   const { t } = useLanguage();
-  const [events, setEvents] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/data/events.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => { if (data) setEvents(data.upcoming || []); })
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  if (isLoading) {
-    return (
-      <section id="events" className="py-8 md:py-16 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="animate-pulse h-64 bg-slate-200 rounded-2xl"></div>
-        </div>
-      </section>
-    );
-  }
-
-  if (events.length === 0) {
-    return (
-      <section id="events" className="py-16 md:py-24 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-6">
-          <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] block">{t.nav.upcoming.toUpperCase()}</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">{t.nav.events}</h2>
-          <p className="text-slate-500 text-base max-w-xl mx-auto">View our full schedule of upcoming and past events on the events page.</p>
-          <Link to="/events" className="inline-flex items-center gap-3 bg-lbbc-green text-white px-8 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-xl active:scale-95">
-            {t.events.viewAll} <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="events" className="py-16 md:py-24 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 md:mb-16 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-14 gap-6">
           <div className="text-center md:text-left">
             <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-3 md:mb-4 block">{t.nav.upcoming.toUpperCase()}</span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">{t.nav.events}</h2>
@@ -150,50 +116,13 @@ export const UpcomingEvents = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-          {events.slice(0, 4).map((event, i) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-xl md:rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col md:flex-row group hover:shadow-2xl transition-all h-full"
-            >
-              <div className="md:w-2/5 relative h-48 md:h-auto overflow-hidden">
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-lbbc-green text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{event.type || 'Event'}</span>
-                </div>
-              </div>
-              <div className="md:w-3/5 p-6 md:p-10 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-4 text-lbbc-green text-[10px] md:text-xs font-black uppercase tracking-widest mb-4">
-                    <span className="flex items-center gap-2"><Calendar size={14} /> {event.date}</span>
-                    <span className="flex items-center gap-2"><MapPin size={14} /> {event.location}</span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight mb-4 group-hover:text-lbbc-green transition-colors">{event.title}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-6">
-                    {event.description}
-                  </p>
-                </div>
-                <a
-                  href={event.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-black text-lbbc-green uppercase tracking-widest group-hover:text-lbbc-red transition-colors"
-                >
-                  {t.events.register} <ArrowUpRight size={16} />
-                </a>
-              </div>
-            </motion.div>
-          ))}
+        {/* Live GlueUp upcoming-events widget (renders in the visitor's browser — always current) */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-2 md:p-4">
+          <GlueUpWidget
+            src="https://lbbc.glueup.com/organization/5915/widget/event-list/full-view"
+            title="LBBC Upcoming Events"
+            minHeight="520px"
+          />
         </div>
       </div>
     </section>

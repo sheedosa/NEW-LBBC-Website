@@ -1,28 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Calendar, Mail } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
 import { sponsorsEvents } from '../config';
-
-type Event = {
-  id: string;
-  title: string;
-  date: string;
-  location: string;
-  image: string | null;
-  link: string;
-};
+import { GlueUpWidget } from '../components/GlueUpWidget';
 
 type Tab = 'upcoming' | 'past';
+
+// GlueUp's live event-list widget renders client-side (always current), replacing the
+// server-side scrape that GlueUp now blocks.
+const EVENTS_UPCOMING_URL = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view';
+const EVENTS_PAST_URL = 'https://lbbc.glueup.com/organization/5915/widget/event-list/full-view?listType=past';
 
 export const EventsPage = () => {
   const { t } = useLanguage();
   const { hash } = useLocation();
-  const [eventsData, setEventsData] = useState<{ upcoming: Event[]; past: Event[] } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('upcoming');
 
   useEffect(() => {
@@ -38,21 +32,9 @@ export const EventsPage = () => {
     }
   }, [hash]);
 
-  useEffect(() => {
-    fetch('/data/events.json')
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then(data => { setEventsData(data); })
-      .catch(() => setFetchError(true))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const upcomingCount = eventsData?.upcoming.length ?? 0;
-  const pastCount = eventsData?.past.length ?? 0;
-  const activeEvents = activeTab === 'upcoming' ? (eventsData?.upcoming ?? []) : (eventsData?.past ?? []);
-
-  const tabs: { id: Tab; label: string; count: number }[] = [
-    { id: 'upcoming', label: t.events.upcomingTab, count: upcomingCount },
-    { id: 'past',     label: t.events.pastTab,     count: pastCount },
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'upcoming', label: t.events.upcomingTab },
+    { id: 'past', label: t.events.pastTab },
   ];
 
   return (
@@ -108,136 +90,32 @@ export const EventsPage = () => {
             </p>
           </div>
 
-          {/* Tabs */}
+          {/* Upcoming / Past tabs — swap the live widget source */}
           <div className="flex flex-wrap gap-2 mb-10">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-sm text-[11px] font-black transition-all border-2 ${
+                className={`px-5 py-2.5 rounded-sm text-[11px] font-black transition-all border-2 ${
                   activeTab === tab.id
                     ? 'bg-lbbc-green border-lbbc-green text-white shadow-md'
                     : 'bg-white border-slate-200 text-slate-500 hover:border-lbbc-green hover:text-lbbc-green'
                 }`}
               >
                 {tab.label}
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
-                  activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
-                }`}>
-                  {tab.count}
-                </span>
               </button>
             ))}
           </div>
 
-          {/* Fetch error */}
-          {fetchError && (
-            <div className="text-center py-24 space-y-4">
-              <p className="text-slate-500 font-semibold">Unable to load events. Please try again.</p>
-              <button
-                onClick={() => { setFetchError(false); setIsLoading(true); fetch('/data/events.json').then(r => r.ok ? r.json() : Promise.reject()).then(data => setEventsData(data)).catch(() => setFetchError(true)).finally(() => setIsLoading(false)); }}
-                className="bg-lbbc-green text-white px-6 py-2 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-lbbc-red transition-colors"
-              >
-                Retry
-              </button>
-            </div>
-          )}
-
-          {/* Skeleton loading */}
-          {!fetchError && isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-slate-100 overflow-hidden animate-pulse">
-                  <div className="aspect-video bg-slate-100" />
-                  <div className="p-5 space-y-3">
-                    <div className="h-3 bg-slate-100 rounded w-1/2" />
-                    <div className="h-4 bg-slate-100 rounded" />
-                    <div className="h-4 bg-slate-100 rounded w-3/4" />
-                    <div className="h-8 bg-slate-50 rounded mt-4" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Event cards */}
-          {!isLoading && !fetchError && (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                {activeEvents.length === 0 ? (
-                  <div className="text-center py-24 text-slate-400">
-                    <Calendar size={40} className="mx-auto mb-4 opacity-30" />
-                    <p className="font-bold text-sm">
-                      {activeTab === 'upcoming' ? t.events.noUpcoming : t.events.noPast}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {activeEvents.map((event, i) => (
-                      <motion.a
-                        key={event.id}
-                        href={event.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: Math.min(i * 0.06, 0.4) }}
-                        className="group bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col"
-                      >
-                        {/* Image */}
-                        <div className="relative aspect-video bg-slate-100 overflow-hidden">
-                          {event.image ? (
-                            <img
-                              src={event.image}
-                              alt={event.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              loading="lazy"
-                              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-lbbc-green/10 to-lbbc-green/5 flex items-center justify-center">
-                              <Calendar size={32} className="text-lbbc-green/30" />
-                            </div>
-                          )}
-                          {/* Date badge — positioned at bottom-start (flips with RTL) */}
-                          {event.date && (
-                            <div className="absolute bottom-3 start-3 bg-lbbc-green text-white text-[11px] font-black px-2.5 py-1 rounded-sm shadow-md">
-                              {event.date.split('(')[0].trim()}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Card body */}
-                        <div className="p-5 flex flex-col gap-2.5 flex-1">
-                          <h3 className="text-sm font-black text-slate-900 leading-snug line-clamp-2 group-hover:text-lbbc-green transition-colors">
-                            {event.title}
-                          </h3>
-                          {event.location && (
-                            <div className="flex items-start gap-1.5 text-slate-500">
-                              <MapPin size={12} className="mt-0.5 flex-shrink-0 text-lbbc-red/70" />
-                              <span className="text-xs font-medium leading-tight line-clamp-1">{event.location}</span>
-                            </div>
-                          )}
-                          <div className="mt-auto pt-3">
-                            <span className="inline-flex items-center gap-1.5 bg-lbbc-green text-white text-[11px] font-black px-4 py-2.5 rounded-sm shadow-sm group-hover:bg-lbbc-red transition-colors">
-                              {activeTab === 'upcoming' ? t.events.registerNow : t.events.viewDetails}
-                              <ExternalLink size={11} />
-                            </span>
-                          </div>
-                        </div>
-                      </motion.a>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          )}
+          {/* Live GlueUp event list (key forces a fresh load + spinner when switching tabs) */}
+          <div className="rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-2 md:p-4 min-h-[500px]">
+            <GlueUpWidget
+              key={activeTab}
+              src={activeTab === 'upcoming' ? EVENTS_UPCOMING_URL : EVENTS_PAST_URL}
+              title={activeTab === 'upcoming' ? 'LBBC Upcoming Events' : 'LBBC Past Events'}
+              minHeight="700px"
+            />
+          </div>
 
           {/* CTA buttons */}
           <div className="mt-12 flex flex-col sm:flex-row items-center gap-4 justify-center pt-8 border-t border-slate-200">

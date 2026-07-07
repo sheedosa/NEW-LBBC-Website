@@ -1,9 +1,14 @@
 name: Scrape GlueUp Data
 
+# NOTE: The daily schedule is DISABLED. GlueUp began returning HTTP 403 to server-side
+# requests on 2026-07-04, so the Directory & Events pages now embed GlueUp's official
+# client-side widgets (which render live in each visitor's browser) instead of scraping.
+# public/data/{members,events}.json is kept as a static snapshot (home logo marquee +
+# command-palette search). Re-enable the `schedule:` below only if GlueUp API access or a
+# proxy is set up so the scraper can reach GlueUp again.
 on:
-  schedule:
-    # Runs every day at 02:00 UTC
-    - cron: '0 2 * * *'
+  # schedule:
+  #   - cron: '0 2 * * *'
   workflow_dispatch:
     # Allows manual trigger from the GitHub Actions tab
 
