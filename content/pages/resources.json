@@ -20,27 +20,12 @@
     },
     {
       "id": 3,
-      "type": "link",
+      "type": "pdf",
       "title": "Legal Guide on Doing Business in Libya",
       "category": "LEGAL",
-      "href": "https://practiceguides.chambers.com/practice-guides/doing-business-in-2025/libya",
+      "file": "/resources/Zahaf Law Firm Libya Business Legal Guide.pdf",
       "btnLabel": "View Legal Guide",
       "logo": "/images/partners/zahaf-logo.webp"
-    },
-    {
-      "id": 4,
-      "title": "UK-Libya Trade Guide 2026",
-      "category": "REGULATORY"
-    },
-    {
-      "id": 5,
-      "title": "Investment Opportunities in Energy",
-      "category": "MARKET INSIGHT"
-    },
-    {
-      "id": 6,
-      "title": "Banking and Finance Sector Overview",
-      "category": "FINANCE"
     }
   ],
   "albums": [
