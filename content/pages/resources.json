@@ -5,7 +5,6 @@
       "type": "pdf",
       "title": "Guide on Travel to Libya 2026",
       "category": "TRAVEL",
-      "file": "/resources/visiting-libya-travel-guide-2026.pdf",
       "btnLabel": "Travel Guide",
       "cover": "/images/travel-guide-cover.jpg"
     },
@@ -14,8 +13,8 @@
       "type": "link",
       "title": "Export Documentation Services by the ABCC",
       "category": "LOGISTICS",
-      "href": "https://abcc.org.uk/trade-services/",
-      "btnLabel": "Visit ABCC Trade Services",
+      "href": "https://abcc.org.uk/export-services-and-documents/",
+      "btnLabel": "See Export Documents",
       "logo": "/images/partners/abcc-logo.jpg"
     },
     {
@@ -23,7 +22,6 @@
       "type": "pdf",
       "title": "Legal Guide on Doing Business in Libya",
       "category": "LEGAL",
-      "file": "/resources/Zahaf Law Firm Libya Business Legal Guide.pdf",
       "btnLabel": "View Legal Guide",
       "logo": "/images/partners/zahaf-logo.webp"
     }
