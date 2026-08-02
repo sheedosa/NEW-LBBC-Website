@@ -66,7 +66,12 @@ const pageEntry = (fileName, label, structuredFields = [], description, entryNam
 });
 
 const config = {
-  media: { input: 'public/images', output: '/images' },
+  // Two media sources. The FIRST entry (images) is the default for every `type: image`
+  // field. The `documents` source is used by the Resources PDF upload field below.
+  media: [
+    { name: 'images', input: 'public/images', output: '/images' },
+    { name: 'documents', input: 'public/resources', output: '/resources', extensions: ['pdf'] },
+  ],
   content: [
     {
       name: 'news',
@@ -130,10 +135,14 @@ const config = {
     pageEntry('resources', '📚 Resources Page', [
       { name: 'documents', label: 'Documents / Guides', type: 'object', list: true, fields: [
         { name: 'id', label: 'ID', type: 'number' },
-        { name: 'type', label: 'Type (pdf or link)', type: 'string' },
+        { name: 'type', label: 'Type', type: 'select', options: { values: ['pdf', 'link'] },
+          description: 'Choose "pdf" to upload a document, or "link" for an external website.' },
         { name: 'title', label: 'Title', type: 'string' },
         { name: 'category', label: 'Category', type: 'string' },
-        { name: 'href', label: 'Link or File', type: 'string' },
+        { name: 'file', label: 'PDF File (upload)', type: 'file', options: { media: 'documents', extensions: ['pdf'] },
+          description: 'For "pdf" type: upload the PDF here. Leave "External Link" blank.' },
+        { name: 'href', label: 'External Link', type: 'string',
+          description: 'For "link" type only: paste the external URL. Leave blank for uploaded PDFs.' },
         { name: 'btnLabel', label: 'Button Label', type: 'string' },
         { name: 'cover', label: 'Cover Image', type: 'image' },
         { name: 'logo', label: 'Logo', type: 'image' },

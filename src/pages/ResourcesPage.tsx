@@ -24,10 +24,14 @@ export const ResourcesPage = () => {
   }, [hash]);
 
   type Resource =
-    | { id: number; type?: 'pdf'; title: string; category: string; href?: string; btnLabel?: string; cover?: string }
+    | { id: number; type?: 'pdf'; title: string; category: string; file?: string; href?: string; btnLabel?: string; cover?: string }
     | { id: number; type: 'link'; title: string; category: string; href: string; btnLabel: string; logo: string };
 
   const pdfs = resourceDocuments as unknown as Resource[];
+
+  // Where a document's button points: an uploaded PDF (`file`) takes priority, then a link (`href`).
+  const docUrl = (d: Resource): string | undefined =>
+    ('file' in d && d.file) ? d.file : ('href' in d && d.href) ? d.href : undefined;
 
   const news = newsData;
 
@@ -106,7 +110,7 @@ export const ResourcesPage = () => {
                   </div>
                   {pdf.type === 'link' ? (
                     <a
-                      href={'href' in pdf ? pdf.href : undefined}
+                      href={docUrl(pdf)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-auto flex items-center justify-center gap-2 bg-lbbc-green text-white px-4 py-3 rounded-sm text-[9px] font-bold uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg"
@@ -114,9 +118,9 @@ export const ResourcesPage = () => {
                       <ExternalLink size={14} />
                       {'btnLabel' in pdf ? pdf.btnLabel : ''}
                     </a>
-                  ) : 'href' in pdf && pdf.href ? (
+                  ) : docUrl(pdf) ? (
                     <a
-                      href={pdf.href}
+                      href={docUrl(pdf)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-auto flex items-center justify-center gap-2 bg-lbbc-green text-white px-4 py-3 rounded-sm text-[9px] font-bold uppercase tracking-widest hover:bg-lbbc-red transition-all shadow-lg group/btn"
