@@ -26,6 +26,15 @@
       "file": "/resources/Zahaf Law Firm Libya Business Legal Guide-1.pdf",
       "btnLabel": "View Legal Guide",
       "cover": "/images/Z&P Logo.svg"
+    },
+    {
+      "id": 0,
+      "type": "pdf",
+      "title": "Misurata Free Zone FAQ Guide",
+      "category": "Investment",
+      "file": "/resources/LBBC MFZ Guide.pdf",
+      "btnLabel": "View MFZ FAQ",
+      "cover": "/images/LBBC MFZ Guide Cover Image.png"
     }
   ],
   "albums": [
