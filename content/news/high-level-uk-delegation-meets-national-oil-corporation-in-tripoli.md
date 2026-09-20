@@ -4,6 +4,7 @@ date: 2026-09-14
 category: ENERGY
 image: /images/LBBC Website News Images-1.jpg
 imageContain: false
+headerImage: /images/LBBC NOC UK Energy Article Header.jpg
 ---
 A high-level delegation of major UK companies from across the energy, trading, engineering and construction sectors met today with the Chairman of the National Oil Corporation (NOC) and senior NOC representatives in Tripoli, as UK–Libya commercial engagement in the energy sector continues to gather pace.
 
