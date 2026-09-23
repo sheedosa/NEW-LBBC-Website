@@ -1,5 +1,5 @@
 ---
-title: "LBBC in Benghazi: Connecting UK Expertise with the City’s Development"
+title: LBBC Connects UK Expertise with Benghazi's Urban Development Plans
 date: 2026-09-08
 category: NFRASTRUCTURE
 image: /images/LBBC Website News Images (1).jpg
