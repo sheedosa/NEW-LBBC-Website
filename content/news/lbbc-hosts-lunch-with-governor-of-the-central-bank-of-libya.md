@@ -22,4 +22,4 @@ The lunch forms part of the LBBC’s wider programme of engagement with Libyan i
 
 The LBBC will continue to support engagement between its members and Libyan institutions as discussions around economic and financial sector reform develop.
 
-To learn more about joining the LBBC network, visit our ++[lbbc.org.uk/membership](http://lbbc.org.uk/membership)++ 
+To learn more about joining the LBBC network, check our [Membership Packages](++[lbbc.org.uk/membership](http://lbbc.org.uk/membership)++). 
