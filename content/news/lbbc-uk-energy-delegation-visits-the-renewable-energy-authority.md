@@ -20,4 +20,4 @@ Following the discussions in Tripoli, the LBBC is now planning further engagemen
 
 The visit provided an opportunity to strengthen relationships with REAOL and gain a clearer understanding of the projects and investment models being developed within Libya’s renewable energy sector. The LBBC will continue to support dialogue between its members and relevant Libyan institutions as these opportunities develop.
 
-To see upcoming LBBC events and delegations, visit our ++[lbbc.org.uk/events](http://lbbc.org.uk/events)++ 
+To see upcoming LBBC events and delegations, visit our ++[lbbc.org.uk/events](Membership Packages.)++ 
