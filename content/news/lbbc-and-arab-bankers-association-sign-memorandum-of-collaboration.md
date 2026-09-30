@@ -4,6 +4,7 @@ date: 2026-09-29
 category: PARTNERSHIPS
 image: /images/LBBC Website News Images (5).jpg
 imageContain: false
+headerImage: /images/LBBC x ABA Partnership Article Headers-2.jpg
 ---
 The Libyan British Business Council (LBBC) and the Arab Bankers Association (ABA) have signed a Memorandum of Collaboration to strengthen engagement across the UK, Libya and the wider Arab banking and financial community.
 
