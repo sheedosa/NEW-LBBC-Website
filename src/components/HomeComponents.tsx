@@ -43,7 +43,7 @@ export const MemberDirectory = () => {
         {isLoading ? (
           <div className="flex gap-12 px-4 w-full">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="w-24 md:w-32 aspect-square rounded-full bg-slate-50 animate-pulse flex-shrink-0" />
+              <div key={i} className="w-28 md:w-38 aspect-square rounded-full bg-slate-50 animate-pulse flex-shrink-0" />
             ))}
           </div>
         ) : (
@@ -52,11 +52,12 @@ export const MemberDirectory = () => {
           <div
             key={language}
             className={`flex gap-6 md:gap-12 px-4 ${isRtl ? 'animate-marquee-rtl' : 'animate-marquee-ltr'}`}
-            /* 2s per logo keeps the scroll speed steady however many council members there are */
-            style={{ animationDuration: `${Math.max(members.length, 1) * 2}s` }}
+            /* ~2.35s per logo keeps the scroll speed steady however many council members there are
+               (scaled with the larger circles so the ticker doesn't speed up) */
+            style={{ animationDuration: `${Math.max(members.length, 1) * 2.35}s` }}
           >
             {allMembers.map((member, i) => (
-              <div key={`${member.id || member.name}-${i}`} className="flex-shrink-0 w-24 md:w-32 text-center group">
+              <div key={`${member.id || member.name}-${i}`} className="flex-shrink-0 w-28 md:w-38 text-center group">
                 <div className="aspect-square rounded-full overflow-hidden bg-white mb-3 border border-slate-100 shadow-sm group-hover:shadow-lg transition-all duration-500 group-hover:-translate-y-1 flex items-center justify-center p-4">
                   {member.logo ? (
                     <img

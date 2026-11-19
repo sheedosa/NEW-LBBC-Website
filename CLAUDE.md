@@ -17,6 +17,12 @@ Members and News sections now share one shape and are at least 44px tall.
 
 Use `SectionLink` for any new section header link.
 
+## 2026-11-19 — council logo ticker size
+Owner's request: council member circles on the home page about 15–20% bigger.
+Changed in `MemberDirectory` only: 96px → 112px on phones (+17%), 128px → 152px on desktop (+19%).
+Animation time per logo scaled 2s → 2.35s so the scroll speed stays the same.
+No horizontal overflow at 320, 390 or 1280px. The partners ticker is unchanged (still 96/128px).
+
 ## Waiting on the owner
 - Arabic text for labels added in November 2026 (they show in English for now).
 - Member data is a snapshot from 3 July 2026 (`public/data/members.json`); GlueUp blocks the scraper.
