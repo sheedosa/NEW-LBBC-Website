@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Building2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { GlueUpWidget } from './GlueUpWidget';
+import { SectionLink } from './SectionLink';
 import { partners } from '../config';
 
 export const MemberDirectory = () => {
@@ -34,13 +35,7 @@ export const MemberDirectory = () => {
           <span className="text-lbbc-green font-bold text-[9px] md:text-[11px] uppercase tracking-[0.3em] mb-2 block">{t.directory.tag}</span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">{t.directory.title}</h2>
         </div>
-        <Link
-          to="/members"
-          className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-lbbc-green transition-all"
-        >
-          {t.directory.cta}
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-        </Link>
+        <SectionLink to="/members">{t.directory.cta}</SectionLink>
       </div>
 
       {/* w-full prevents RTL flex shrink-to-content on first render */}
@@ -88,7 +83,7 @@ export const MemberDirectory = () => {
       <div className="mt-10 md:mt-12 text-center px-4">
         <Link
           to="/members"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-lbbc-green text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-[10px] font-bold hover:bg-lbbc-red transition-all shadow-lg hover:shadow-lbbc-red/20 hover:-translate-y-0.5 uppercase tracking-widest"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-3 min-h-11 bg-lbbc-green text-white px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red transition-all shadow-xl uppercase tracking-widest"
         >
           {t.directory.cta}
           <ArrowRight size={14} />
@@ -109,13 +104,7 @@ export const UpcomingEvents = () => {
             <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-3 md:mb-4 block">{t.nav.upcoming.toUpperCase()}</span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">{t.nav.events}</h2>
           </div>
-          <Link
-            to="/events"
-            className="group inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-lbbc-red hover:text-white transition-all shadow-xl active:scale-95"
-          >
-            {t.events.viewAll}
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <SectionLink to="/events">{t.events.cta}</SectionLink>
         </div>
 
         {/* Live GlueUp upcoming-events widget (renders in the visitor's browser — always current) */}
@@ -144,13 +133,7 @@ export const PartnersTicker = () => {
           <span className="text-lbbc-green font-bold text-[9px] md:text-[11px] uppercase tracking-[0.3em] mb-2 block">{t.partners.tag}</span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">{t.footer.partners}</h2>
         </div>
-        <Link
-          to="/about#partners"
-          className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-lbbc-green transition-all"
-        >
-          {t.footer.viewAllPartners}
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-        </Link>
+        <SectionLink to="/about#partners">{t.footer.viewAllPartners}</SectionLink>
       </div>
 
       <div className="relative flex overflow-hidden w-full">
@@ -206,10 +189,7 @@ export const LatestNews = () => {
             <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] mb-4 block">{t.news.tag}</span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.news.title}</h2>
           </div>
-          <Link to="/resources#news" className="text-lbbc-green font-bold text-xs md:text-sm uppercase tracking-widest flex items-center justify-center gap-2 group">
-            {t.news.cta}
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <SectionLink to="/resources#news">{t.news.cta}</SectionLink>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
@@ -240,13 +220,13 @@ export const LatestNews = () => {
         <div className="mt-12 md:mt-20 flex flex-col sm:flex-row justify-center gap-4 md:gap-6 px-4">
           <Link
             to="/resources#news"
-            className="w-full sm:w-auto bg-lbbc-green text-white px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red transition-all uppercase tracking-widest shadow-xl text-center"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-11 bg-lbbc-green text-white px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red transition-all uppercase tracking-widest shadow-xl text-center"
           >
             {t.news.more}
           </Link>
           <Link
             to="/membership"
-            className="w-full sm:w-auto bg-white border-2 border-lbbc-green text-lbbc-green px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red hover:border-lbbc-red hover:text-white transition-all uppercase tracking-widest text-center"
+            className="w-full sm:w-auto inline-flex items-center justify-center min-h-11 bg-white border-2 border-lbbc-green text-lbbc-green px-8 md:px-10 py-3 md:py-4 rounded-sm text-xs font-bold hover:bg-lbbc-red hover:border-lbbc-red hover:text-white transition-all uppercase tracking-widest text-center"
           >
             {t.news.exclusive}
           </Link>
