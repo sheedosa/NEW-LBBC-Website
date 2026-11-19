@@ -36,8 +36,18 @@
   "featuredEvents": [
     {
       "name": "UK Roadshow 2026: Gateway to the Middle East and North Africa",
-      "date": "23 November - 27 November",
+      "date": "23 -27 November 2026 (UK)",
       "link": "https://uk-roadshow.the-mea.com/"
+    },
+    {
+      "name": "International Strategic Forum for Advanced Medical Technologies (ISFAMT 2027)",
+      "date": "16-17 January 2027 (Tripoli)",
+      "link": "https://cms.gamesd.gov.ly/assets-file/content/attachments/Profile%20Eng%20S.pdf"
+    },
+    {
+      "name": "Libya Build 2027",
+      "date": "3-6 May 2027 (Benghazi)",
+      "link": "https://www.libyabuild.com/"
     }
   ],
   "en": {
