@@ -33,7 +33,13 @@
       "alt": "Crowd Digital"
     }
   ],
-  "featuredEvents": [],
+  "featuredEvents": [
+    {
+      "name": "UK Roadshow 2026: Gateway to the Middle East and North Africa",
+      "date": "23 November - 27 November",
+      "link": "https://uk-roadshow.the-mea.com/"
+    }
+  ],
   "en": {
     "events": {
       "tag": "CALENDAR",
