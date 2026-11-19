@@ -115,9 +115,16 @@ const config = {
         { name: 'src', label: 'Logo', type: 'image' },
         { name: 'alt', label: 'Name', type: 'string' },
       ] },
-    ], 'Event listings sync automatically from GlueUp — only the page wording and sponsors are edited here.'),
-    pageEntry('directory', '🔎 Directory Page', [],
-      'The member list syncs automatically from GlueUp — only the page wording is edited here.'),
+      { name: 'featuredEvents', label: 'Events to Watch (Featured Industry Events)', type: 'object', list: true,
+        description: 'External industry events shown under the main events list. Add one row per event.',
+        fields: [
+          { name: 'name', label: 'Name of Event', type: 'string' },
+          { name: 'date', label: 'Date / Time', type: 'string', description: 'Shown as typed, e.g. "12 March 2027, 6:00 PM (London)".' },
+          { name: 'link', label: 'Link to See Event', type: 'string', description: 'Full web address, starting with https://' },
+        ] },
+    ], 'LBBC event listings sync automatically from GlueUp — the page wording, sponsors and "Events to Watch" are edited here.'),
+    pageEntry('directory', '👥 Members Page', [],
+      'The member list comes from the GlueUp snapshot (public/data/members.json) — only the page wording is edited here.'),
     pageEntry('membership', '💼 Membership Page', [
       { name: 'pricing', label: 'Prices & Apply Links', type: 'object', fields: [
         { name: 'councilUk', label: 'Council price (UK)', type: 'string' },

@@ -59,7 +59,8 @@ const AppContent = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/events" element={<EventsPage />} />
-              <Route path="/directory" element={<DirectoryPage />} />
+              <Route path="/members" element={<DirectoryPage />} />
+              <Route path="/directory" element={<Navigate to="/members" replace />} />
               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/membership" element={<MembershipPage />} />
               <Route path="/contact" element={<ContactPage />} />

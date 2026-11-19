@@ -33,6 +33,7 @@
       "alt": "Crowd Digital"
     }
   ],
+  "featuredEvents": [],
   "en": {
     "events": {
       "tag": "CALENDAR",
@@ -68,7 +69,12 @@
       "sponsorsTag": "SPONSORS",
       "sponsorsTitle": "Our Past Event Sponsors",
       "sponsorsDesc": "Enhance your organisation’s profile by sponsoring an LBBC event. Our events provide targeted visibility among key decision-makers and industry peers. Contact our events team to discuss available opportunities.",
-      "contactUs": "Contact Us"
+      "contactUs": "Contact Us",
+      "watchTag": "EVENTS TO WATCH",
+      "watchTitle": "Featured Industry Events",
+      "watchDesc": "Discover upcoming events focused on trade, investment, energy and other areas of commercial interest.",
+      "watchCta": "See Event",
+      "watchEmpty": "New events will be listed here soon."
     }
   },
   "ar": {
@@ -106,7 +112,12 @@
       "sponsorsTag": "الرعاة",
       "sponsorsTitle": "رعاة فعالياتنا السابقة",
       "sponsorsDesc": "عزز مكانة مؤسستك من خلال رعاية إحدى فعاليات المجلس. توفر فعالياتنا رؤية مستهدفة بين صناع القرار الرئيسيين والأقران في الصناعة. اتصل بفريق الفعاليات لدينا لمناقشة الفرص المتاحة.",
-      "contactUs": "اتصل بنا"
+      "contactUs": "اتصل بنا",
+      "watchTag": "EVENTS TO WATCH",
+      "watchTitle": "Featured Industry Events",
+      "watchDesc": "Discover upcoming events focused on trade, investment, energy and other areas of commercial interest.",
+      "watchCta": "See Event",
+      "watchEmpty": "New events will be listed here soon."
     }
   }
 }

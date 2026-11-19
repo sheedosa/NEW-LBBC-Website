@@ -60,7 +60,7 @@
       "events": "Events",
       "upcoming": "Upcoming Events",
       "archive": "Events Archive",
-      "directory": "Directory",
+      "directory": "Members",
       "resources": "Resources",
       "guides": "Guides and Guidance",
       "newsInsights": "News and Insights",
@@ -82,7 +82,8 @@
       "becomeSponsor": "Become an LBBC Sponsor",
       "email": "Email",
       "tel": "Tel",
-      "name": "Libyan British Business Council"
+      "name": "Libyan British Business Council",
+      "viewAllPartners": "View All Partners"
     }
   },
   "ar": {
@@ -122,7 +123,8 @@
       "becomeSponsor": "كن راعياً للمجلس",
       "email": "البريد الإلكتروني",
       "tel": "الهاتف",
-      "name": "مجلس الأعمال الليبي البريطاني"
+      "name": "مجلس الأعمال الليبي البريطاني",
+      "viewAllPartners": "View All Partners"
     }
   }
 }

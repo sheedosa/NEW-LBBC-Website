@@ -4,6 +4,7 @@ import { Mail, Phone, ArrowRight, ChevronDown, CheckCircle, AlertCircle, Loader2
 import { useLanguage } from '../context/LanguageContext';
 import { settings, telHref } from '../config';
 import { SEO } from '../components/SEO';
+import { LinkedInFeed } from '../components/LinkedInFeed';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -17,12 +18,6 @@ export const ContactPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const script = document.createElement('script');
-    script.src = "https://elfsightcdn.com/platform.js";
-    script.async = true;
-    script.onerror = () => {};
-    document.body.appendChild(script);
-    return () => { if (document.body.contains(script)) document.body.removeChild(script); };
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -269,17 +264,7 @@ export const ContactPage = () => {
       </section>
 
       {/* LinkedIn Feed Section */}
-      <section className="pt-6 md:pt-10 pb-12 md:pb-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 md:mb-20">
-            <span className="text-lbbc-green font-bold text-[10px] md:text-[11px] uppercase tracking-[0.3em] block mb-3 md:mb-4">{t.contact.socialTag}</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">{t.contact.socialTitle}</h2>
-          </div>
-          <div className="max-w-5xl mx-auto">
-            <div className={`elfsight-app-${settings.elfsightAppId}`} data-elfsight-app-lazy></div>
-          </div>
-        </div>
-      </section>
+      <LinkedInFeed />
 
       {/* Disclaimer Section */}
       <section className="py-12 md:py-16 bg-slate-50 border-t border-slate-100">

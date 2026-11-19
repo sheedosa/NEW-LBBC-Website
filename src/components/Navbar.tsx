@@ -80,7 +80,7 @@ export const Navbar = () => {
         { name: t.nav.archive, href: '/events#past' },
       ]
     },
-    { name: t.nav.directory, href: '/directory' },
+    { name: t.nav.directory, href: '/members' },
     { 
       name: t.nav.resources, 
       href: '/resources',

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, Mail } from 'lucide-react';
+import { Calendar, Mail, ArrowUpRight, Clock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { SEO } from '../components/SEO';
-import { sponsorsEvents } from '../config';
+import { sponsorsEvents, featuredEvents } from '../config';
 import { GlueUpWidget } from '../components/GlueUpWidget';
 
 type Tab = 'upcoming' | 'past';
@@ -31,6 +31,9 @@ export const EventsPage = () => {
       window.scrollTo(0, 0);
     }
   }, [hash]);
+
+  // Skip blank rows a CMS editor may have added but not filled in yet.
+  const watchList = featuredEvents.filter((e) => e && e.name);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'upcoming', label: t.events.upcomingTab },
@@ -134,6 +137,48 @@ export const EventsPage = () => {
               {t.events.joinLBBC}
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Events to Watch — external industry events, edited in the CMS (Events Page → Events to Watch) */}
+      <section id="events-to-watch" className="py-16 md:py-24 bg-slate-50/50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="max-w-3xl mb-10 md:mb-14">
+            <span className="text-lbbc-green font-bold text-[11px] block mb-4">{t.events.watchTag}</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight mb-6">{t.events.watchTitle}</h2>
+            <p className="text-base md:text-lg text-slate-600 leading-relaxed">{t.events.watchDesc}</p>
+          </div>
+
+          {watchList.length === 0 ? (
+            <p className="bg-white rounded-2xl border border-slate-100 shadow-sm px-6 py-10 text-center text-slate-500 text-sm md:text-base">
+              {t.events.watchEmpty}
+            </p>
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              {watchList.map((event) => (
+                <li key={`${event.name}-${event.date}`} className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow p-6 md:p-7 flex flex-col">
+                  {event.date && (
+                    <p className="flex items-center gap-2 text-lbbc-green font-bold text-xs mb-3">
+                      <Clock size={14} className="flex-shrink-0" />
+                      {event.date}
+                    </p>
+                  )}
+                  <h3 className="text-lg font-extrabold text-slate-900 leading-snug mb-6">{event.name}</h3>
+                  {event.link && (
+                    <a
+                      href={event.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-auto inline-flex items-center gap-2 self-start text-[11px] font-black text-lbbc-green hover:text-lbbc-red transition-colors uppercase tracking-widest"
+                    >
+                      {t.events.watchCta}
+                      <ArrowUpRight size={14} />
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 

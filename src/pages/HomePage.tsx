@@ -1,7 +1,8 @@
 import { SEO } from '../components/SEO';
 import { Hero } from '../components/Hero';
 import { About } from '../components/About';
-import { MemberDirectory, UpcomingEvents, FeaturedStory, LatestNews } from '../components/HomeComponents';
+import { MemberDirectory, UpcomingEvents, PartnersTicker, LatestNews } from '../components/HomeComponents';
+import { LinkedInFeed } from '../components/LinkedInFeed';
 
 export const HomePage = () => {
   return (
@@ -15,8 +16,9 @@ export const HomePage = () => {
       <About />
       <MemberDirectory />
       <UpcomingEvents />
-      <FeaturedStory />
+      <PartnersTicker />
       <LatestNews />
+      <LinkedInFeed className="py-12 md:py-20 bg-white" />
     </main>
   );
 };

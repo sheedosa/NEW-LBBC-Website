@@ -22,6 +22,12 @@ export const leadership = aboutPage.leadership;
 export const board = aboutPage.board;
 export const partners = aboutPage.partners;
 export const sponsorsEvents = eventsPage.sponsors;
+// "Events to Watch" — external industry events added by LBBC staff in the CMS.
+export const featuredEvents = eventsPage.featuredEvents as Array<{
+  name: string;
+  date: string;
+  link: string;
+}>;
 export const footerPartners = globalPage.footerPartners;
 export const footerSponsors = globalPage.footerSponsors;
 export const resourceDocuments = resourcesPage.documents;

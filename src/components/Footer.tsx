@@ -24,7 +24,7 @@ export const Footer = () => {
                 { label: t.nav.about, path: '/about' },
                 { label: t.nav.membership, path: '/membership' },
                 { label: t.nav.events, path: '/events' },
-                { label: t.nav.directory, path: '/directory' },
+                { label: t.nav.directory, path: '/members' },
                 { label: t.nav.resources, path: '/resources' },
                 { label: t.nav.contact, path: '/contact' }
               ].map((item) => (
@@ -53,6 +53,10 @@ export const Footer = () => {
                 </a>
               ))}
             </div>
+            <Link to="/about#partners" className="inline-flex items-center gap-2 text-xs md:text-sm font-bold text-white hover:underline underline-offset-4 group">
+              {t.footer.viewAllPartners}
+              <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
           </div>
 
           {/* Column 3: Sponsors */}

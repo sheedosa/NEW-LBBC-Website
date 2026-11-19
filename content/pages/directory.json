@@ -1,18 +1,18 @@
 {
   "en": {
     "directory": {
-      "tag": "DIRECTORY",
-      "title": "Our Members",
-      "cta": "View Full Directory",
+      "tag": "MEMBERS",
+      "title": "Our Council Members",
+      "cta": "View All Members",
       "pageTitle": "A Diverse Network of Leading UK and Libyan Businesses",
-      "pageTag": "MEMBER DIRECTORY",
+      "pageTag": "MEMBERS",
       "searchPlaceholder": "Search by company name...",
       "allSectors": "All Sectors",
       "councilTab": "Council Members",
       "corporateTab": "Corporate Members",
-      "loading": "Loading Directory...",
+      "loading": "Loading Members...",
       "error": "Connection Issue",
-      "errorText": "Failed to load directory. Please try again.",
+      "errorText": "Failed to load members. Please try again.",
       "intro": "The LBBC operates two levels of membership – Council and Corporate. Our network represents a wide range of organizations, from global corporations to specialized SMEs, all committed to the UK-Libya trade relationship.",
       "noResults": "No {tab} members found matching your search.",
       "clearFilters": "Clear All Filters",
@@ -25,7 +25,8 @@
       "searchLabel": "Search by name or sector…",
       "showing": "Showing",
       "memberSingular": "member",
-      "memberPlural": "members"
+      "memberPlural": "members",
+      "partnersTitle": "Partners"
     }
   },
   "ar": {
@@ -54,7 +55,8 @@
       "searchLabel": "ابحث بالاسم أو القطاع…",
       "showing": "عرض",
       "memberSingular": "عضو",
-      "memberPlural": "أعضاء"
+      "memberPlural": "أعضاء",
+      "partnersTitle": "Partners"
     }
   }
 }

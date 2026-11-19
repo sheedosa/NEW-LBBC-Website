@@ -20,7 +20,7 @@ const PAGES: Result[] = [
   { id: 'about',      kind: 'page', title: 'About LBBC',       subtitle: 'Mission, leadership & board',        href: '/about' },
   { id: 'membership', kind: 'page', title: 'Membership',       subtitle: 'Join the council',                   href: '/membership' },
   { id: 'events',     kind: 'page', title: 'Events',           subtitle: 'Upcoming & past events',             href: '/events' },
-  { id: 'directory',  kind: 'page', title: 'Member Directory', subtitle: 'Council & corporate members',        href: '/directory' },
+  { id: 'directory',  kind: 'page', title: 'Members',          subtitle: 'Council & corporate members',        href: '/members' },
   { id: 'resources',  kind: 'page', title: 'Resources',        subtitle: 'Guides, news & media gallery',       href: '/resources' },
   { id: 'contact',    kind: 'page', title: 'Contact',          subtitle: 'Get in touch with the secretariat',  href: '/contact' },
 ];
@@ -91,7 +91,7 @@ export const CommandPalette = ({ isOpen, onClose }: Props) => {
             kind:     'member' as ResultKind,
             title:    m.name,
             subtitle: m.sector,
-            href:     '/directory',
+            href:     '/members',
           })));
         })
         .catch(() => {});
